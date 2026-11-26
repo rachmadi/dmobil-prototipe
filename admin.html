@@ -1,0 +1,3266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D-Mobil Web Admin — Prototype Interaktif (Material Design 3)</title>
+  <!-- Favicon SVG Logo Dokter Mobil -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23FFFFFF' stroke='%23E5E7EB' stroke-width='4'/%3E%3Cpath fill='%23E31E24' fill-rule='evenodd' d='M25 18 H53 C72 18 84 31 84 50 C84 69 72 82 53 82 H25 Z M52 32 C41 32 33 40 33 50 C33 57.5 37.2 64 43.5 66.8 L43.5 55.5 C40.5 53.6 38.8 50.2 39.2 46.5 C39.7 41.8 43.2 38.2 47.8 37.5 L47.8 44.5 L52 47.2 L56.2 44.5 L56.2 37.5 C60.8 38.2 64.3 41.8 64.8 46.5 C65.2 50.2 63.5 53.6 60.5 55.5 L60.5 66.8 C66.8 64 71 57.5 71 50 C71 40 63 32 52 32 Z'/%3E%3C/svg%3E" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter + Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            md: {
+              primary: '#B3261E',
+              onPrimary: '#FFFFFF',
+              primaryContainer: '#F9DEDC',
+              onPrimaryContainer: '#410E0B',
+              secondary: '#1E3A5F',
+              onSecondary: '#FFFFFF',
+              secondaryContainer: '#D6E3FF',
+              onSecondaryContainer: '#001B3E',
+              tertiary: '#006C4C',
+              tertiaryContainer: '#89F8C7',
+              onTertiaryContainer: '#002114',
+              surface: '#FEF7FF',
+              surfaceContainerLow: '#F7F2FA',
+              surfaceContainer: '#F3EDF7',
+              surfaceContainerHigh: '#ECE6F0',
+              surfaceContainerHighest: '#E6E0E9',
+              outline: '#79747E',
+              outlineVariant: '#CAC4D0',
+              onSurface: '#1D1B20',
+              onSurfaceVariant: '#49454F',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .icon-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .m3-transition {
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CAC4D0;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #79747E;
+    }
+
+    @keyframes radarPulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      70% { transform: scale(2.2); opacity: 0; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .radar-ring {
+      animation: radarPulse 2s infinite ease-out;
+    }
+
+    .gmaps-surface {
+      background-color: #F2EFE9;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.85) 1.5px, transparent 1.5px),
+        linear-gradient(to bottom, rgba(255,255,255,0.85) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 18% 22%, #CBE8BA 0%, #CBE8BA 8%, transparent 8.5%),
+        radial-gradient(circle at 72% 82%, #D4EDD6 0%, #D4EDD6 10%, transparent 10.5%);
+      background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
+    }
+  </style>
+</head>
+<body class="bg-md-surface text-md-onSurface font-sans antialiased selection:bg-md-primaryContainer selection:text-md-onPrimaryContainer">
+
+  <!-- ==================== LOGIN SCREEN (GOOGLE SIGN-IN ONLY) ==================== -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-md-surfaceContainerLow">
+    <div class="w-full max-w-md bg-white rounded-[28px] p-8 shadow-sm border border-md-outlineVariant/60 text-center">
+      <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white shadow-md border border-gray-200 p-2 flex items-center justify-center">
+        <svg viewBox="0 0 100 100" class="w-full h-full" aria-label="Logo Dokter Mobil">
+          <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-md-onSurface tracking-tight">D-Mobil Web Admin</h1>
+      <p class="text-sm text-md-onSurfaceVariant mt-2 leading-relaxed">
+        Portal Operasional Bengkel Dokter Mobil, Bursa Mekanik Mitra & Pemantauan Kedatangan.
+      </p>
+
+      <button onclick="openWebGoogleAccountChooser()" class="mt-7 w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-semibold py-3.5 px-6 rounded-full shadow-sm m3-transition active:scale-[0.99]">
+        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+          <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+        </svg>
+        <span>Sign in with Google</span>
+      </button>
+
+      <div id="login-error-box" class="hidden mt-5 p-3.5 rounded-2xl bg-red-50 border border-red-200 text-left flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-red-600 text-xl mt-0.5">gpp_bad</span>
+        <div class="text-xs text-red-800">
+          <p class="font-semibold">Akses Ditolak</p>
+          <p class="mt-0.5">Email <span class="font-mono font-semibold">tamu.luar@example.com</span> belum terdaftar sebagai Admin. Hubungi Super Admin untuk mendaftarkan email Google Anda.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Account Chooser Dialog (Muncul setelah tombol Sign in with Google diklik) -->
+    <div id="web-google-chooser-modal" onclick="closeWebGoogleAccountChooser()" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div onclick="event.stopPropagation()" class="w-full max-w-sm bg-white rounded-[28px] p-6 shadow-2xl border border-gray-200 text-left">
+        <div class="flex items-center justify-center gap-2 mb-1">
+          <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+          </svg>
+          <span class="text-xs font-semibold text-gray-600">Sign in with Google</span>
+        </div>
+        <h3 class="text-lg font-bold text-center text-md-onSurface">Pilih Akun</h3>
+        <p class="text-xs text-center text-md-onSurfaceVariant mt-0.5 mb-5">untuk melanjutkan ke <strong>D-Mobil Web Admin</strong></p>
+
+        <div class="divide-y divide-gray-200 border border-gray-200 rounded-2xl overflow-hidden">
+          <button onclick="handleGoogleLogin('SUPER_ADMIN')" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-md-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">BS</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Budi Santoso</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">budi.superadmin@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-md-primaryContainer text-md-onPrimaryContainer shrink-0">Super Admin</span>
+          </button>
+
+          <button onclick="handleGoogleLogin('ADMIN_BENGKEL')" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-md-tertiary text-white font-bold text-xs flex items-center justify-center shrink-0">RM</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Rina Marlina</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rina.admin@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-md-secondaryContainer text-md-onSecondaryContainer shrink-0">Admin Bengkel</span>
+          </button>
+
+          <button onclick="handleGoogleLogin('UNAUTHORIZED')" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-gray-400 text-white font-bold text-xs flex items-center justify-center shrink-0">TL</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Tamu Luar</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">tamu.luar@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-gray-100 text-gray-600 shrink-0">Non-Admin</span>
+          </button>
+        </div>
+
+        <button onclick="closeWebGoogleAccountChooser()" class="mt-4 w-full py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant hover:bg-gray-100">
+          Batal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN SHELL (MATERIAL DESIGN 3) ==================== -->
+  <div id="app-shell" class="hidden min-h-screen flex flex-col lg:flex-row">
+
+    <!-- Mobile Top App Bar (M3) -->
+    <header class="lg:hidden sticky top-0 z-30 bg-md-surfaceContainerLow/95 backdrop-blur border-b border-md-outlineVariant/60 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleMobileDrawer(true)" class="p-2 rounded-full hover:bg-md-surfaceContainerHigh text-md-onSurface">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-2xs p-1 flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+              <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+            </svg>
+          </span>
+          <div>
+            <span class="font-bold text-base tracking-tight block leading-none">D-Mobil</span>
+            <span class="text-[11px] text-md-onSurfaceVariant">Admin Portal</span>
+          </div>
+        </div>
+      </div>
+      <button onclick="openCreateJobModal()" class="inline-flex items-center gap-1.5 bg-md-primary text-white text-xs font-medium px-3.5 py-2 rounded-full shadow-sm">
+        <span class="material-symbols-outlined text-base">add</span>
+        <span>Posting Pekerjaan</span>
+      </button>
+    </header>
+
+    <!-- Mobile Navigation Drawer Overlay -->
+    <div id="mobile-drawer-backdrop" onclick="toggleMobileDrawer(false)" class="hidden fixed inset-0 z-40 bg-black/40 lg:hidden"></div>
+    <aside id="mobile-drawer" class="fixed inset-y-0 left-0 z-50 w-72 bg-md-surfaceContainerLow border-r border-md-outlineVariant/60 transform -translate-x-full transition-transform duration-200 lg:hidden flex flex-col justify-between p-4">
+      <div>
+        <div class="flex items-center justify-between px-3 py-2 mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-full bg-white border border-gray-200 shadow-2xs p-1 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 100 100" class="w-full h-full">
+                <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-base leading-tight">D-Mobil</div>
+              <div class="text-xs text-md-onSurfaceVariant">Dokter Mobil Web</div>
+            </div>
+          </div>
+          <button onclick="toggleMobileDrawer(false)" class="p-2 rounded-full hover:bg-md-surfaceContainerHigh">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <nav id="mobile-nav-links" class="space-y-1"></nav>
+      </div>
+      <div class="pt-4 border-t border-md-outlineVariant/60">
+        <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-md-primary hover:bg-md-primaryContainer/50">
+          <span class="material-symbols-outlined">logout</span>
+          <span>Keluar Akun Google</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Desktop Navigation Drawer / Rail (M3 Standard) -->
+    <aside class="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 bg-md-surfaceContainerLow border-r border-md-outlineVariant/60 p-4 justify-between z-20">
+      <div>
+        <!-- Brand Header -->
+        <div class="flex items-center gap-3 px-2 py-2.5 mb-4">
+          <div class="w-11 h-11 rounded-full bg-white border border-gray-200 shadow-sm p-1.5 flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 100 100" class="w-full h-full" aria-label="Logo Dokter Mobil">
+              <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-lg tracking-tight text-md-onSurface">D-Mobil</span>
+            </div>
+            <p class="text-xs text-md-onSurfaceVariant">Dokter Mobil Admin</p>
+          </div>
+        </div>
+
+        <!-- M3 Extended FAB (Primary Action) -->
+        <button onclick="openCreateJobModal()" class="w-full mb-5 flex items-center justify-center gap-2.5 bg-md-primaryContainer hover:bg-md-primaryContainer/80 text-md-onPrimaryContainer font-semibold py-3.5 px-5 rounded-2xl shadow-sm m3-transition active:scale-[0.99]">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span>Posting Pekerjaan Baru</span>
+        </button>
+
+        <!-- Navigation Items -->
+        <nav id="desktop-nav-links" class="space-y-1"></nav>
+      </div>
+
+      <!-- Bottom Active Admin Card -->
+      <div class="pt-3 border-t border-md-outlineVariant/60 space-y-2">
+        <div class="p-3 rounded-2xl bg-md-surfaceContainer flex items-center gap-3">
+          <div id="admin-avatar" class="w-9 h-9 rounded-full bg-md-secondary text-white font-semibold text-sm flex items-center justify-center shrink-0">
+            BS
+          </div>
+          <div class="min-w-0 flex-1">
+            <p id="admin-name-display" class="text-xs font-semibold text-md-onSurface truncate">Budi Santoso</p>
+            <p id="admin-role-display" class="text-[11px] text-md-onSurfaceVariant truncate">Super Admin</p>
+          </div>
+          <button onclick="logout()" title="Ganti Akun / Logout" class="p-1.5 rounded-full hover:bg-md-surfaceContainerHighest text-md-onSurfaceVariant hover:text-md-primary">
+            <span class="material-symbols-outlined text-lg">logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <main class="flex-1 lg:pl-72 flex flex-col min-h-screen">
+      <!-- Desktop Top Header Bar -->
+      <div class="hidden lg:flex items-center justify-between px-8 py-4 bg-md-surface/90 backdrop-blur border-b border-md-outlineVariant/50 sticky top-0 z-10">
+        <div>
+          <h2 id="page-title" class="text-xl font-bold text-md-onSurface tracking-tight">Operasional & Live Tracking</h2>
+          <p id="page-subtitle" class="text-xs text-md-onSurfaceVariant mt-0.5">Pantau kedatangan mekanik mitra, durasi pengerjaan, dan bursa pekerjaan bengkel DM.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div id="header-location-container"></div>
+
+          <button onclick="simulateIncomingBooking()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium bg-md-surfaceContainerHigh hover:bg-md-surfaceContainerHighest text-md-onSurface m3-transition" title="Simulasi pelanggan mengirim booking dari aplikasi Android D-Mobil">
+            <span class="material-symbols-outlined text-base text-md-secondary">notifications_active</span>
+            <span>Simulasi Booking Masuk</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dynamic Page Container -->
+      <div id="page-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto flex-1"></div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: POSTING PEKERJAAN BARU ==================== -->
+  <div id="create-job-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-md-surfaceContainerLow w-full max-w-xl rounded-[28px] shadow-xl border border-md-outlineVariant overflow-hidden max-h-[92vh] flex flex-col">
+      <div class="px-6 py-4 bg-white border-b border-md-outlineVariant/60 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-md-primary">work</span>
+          <h3 class="text-lg font-bold text-md-onSurface">Posting Pekerjaan ke Bursa Mekanik</h3>
+        </div>
+        <button onclick="closeCreateJobModal()" class="p-2 rounded-full hover:bg-md-surfaceContainerHigh">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="create-job-form" onsubmit="submitCreateJob(event)" class="p-6 overflow-y-auto space-y-4">
+        <input type="hidden" id="job-source-booking-id" value="" />
+
+        <!-- Sumber Pekerjaan -->
+        <div id="job-source-badge" class="p-3 rounded-2xl bg-md-secondaryContainer/60 text-md-onSecondaryContainer text-xs flex items-center justify-between">
+          <span>Sumber Order: <strong id="job-source-label">Pelanggan Datang Langsung (Walk-In)</strong></span>
+          <span class="px-2.5 py-0.5 rounded-full bg-white/80 text-[11px] font-medium">Siap Tayang</span>
+        </div>
+
+        <!-- Pemilihan Pelanggan Terdaftar & Kendaraan Miliknya (Multi-Mobil) -->
+        <div id="job-customer-picker-section" class="p-3.5 rounded-2xl bg-white border border-md-outlineVariant/80 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <label class="text-xs font-bold text-md-onSurface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-md-secondary">person_search</span>
+              <span>Data Pelanggan</span>
+            </label>
+            <button type="button" onclick="openCustomerModal(null, true)" class="text-xs font-semibold text-md-primary hover:underline inline-flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">person_add</span>
+              <span>Daftarkan Pelanggan Baru</span>
+            </button>
+          </div>
+          <select id="job-customer-select" onchange="handleJobCustomerChange()" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2 text-xs font-medium focus:outline-none focus:border-md-primary"></select>
+
+          <!-- Dropdown Pemilih Unit Mobil jika pelanggan dipilih -->
+          <div id="job-customer-vehicle-wrapper" class="hidden pt-1 border-t border-md-outlineVariant/40">
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-semibold text-md-onSurfaceVariant">Pilih Unit Mobil Pelanggan (<span id="job-customer-veh-count">1</span> Terdaftar)</label>
+              <button type="button" id="job-add-veh-inline-btn" class="text-[11px] font-semibold text-md-secondary hover:underline inline-flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-xs">add_circle</span>
+                <span>Tambah Mobil Lain</span>
+              </button>
+            </div>
+            <select id="job-customer-vehicle-select" onchange="handleJobVehicleSelectChange()" class="w-full rounded-xl border border-md-outline bg-md-surfaceContainerLow px-3 py-1.5 text-xs font-semibold text-md-onSurface focus:outline-none focus:border-md-primary"></select>
+          </div>
+        </div>
+
+        <!-- Lokasi Bengkel -->
+        <div id="job-location-field"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Kategori Layanan *</label>
+            <select id="job-category-select" required class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Total Biaya Jasa Net (Rp) *</label>
+            <input type="number" id="job-price-input" required min="50000" step="10000" value="500000" oninput="updateCreateJobSplitPreview()" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:border-md-primary" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Judul Pekerjaan (tampil di bursa, tanpa nama &amp; plat) *</label>
+          <input type="text" id="job-title-input" required placeholder="Contoh: Overhaul Kompresor AC & Flushing" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Ringkasan untuk Bursa (tanpa nama, nomor HP, plat, alamat) *</label>
+          <textarea id="job-board-summary-input" rows="2" required placeholder="Contoh: Perawatan AC: cuci evaporator dan isi freon." class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Data Kendaraan (Merek, Tipe, Tahun, Plat) *</label>
+          <input type="text" id="job-vehicle-input" required placeholder="Contoh: Honda CR-V Turbo 2020 (BG 1420 XX)" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Keluhan &amp; Instruksi Teknis (tidak tampil di bursa) *</label>
+          <textarea id="job-desc-input" rows="2" required placeholder="Jelaskan detail pengerjaan yang dibutuhkan..." class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary"></textarea>
+        </div>
+
+        <!-- Preview Kalkulasi Bagi Hasil Internal Admin (Disimpan di koleksi terpisah job_financials) -->
+        <div class="p-4 rounded-2xl bg-white border border-md-outlineVariant">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-md-onSurfaceVariant">Rincian Bagi Hasil (Tersimpan di <code class="font-mono text-[10px]">job_financials</code>)</span>
+            <span class="text-[11px] text-md-secondary font-medium">Mekanik hanya melihat Total Jasa</span>
+          </div>
+          <div id="create-job-split-preview" class="grid grid-cols-3 gap-2 text-center"></div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeCreateJobModal()" class="px-5 py-2.5 rounded-full text-sm font-medium text-md-onSurfaceVariant hover:bg-md-surfaceContainerHigh">
+            Batal
+          </button>
+          <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold bg-md-primary text-white hover:bg-md-primary/90 shadow-sm">
+            <span class="material-symbols-outlined text-lg">send</span>
+            <span>Posting Sekarang</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PREVIEW DOKUMEN MEKANIK ==================== -->
+  <div id="doc-preview-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-[28px] p-6 shadow-xl border border-md-outlineVariant">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 id="doc-modal-title" class="text-lg font-bold text-md-onSurface">Berkas Verifikasi Mitra Mekanik</h3>
+          <p class="text-xs text-md-onSurfaceVariant">Kelengkapan identitas dan sertifikasi keahlian mitra</p>
+        </div>
+        <button onclick="closeDocPreviewModal()" class="p-1.5 rounded-full hover:bg-md-surfaceContainerHigh">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div id="doc-modal-body" class="space-y-4 my-4 max-h-[65vh] overflow-y-auto"></div>
+
+      <div id="doc-modal-footer" class="flex justify-end gap-2 pt-2 border-t border-md-outlineVariant/50"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TAMBAH / EDIT LOKASI, KATEGORI & PELANGGAN ==================== -->
+  <div id="entity-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-[28px] p-6 shadow-xl border border-md-outlineVariant max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="entity-modal-title" class="text-lg font-bold text-md-onSurface">Tambah Data</h3>
+        <button onclick="closeEntityModal()" class="p-1.5 rounded-full hover:bg-md-surfaceContainerHigh">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div id="entity-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PETA PERJALANAN MEKANIK (MULTI-OTW SUPPORT) ==================== -->
+  <div id="tracking-map-modal" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-3xl rounded-[28px] shadow-2xl border border-md-outlineVariant overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="px-6 py-4 bg-white border-b border-md-outlineVariant/60 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <div>
+            <h3 id="tracking-modal-title" class="text-base font-bold text-md-onSurface">Pemantauan Perjalanan Mekanik</h3>
+            <p id="tracking-modal-subtitle" class="text-xs text-md-onSurfaceVariant">Rute langsung menuju lokasi bengkel Dokter Mobil</p>
+          </div>
+        </div>
+        <button onclick="closeTrackingMapModal()" class="p-2 rounded-full hover:bg-md-surfaceContainerHigh">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div id="tracking-modal-body" class="overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SNACKBAR TOAST (MATERIAL DESIGN 3) ==================== -->
+  <div id="m3-snackbar" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-md">
+    <div class="bg-[#322F35] text-[#F5EFF7] px-4 py-3.5 rounded-2xl shadow-lg flex items-center gap-3 text-sm">
+      <span id="snackbar-icon" class="material-symbols-outlined text-md-tertiaryContainer text-xl">check_circle</span>
+      <span id="snackbar-text" class="flex-1 leading-snug">Notifikasi sistem</span>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    /* ==========================================================================
+       1. DUMMY DATA STATE
+       ========================================================================== */
+    const state = {
+      currentUser: {
+        email: 'budi.superadmin@example.com',
+        name: 'Budi Santoso',
+        role: 'SUPER_ADMIN',
+        initials: 'BS'
+      },
+      activeTab: 'operations', // operations | bookings | customers | mechanics | reports | settings
+      selectedLocationFilter: 'ALL',
+      customerSearchQuery: '',
+      customerSourceFilter: 'ALL', // ALL | APP_SELF_REGISTER | WALK_IN_ADMIN
+
+      globalConfig: {
+        mechanicLabel: 'Mekanik',
+        mechanicPercentage: 70,
+        dmLabel: 'Dokter Mobil',
+        dmPercentage: 20,
+        platformLabel: 'Pengelola Platform',
+        platformPercentage: 10,
+        maxArrivalMinutes: 60
+      },
+
+      locations: [
+        {
+          locationId: 'dm_palembang',
+          name: 'Dokter Mobil Palembang - Spesialis Service AC & Tune Up',
+          address: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30111',
+          lat: -2.98115,
+          lng: 104.75992,
+          phone: '0851-1137-3307',
+          operatingHours: '09:00 - 17:00 WIB',
+          supportedCategoryIds: ['mesin', 'kaki_kaki', 'ac', 'elektrikal'],
+          isPrimary: true,
+          isActive: true
+        }
+      ],
+
+      categories: [
+        { categoryId: 'mesin', name: 'Mesin', description: 'Tune up, overhaul mesin, sistem bahan bakar & pendingin', sortOrder: 1, isActive: true },
+        { categoryId: 'kaki_kaki', name: 'Kaki-kaki', description: 'Shockbreaker, rack steer, tie rod, ball joint & spooring', sortOrder: 2, isActive: true },
+        { categoryId: 'ac', name: 'AC', description: 'Cuci AC, isi freon, kompresor, kondensor & evaporator', sortOrder: 3, isActive: true },
+        { categoryId: 'elektrikal', name: 'Elektrikal', description: 'ECU, alternator, starter, kelistrikan bodi & sensor', sortOrder: 4, isActive: true }
+      ],
+
+      adminUsers: [
+        { email: 'budi.superadmin@example.com', name: 'Budi Santoso', role: 'SUPER_ADMIN', isActive: true },
+        { email: 'rina.admin@example.com', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', isActive: true }
+      ],
+
+      customers: [
+        {
+          customerId: 'cust_01',
+          name: 'Andi Saputra',
+          phone: '08XX-XXXX-0001',
+          email: 'andi.saputra@example.com',
+          registrationSource: 'APP_SELF_REGISTER',
+          registeredByAdmin: null,
+          isAccountClaimed: true,
+          vehicles: [
+            { plateNumber: 'BG 1892 XX', brand: 'Toyota', model: 'Innova Reborn', year: '2021' },
+            { plateNumber: 'BG 1102 XX', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020' }
+          ],
+          totalVisits: 4,
+          lastVisit: 'Hari Ini',
+          notes: 'Pelanggan rutin servis AC setiap 6 bulan untuk 2 mobil keluarga.'
+        },
+        {
+          customerId: 'cust_02',
+          name: 'Siti Nurhaliza',
+          phone: '08XX-XXXX-0006',
+          email: 'siti.nurhaliza89@example.com',
+          registrationSource: 'APP_SELF_REGISTER',
+          registeredByAdmin: null,
+          isAccountClaimed: true,
+          vehicles: [
+            { plateNumber: 'BG 2401 XX', brand: 'Honda', model: 'HR-V Prestige', year: '2022' }
+          ],
+          totalVisits: 2,
+          lastVisit: 'Hari Ini',
+          notes: ''
+        },
+        {
+          customerId: 'cust_03',
+          name: 'H. Bambang Wijaya',
+          phone: '08XX-XXXX-0007',
+          email: 'bambang.wijaya.plg@example.com',
+          registrationSource: 'WALK_IN_ADMIN',
+          registeredByAdmin: 'Rina Marlina',
+          isAccountClaimed: false,
+          vehicles: [
+            { plateNumber: 'BG 1990 XX', brand: 'Toyota', model: 'Fortuner VRZ', year: '2019' },
+            { plateNumber: 'BG 1088 XX', brand: 'Toyota', model: 'Camry 2.5V', year: '2019' },
+            { plateNumber: 'BG 8821 XX', brand: 'Honda', model: 'Brio RS', year: '2023' }
+          ],
+          totalVisits: 6,
+          lastVisit: 'Hari Ini',
+          notes: 'Didaftarkan resepsionis saat datang langsung ke bengkel. Memiliki 3 unit mobil.'
+        },
+        {
+          customerId: 'cust_04',
+          name: 'Dr. Rahmat Hidayat',
+          phone: '08XX-XXXX-0008',
+          email: null,
+          registrationSource: 'WALK_IN_ADMIN',
+          registeredByAdmin: 'Budi Santoso',
+          isAccountClaimed: false,
+          vehicles: [
+            { plateNumber: 'BG 2718 XX', brand: 'Mazda', model: 'CX-5', year: '2018' }
+          ],
+          totalVisits: 1,
+          lastVisit: 'Hari Ini',
+          notes: 'Belum mengunduh aplikasi D-Mobil, didaftarkan via nomor WA saat walk-in.'
+        }
+      ],
+
+      mechanics: [
+        {
+          uid: 'mech_01',
+          name: 'Agus Setiawan',
+          email: 'agus.mekanik@example.com',
+          phone: '08XX-XXXX-0002',
+          whatsappNumber: '62-8XX-XXXX-0002',
+          skillIds: ['ac', 'elektrikal'],
+          hasCertificate: true,
+          isVerified: true,
+          isSuspended: false,
+          isRecommendedForOnSite: true,
+          isAvailableForWorkshop: true,
+          isAvailableForOnSite: true,
+          ratingAvg: 4.9,
+          ratingCount: 28,
+          completedJobsCount: 31,
+          cancelledJobsCount: 0,
+          avgArrivalMinutes: 22,
+          avgWorkDurationMinutes: 85,
+          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          certNote: 'Sertifikat Teknisi AC Otomotif BNSP'
+        },
+        {
+          uid: 'mech_02',
+          name: 'Dedi Kurniawan',
+          email: 'dedi.kurniawan88@example.com',
+          phone: '08XX-XXXX-0003',
+          whatsappNumber: '62-8XX-XXXX-0003',
+          skillIds: ['mesin', 'kaki_kaki'],
+          hasCertificate: true,
+          isVerified: true,
+          isSuspended: false,
+          isRecommendedForOnSite: true,
+          isAvailableForWorkshop: true,
+          isAvailableForOnSite: false,
+          ratingAvg: 4.7,
+          ratingCount: 19,
+          completedJobsCount: 21,
+          cancelledJobsCount: 1,
+          avgArrivalMinutes: 28,
+          avgWorkDurationMinutes: 115,
+          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          certNote: 'Sertifikat Mekanik Engine & Chassis Astra'
+        },
+        {
+          uid: 'mech_03',
+          name: 'Hendra Wijaya',
+          email: 'hendra.auto@example.com',
+          phone: '08XX-XXXX-0009',
+          whatsappNumber: '62-8XX-XXXX-0009',
+          skillIds: ['kaki_kaki', 'mesin'],
+          hasCertificate: false,
+          isVerified: true,
+          isSuspended: false,
+          isRecommendedForOnSite: false,
+          isAvailableForWorkshop: true,
+          isAvailableForOnSite: false,
+          ratingAvg: 4.3,
+          ratingCount: 4,
+          completedJobsCount: 5,
+          cancelledJobsCount: 1,
+          avgArrivalMinutes: 46,
+          avgWorkDurationMinutes: 130,
+          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          certNote: null
+        },
+        {
+          uid: 'mech_04',
+          name: 'Rizky Pratama',
+          email: 'rizky.pratama.mech@example.com',
+          phone: '08XX-XXXX-0005',
+          whatsappNumber: '62-8XX-XXXX-0005',
+          skillIds: ['elektrikal', 'ac'],
+          hasCertificate: false,
+          isVerified: false,
+          isSuspended: false,
+          isRecommendedForOnSite: false,
+          isAvailableForWorkshop: false,
+          isAvailableForOnSite: false,
+          ratingAvg: 0,
+          ratingCount: 0,
+          completedJobsCount: 0,
+          cancelledJobsCount: 0,
+          avgArrivalMinutes: 0,
+          avgWorkDurationMinutes: 0,
+          ktpNote: 'NIK disamarkan • Menunggu Pemeriksaan KTP',
+          certNote: null
+        }
+      ],
+
+      bookings: [
+        {
+          bookingId: 'BK-2026-081',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          customerId: 'cust_01',
+          customerName: 'Andi Saputra',
+          customerPhone: '08XX-XXXX-0001',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          categoryId: 'ac',
+          categoryName: 'AC',
+          complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
+          scheduledDate: 'Hari Ini, 15:00 WIB',
+          status: 'PENDING',
+          adminResponseNote: '',
+          proposedSchedule: null,
+          linkedJobId: null
+        },
+        {
+          bookingId: 'BK-2026-082',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          customerId: 'cust_02',
+          customerName: 'Siti Nurhaliza',
+          customerPhone: '08XX-XXXX-0006',
+          vehicleInfo: 'Honda HR-V Prestige 2022 (BG 2401 XX)',
+          categoryId: 'kaki_kaki',
+          categoryName: 'Kaki-kaki',
+          complaint: 'Bunyi gluduk di roda depan kiri saat melewati polisi tidur.',
+          scheduledDate: 'Hari Ini, 15:30 WIB',
+          status: 'PENDING',
+          adminResponseNote: '',
+          proposedSchedule: null,
+          linkedJobId: null
+        }
+      ],
+
+      jobs: [
+        {
+          jobId: 'JOB-104',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          sourceType: 'APP_BOOKING',
+          bookingId: 'BK-2026-079',
+          customerId: 'cust_01',
+          customerName: 'Andi Saputra',
+          title: 'Ganti Evaporator & Flushing AC Total',
+          categoryId: 'ac',
+          categoryName: 'AC',
+          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          description: 'Bongkar dashboard, ganti evaporator baru, vakum dan isi freon R134a.',
+          status: 'COMPLETED',
+          assignedMechanicId: 'mech_01',
+          assignedMechanicName: 'Agus Setiawan',
+          assignedMechanicPhone: '08XX-XXXX-0002',
+          totalPrice: 850000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 595000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 170000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 85000
+          },
+          createdAt: '13:10 WIB',
+          acceptedAt: '13:12 WIB',
+          startedAt: '13:18 WIB',
+          completedAt: '14:00 WIB',
+          arrivalDurationMinutes: 6,
+          workDurationMinutes: 42,
+          isReviewed: false
+        },
+        {
+          jobId: 'JOB-102',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN',
+          bookingId: null,
+          customerId: 'cust_03',
+          customerName: 'H. Bambang Wijaya',
+          title: 'Kuras Oli Transmisi Matic & Tune Up',
+          categoryId: 'mesin',
+          categoryName: 'Mesin',
+          vehicleSummary: 'Toyota Camry 2.5V 2019 (BG 1088 XX)',
+          description: 'Flushing ATF WS, pembersihan throttle body, dan cek tekanan fuel pump.',
+          status: 'ON_THE_WAY',
+          assignedMechanicId: 'mech_03',
+          assignedMechanicName: 'Hendra Wijaya',
+          assignedMechanicPhone: '08XX-XXXX-0009',
+          totalPrice: 550000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 385000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 110000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 55000
+          },
+          createdAt: '13:20 WIB',
+          acceptedAt: '13:24 WIB',
+          startedAt: null,
+          completedAt: null,
+          arrivalDurationMinutes: null,
+          workDurationMinutes: null,
+          isReviewed: false,
+          tracking: {
+            progressPercent: 20,
+            distanceRemainingKm: 3.6,
+            etaMinutes: 14,
+            currentStreet: 'Jl. Semeru (Menuju Jl. Dempo Luar)',
+            speedKmh: 28
+          }
+        },
+        {
+          jobId: 'JOB-103',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN',
+          bookingId: null,
+          customerId: 'cust_03',
+          customerName: 'H. Bambang Wijaya',
+          title: 'Overhaul Rack Steer & Ganti Tie Rod End',
+          categoryId: 'kaki_kaki',
+          categoryName: 'Kaki-kaki',
+          vehicleSummary: 'Toyota Fortuner VRZ 2019 (BG 1990 XX)',
+          description: 'Perbaikan rack steer EPS bunyi dan penggantian tie rod kiri-kanan.',
+          status: 'IN_PROGRESS',
+          assignedMechanicId: 'mech_02',
+          assignedMechanicName: 'Dedi Kurniawan',
+          assignedMechanicPhone: '08XX-XXXX-0003',
+          totalPrice: 600000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 420000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 120000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 60000
+          },
+          createdAt: '11:30 WIB',
+          acceptedAt: '11:32 WIB',
+          startedAt: '11:58 WIB',
+          completedAt: null,
+          arrivalDurationMinutes: 26,
+          workDurationMinutes: null,
+          liveWorkElapsedMinutes: 54,
+          isReviewed: false
+        },
+        {
+          jobId: 'JOB-105',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN',
+          bookingId: null,
+          customerId: 'cust_04',
+          customerName: 'Dr. Rahmat Hidayat',
+          title: 'Diagnosa Check Engine & Kalibrasi Sensor',
+          categoryId: 'elektrikal',
+          categoryName: 'Elektrikal',
+          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 XX)',
+          description: 'Lampu check engine menyala, RPM tidak stabil saat idle. Butuh scan OBD & pengecekan soket injektor.',
+          boardSummary: 'Pemeriksaan indikator mesin dan sensor.',
+          status: 'OPEN',
+          assignedMechanicId: null,
+          assignedMechanicName: null,
+          assignedMechanicPhone: null,
+          totalPrice: 450000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 315000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 90000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 45000
+          },
+          createdAt: '13:45 WIB',
+          acceptedAt: null,
+          startedAt: null,
+          completedAt: null,
+          arrivalDurationMinutes: null,
+          workDurationMinutes: null,
+          isReviewed: false
+        },
+        {
+          jobId: 'JOB-106', locationId: 'dm_palembang', locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN', bookingId: null,
+          customerId: null, customerName: 'Pelanggan Walk-In Umum',
+          title: 'Cuci Evaporator Tanpa Bongkar & Isi Freon R134a', categoryId: 'ac', categoryName: 'AC',
+          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 XX)', description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.', boardSummary: 'Perawatan AC: cuci evaporator dan isi freon.',
+          status: 'OPEN', assignedMechanicId: null, assignedMechanicName: null, assignedMechanicPhone: null,
+          totalPrice: 550000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 385000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 110000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 55000
+          },
+          createdAt: '13:50 WIB', acceptedAt: null, startedAt: null, completedAt: null,
+          arrivalDurationMinutes: null, workDurationMinutes: null, isReviewed: false
+        },
+        {
+          jobId: 'JOB-107', locationId: 'dm_palembang', locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN', bookingId: null,
+          customerId: 'cust_03', customerName: 'H. Bambang Wijaya',
+          title: 'Tune Up Ruang Bakar & Gurah Mesin', categoryId: 'mesin', categoryName: 'Mesin',
+          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 XX)', description: 'Tarikan terasa berat dan konsumsi BBM boros.', boardSummary: 'Tune up dan pembersihan ruang bakar.',
+          status: 'OPEN', assignedMechanicId: null, assignedMechanicName: null, assignedMechanicPhone: null,
+          totalPrice: 400000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 280000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 80000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 40000
+          },
+          createdAt: '13:55 WIB', acceptedAt: null, startedAt: null, completedAt: null,
+          arrivalDurationMinutes: null, workDurationMinutes: null, isReviewed: false
+        },
+        {
+          jobId: 'JOB-101',
+          locationId: 'dm_palembang',
+          locationName: 'Dokter Mobil Palembang',
+          sourceType: 'WALK_IN',
+          bookingId: null,
+          customerId: null,
+          customerName: 'Pelanggan Walk-In Umum',
+          title: 'Perbaikan Alternator & Penggantian IC Regulator',
+          categoryId: 'elektrikal',
+          categoryName: 'Elektrikal',
+          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 XX)',
+          description: 'Pengisian aki drop di bawah 12.2V saat beban AC & lampu menyala.',
+          status: 'COMPLETED',
+          assignedMechanicId: 'mech_01',
+          assignedMechanicName: 'Agus Setiawan',
+          assignedMechanicPhone: '08XX-XXXX-0002',
+          totalPrice: 400000,
+          revenueSplit: {
+            mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 280000,
+            dmLabel: 'Dokter Mobil', dmPercent: 20, dmAmount: 80000,
+            platformLabel: 'Pengelola Platform', platformPercent: 10, platformAmount: 40000
+          },
+          createdAt: '09:00 WIB',
+          acceptedAt: '09:02 WIB',
+          startedAt: '09:22 WIB',
+          completedAt: '10:37 WIB',
+          arrivalDurationMinutes: 20,
+          workDurationMinutes: 75,
+          isReviewed: false
+        }
+      ],
+
+      onsiteLogs: [
+        { logId: 'LOG-01', customerName: 'Dimas Anggara', mechanicName: 'Agus Setiawan', categoryName: 'AC', method: 'WHATSAPP', distanceKm: 3.2, time: 'Hari Ini, 12:15 WIB' },
+        { logId: 'LOG-02', customerName: 'Fajar Nugroho', mechanicName: 'Dedi Kurniawan', categoryName: 'Mesin', method: 'PHONE_CALL', distanceKm: 4.8, time: 'Hari Ini, 10:40 WIB' },
+        { logId: 'LOG-03', customerName: 'Lina Marlina', mechanicName: 'Agus Setiawan', categoryName: 'Elektrikal', method: 'WHATSAPP', distanceKm: 1.9, time: 'Kemarin, 16:20 WIB' }
+      ],
+
+      activeTrackingJobId: null,
+      isSimulatingTracking: false,
+      draftPinCoords: { lat: -2.98115, lng: 104.75992, xPct: 60, yPct: 58, picked: false }
+    };
+
+    /* ==========================================================================
+       2. HELPER FUNCTIONS
+       ========================================================================== */
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function showSnackbar(message, icon = 'check_circle') {
+      const sb = document.getElementById('m3-snackbar');
+      document.getElementById('snackbar-text').textContent = message;
+      document.getElementById('snackbar-icon').textContent = icon;
+      sb.classList.remove('translate-y-24', 'opacity-0');
+      clearTimeout(window._sbTimeout);
+      window._sbTimeout = setTimeout(() => {
+        sb.classList.add('translate-y-24', 'opacity-0');
+      }, 3600);
+    }
+
+    function getActiveLocations() {
+      return state.locations.filter(l => l.isActive);
+    }
+
+    function getActiveCategories() {
+      return state.categories.filter(c => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+
+    function getCategoryNameById(id) {
+      const found = state.categories.find(c => c.categoryId === id);
+      return found ? found.name : id;
+    }
+
+    /* ==========================================================================
+       3. AUTHENTICATION & NAVIGATION
+       ========================================================================== */
+    function openWebGoogleAccountChooser() {
+      document.getElementById('web-google-chooser-modal').classList.remove('hidden');
+    }
+
+    function closeWebGoogleAccountChooser() {
+      document.getElementById('web-google-chooser-modal').classList.add('hidden');
+    }
+
+    function handleGoogleLogin(val) {
+      closeWebGoogleAccountChooser();
+      const errBox = document.getElementById('login-error-box');
+      if (val === 'UNAUTHORIZED') {
+        errBox.classList.remove('hidden');
+        return;
+      }
+      errBox.classList.add('hidden');
+      if (val === 'SUPER_ADMIN') {
+        state.currentUser = { email: 'budi.superadmin@example.com', name: 'Budi Santoso', role: 'SUPER_ADMIN', initials: 'BS' };
+      } else {
+        state.currentUser = { email: 'rina.admin@example.com', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', initials: 'RM' };
+      }
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-shell').classList.remove('hidden');
+      renderApp();
+      showSnackbar(`Selamat datang kembali, ${state.currentUser.name} (${state.currentUser.role})`);
+    }
+
+    function logout() {
+      stopTrackingSimulationTimer();
+      document.getElementById('app-shell').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+    }
+
+    function toggleMobileDrawer(open) {
+      const drawer = document.getElementById('mobile-drawer');
+      const backdrop = document.getElementById('mobile-drawer-backdrop');
+      if (open) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      toggleMobileDrawer(false);
+      renderApp();
+    }
+
+    function renderNavigation() {
+      const pendingBookings = state.bookings.filter(b => b.status === 'PENDING').length;
+      const unverifiedMechs = state.mechanics.filter(m => !m.isVerified).length;
+      const activeJobsCount = state.jobs.filter(j => ['OPEN', 'ON_THE_WAY', 'IN_PROGRESS'].includes(j.status)).length;
+
+      const navItems = [
+        { id: 'operations', label: 'Operasional & Tracking', icon: 'map', badge: activeJobsCount, badgeColor: 'bg-md-primaryContainer text-md-onPrimaryContainer' },
+        { id: 'bookings', label: 'Booking Pelanggan', icon: 'event_available', badge: pendingBookings, badgeColor: 'bg-amber-100 text-amber-800' },
+        { id: 'customers', label: 'Data Pelanggan', icon: 'groups', badge: state.customers.length, badgeColor: 'bg-md-surfaceContainerHighest text-md-onSurfaceVariant' },
+        { id: 'mechanics', label: 'Mitra Mekanik & Kurasi', icon: 'engineering', badge: unverifiedMechs, badgeColor: 'bg-blue-100 text-blue-800' },
+        { id: 'reports', label: 'Laporan & Evaluasi', icon: 'analytics', badge: 0 },
+        { id: 'settings', label: 'Settings Sistem', icon: 'settings', badge: 0 }
+      ];
+
+      const buildHtml = () => navItems.map(item => {
+        const isActive = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')" class="w-full flex items-center justify-between px-4 py-3 rounded-full text-sm font-medium m3-transition ${
+            isActive
+              ? 'bg-md-secondaryContainer text-md-onSecondaryContainer font-semibold'
+              : 'text-md-onSurfaceVariant hover:bg-md-surfaceContainerHigh hover:text-md-onSurface'
+          }">
+            <span class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[20px] ${isActive ? 'icon-filled' : ''}">${item.icon}</span>
+              <span>${item.label}</span>
+            </span>
+            ${item.badge > 0 ? `<span class="px-2 py-0.5 text-[11px] font-bold rounded-full ${item.badgeColor}">${item.badge}</span>` : ''}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('desktop-nav-links').innerHTML = buildHtml();
+      document.getElementById('mobile-nav-links').innerHTML = buildHtml();
+
+      document.getElementById('admin-avatar').textContent = state.currentUser.initials;
+      document.getElementById('admin-name-display').textContent = state.currentUser.name;
+      document.getElementById('admin-role-display').textContent = state.currentUser.role === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin Bengkel';
+    }
+
+    function renderHeaderLocationIndicator() {
+      const activeLocs = getActiveLocations();
+      const container = document.getElementById('header-location-container');
+      if (activeLocs.length === 1) {
+        container.innerHTML = `
+          <div class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium bg-md-surfaceContainer text-md-onSurfaceVariant border border-md-outlineVariant/60">
+            <span class="material-symbols-outlined text-base text-md-primary icon-filled">location_on</span>
+            <span>${activeLocs[0].name}</span>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <select onchange="state.selectedLocationFilter = this.value; renderApp();" class="rounded-full border border-md-outlineVariant bg-white px-3.5 py-2 text-xs font-medium text-md-onSurface focus:outline-none focus:border-md-primary">
+            <option value="ALL" ${state.selectedLocationFilter === 'ALL' ? 'selected' : ''}>Semua Cabang (${activeLocs.length} Lokasi)</option>
+            ${activeLocs.map(l => `<option value="${l.locationId}" ${state.selectedLocationFilter === l.locationId ? 'selected' : ''}>${l.name}</option>`).join('')}
+          </select>
+        `;
+      }
+    }
+
+    /* ==========================================================================
+       4. TAB 1: OPERASIONAL & MULTI-MEKANIK OTW TRACKING
+       ========================================================================== */
+    function renderOperationsTab() {
+      document.getElementById('page-title').textContent = 'Operasional Bengkel & Pemantauan Mekanik';
+      document.getElementById('page-subtitle').textContent = 'Pantau beberapa mekanik yang sedang menuju bengkel DM, validasi waktu kerja, dan kelola bursa pekerjaan.';
+
+      const filteredJobs = state.selectedLocationFilter === 'ALL'
+        ? state.jobs
+        : state.jobs.filter(j => j.locationId === state.selectedLocationFilter);
+
+      const otwJobs = filteredJobs.filter(j => j.status === 'ON_THE_WAY');
+      const inProgressJobs = filteredJobs.filter(j => j.status === 'IN_PROGRESS');
+      const openJobs = filteredJobs.filter(j => j.status === 'OPEN');
+      const completedJobs = filteredJobs.filter(j => j.status === 'COMPLETED');
+
+      return `
+        <!-- Summary Metrics Row (M3 Cards) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/60">
+            <div class="flex items-center justify-between text-md-onSurfaceVariant mb-1">
+              <span class="text-xs font-medium">Bursa Terbuka</span>
+              <span class="material-symbols-outlined text-amber-600 text-xl">campaign</span>
+            </div>
+            <p class="text-2xl font-bold text-md-onSurface">${openJobs.length}</p>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-1">Menunggu diambil mekanik</p>
+          </div>
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/60">
+            <div class="flex items-center justify-between text-md-onSurfaceVariant mb-1">
+              <span class="text-xs font-medium">Mekanik Dalam Perjalanan</span>
+              <span class="material-symbols-outlined text-blue-600 text-xl">near_me</span>
+            </div>
+            <p class="text-2xl font-bold text-blue-700">${otwJobs.length}</p>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-1">Klik kartu untuk buka peta</p>
+          </div>
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/60">
+            <div class="flex items-center justify-between text-md-onSurfaceVariant mb-1">
+              <span class="text-xs font-medium">Sedang Dikerjakan</span>
+              <span class="material-symbols-outlined text-md-tertiary text-xl">build</span>
+            </div>
+            <p class="text-2xl font-bold text-md-tertiary">${inProgressJobs.length}</p>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-1">Durasi pengerjaan berjalan</p>
+          </div>
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/60">
+            <div class="flex items-center justify-between text-md-onSurfaceVariant mb-1">
+              <span class="text-xs font-medium">Selesai Hari Ini</span>
+              <span class="material-symbols-outlined text-md-primary text-xl">task_alt</span>
+            </div>
+            <p class="text-2xl font-bold text-md-onSurface">${completedJobs.length}</p>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-1">Tercatat evaluasi & bagi hasil</p>
+          </div>
+        </div>
+
+        <!-- MULTI-MECHANIC ON THE WAY CARDS SECTION -->
+        <div class="bg-white rounded-[28px] border border-md-outlineVariant/60 p-5 sm:p-6 mb-8 shadow-2xs">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full ${otwJobs.length > 0 ? 'bg-blue-600 animate-ping' : 'bg-gray-400'}"></span>
+              <div>
+                <h3 class="font-bold text-base text-md-onSurface">Mekanik Dalam Perjalanan ke Bengkel (${otwJobs.length} Aktif)</h3>
+                <p class="text-xs text-md-onSurfaceVariant">Pilih kartu mekanik untuk membuka peta rute dan estimasi waktu tiba (ETA).</p>
+              </div>
+            </div>
+          </div>
+
+          ${otwJobs.length > 0 ? `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${otwJobs.map(job => `
+                <div class="rounded-2xl border border-blue-200 bg-blue-50/40 p-4 flex flex-col justify-between hover:border-blue-400 m3-transition">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-600 text-white">
+                        <span class="material-symbols-outlined text-xs">schedule</span>
+                        <span>ETA ${job.tracking.etaMinutes} mnt (${job.tracking.distanceRemainingKm} km)</span>
+                      </span>
+                      <span class="font-mono text-[11px] text-md-onSurfaceVariant">${job.jobId}</span>
+                    </div>
+
+                    <div class="flex items-center gap-3 mt-2">
+                      <div class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        ${job.assignedMechanicName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="font-bold text-sm text-md-onSurface truncate">${job.assignedMechanicName}</h4>
+                        <p class="text-xs text-md-onSurfaceVariant truncate">${job.title} • ${job.categoryName}</p>
+                      </div>
+                    </div>
+
+                    <div class="mt-3 p-2.5 rounded-xl bg-white border border-blue-100 text-[11px] space-y-1">
+                      <div class="flex items-start gap-1.5 text-md-onSurface">
+                        <span class="material-symbols-outlined text-sm text-blue-600 shrink-0">near_me</span>
+                        <span class="line-clamp-1">${job.tracking.currentStreet}</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-md-onSurfaceVariant">
+                        <span class="material-symbols-outlined text-sm text-md-primary shrink-0">store</span>
+                        <span class="truncate">Tujuan: ${job.locationName}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3.5 pt-3 border-t border-blue-200/70 flex items-center gap-2">
+                    <button onclick="openTrackingMapModal('${job.jobId}')" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-2xs m3-transition">
+                      <span class="material-symbols-outlined text-sm">map</span>
+                      <span>Lacak di Peta</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="rounded-2xl bg-md-surfaceContainerLow p-6 text-center border border-dashed border-md-outlineVariant">
+              <span class="material-symbols-outlined text-3xl text-md-outline mb-1">explore</span>
+              <p class="text-xs font-semibold text-md-onSurface">Tidak ada mekanik dalam perjalanan saat ini</p>
+              <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Kartu pemantauan perjalanan akan muncul otomatis saat mekanik mengambil pekerjaan.</p>
+            </div>
+          `}
+        </div>
+
+        <!-- ACTIVE & COMPLETED JOBS LIST -->
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-md-onSurface">Daftar Pekerjaan Bengkel DM</h3>
+          <span class="text-xs text-md-onSurfaceVariant">Validasi waktu mulai & selesai dilakukan oleh staf bengkel</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${filteredJobs.map(job => renderJobCard(job)).join('')}
+        </div>
+      `;
+    }
+
+    function renderJobCard(job) {
+      const statusMap = {
+        OPEN: { label: 'OPEN • Menunggu Mekanik', badge: 'bg-amber-100 text-amber-900', icon: 'hourglass_top' },
+        ON_THE_WAY: { label: 'ON THE WAY • Menuju Bengkel', badge: 'bg-blue-100 text-blue-900', icon: 'near_me' },
+        IN_PROGRESS: { label: 'IN PROGRESS • Dikerjakan', badge: 'bg-emerald-100 text-emerald-900', icon: 'build' },
+        COMPLETED: { label: 'COMPLETED • Selesai', badge: 'bg-gray-200 text-gray-800', icon: 'check_circle' }
+      };
+      const st = statusMap[job.status] || statusMap.OPEN;
+
+      return `
+        <div class="bg-white rounded-[24px] p-5 border border-md-outlineVariant/60 flex flex-col justify-between shadow-2xs">
+          <div>
+            <!-- Top Row -->
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${st.badge}">
+                  <span class="material-symbols-outlined text-sm">${st.icon}</span>
+                  <span>${st.label}</span>
+                </span>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-md-surfaceContainer text-md-onSurfaceVariant">
+                  ${job.categoryName}
+                </span>
+              </div>
+              <span class="font-mono text-xs text-md-onSurfaceVariant">${job.jobId}</span>
+            </div>
+
+            <!-- Title & Vehicle -->
+            <h4 class="font-bold text-base text-md-onSurface">${job.title}</h4>
+            <p class="text-xs font-medium text-md-secondary mt-0.5">${job.vehicleSummary}</p>
+            <p class="text-xs text-md-onSurfaceVariant mt-1.5 line-clamp-2">${job.description}</p>
+
+            <!-- Info Grid -->
+            <div class="mt-4 p-3 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-1.5">
+              <div class="flex justify-between">
+                <span class="text-md-onSurfaceVariant">Pelanggan & Sumber:</span>
+                <span class="font-medium text-right">${job.customerName || 'Walk-In Umum'} • ${job.sourceType === 'APP_BOOKING' ? 'Booking (' + job.bookingId + ')' : 'Walk-In'}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-md-onSurfaceVariant">Mekanik Mitra:</span>
+                <span class="font-semibold ${job.assignedMechanicName ? 'text-md-onSurface' : 'text-amber-700'}">
+                  ${job.assignedMechanicName || 'Belum diambil (Tampil di Bursa)'}
+                </span>
+              </div>
+              ${job.status === 'IN_PROGRESS' ? `
+                <div class="flex justify-between text-md-tertiary font-semibold">
+                  <span>Durasi Kerja Berjalan:</span>
+                  <span>${job.liveWorkElapsedMinutes} menit (Mulai ${job.startedAt})</span>
+                </div>
+              ` : ''}
+              ${job.status === 'COMPLETED' ? `
+                <div class="flex justify-between text-md-onSurface">
+                  <span class="text-md-onSurfaceVariant">Rekam Waktu Evaluasi:</span>
+                  <span class="font-semibold">Tiba ${job.arrivalDurationMinutes} mnt • Kerja ${job.workDurationMinutes} mnt</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Revenue Split Box (Koleksi Terpisah job_financials - Khusus Admin) -->
+            <div class="mt-3 p-3 rounded-2xl border border-md-outlineVariant/60 bg-white">
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="text-md-onSurfaceVariant">Total Jasa Kasir DM <span class="text-[10px] text-md-secondary">(Tampil di Mekanik)</span>:</span>
+                <span class="font-bold text-sm text-md-onSurface">${formatRupiah(job.totalPrice)}</span>
+              </div>
+              <div class="grid grid-cols-3 gap-1.5 text-[11px] pt-1.5 border-t border-md-outlineVariant/40">
+                <div>
+                  <span class="text-md-onSurfaceVariant block">${job.revenueSplit.mechanicLabel} (${job.revenueSplit.mechanicPercent}%)</span>
+                  <strong class="text-md-tertiary">${formatRupiah(job.revenueSplit.mechanicAmount)}</strong>
+                </div>
+                <div>
+                  <span class="text-md-onSurfaceVariant block">${job.revenueSplit.dmLabel} (${job.revenueSplit.dmPercent}%)</span>
+                  <strong>${formatRupiah(job.revenueSplit.dmAmount)}</strong>
+                </div>
+                <div>
+                  <span class="text-md-onSurfaceVariant block">${job.revenueSplit.platformLabel} (${job.revenueSplit.platformPercent}%)</span>
+                  <strong>${formatRupiah(job.revenueSplit.platformAmount)}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons Based on Status -->
+          <div class="mt-4 pt-3 border-t border-md-outlineVariant/50 flex flex-wrap items-center justify-end gap-2">
+            ${job.status === 'OPEN' ? `
+              <button onclick="simulateMechanicTakeJob('${job.jobId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90 m3-transition">
+                <span class="material-symbols-outlined text-sm">smartphone</span>
+                <span>Simulasi Mekanik Ambil Pekerjaan</span>
+              </button>
+            ` : ''}
+
+            ${job.status === 'ON_THE_WAY' ? `
+              <button onclick="openTrackingMapModal('${job.jobId}')" class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+                <span class="material-symbols-outlined text-sm">map</span>
+                <span>Lacak Peta</span>
+              </button>
+              <button onclick="reopenJob('${job.jobId}', 'Pelepasan manual oleh Admin DM')" class="px-3 py-2 rounded-full text-xs font-medium text-md-primary hover:bg-md-primaryContainer/50">
+                Rilis Ulang
+              </button>
+              <button onclick="confirmMechanicArrived('${job.jobId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-tertiary text-white hover:bg-md-tertiary/90">
+                <span class="material-symbols-outlined text-sm">play_arrow</span>
+                <span>Konfirmasi Tiba & Mulai Kerja</span>
+              </button>
+            ` : ''}
+
+            ${job.status === 'IN_PROGRESS' ? `
+              <button onclick="completeJob('${job.jobId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90 shadow-xs">
+                <span class="material-symbols-outlined text-sm">check_circle</span>
+                <span>Konfirmasi Pekerjaan Selesai</span>
+              </button>
+            ` : ''}
+
+            ${job.status === 'COMPLETED' && job.sourceType === 'APP_BOOKING' ? `
+              <span class="inline-flex items-center gap-1 text-xs font-medium ${job.isReviewed ? 'text-md-tertiary' : 'text-md-onSurfaceVariant'}">
+                <span class="material-symbols-outlined text-base ${job.isReviewed ? 'icon-filled' : ''}">${job.isReviewed ? 'verified' : 'rate_review'}</span>
+                <span>${job.isReviewed ? `Diulas Pelanggan (${job.givenRating || 5}★)` : 'Menunggu Ulasan Pelanggan di Aplikasi'}</span>
+              </span>
+            ` : ''}
+
+            ${job.status === 'COMPLETED' && job.sourceType === 'WALK_IN' ? `
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-md-onSurfaceVariant">
+                <span class="material-symbols-outlined text-base text-md-tertiary icon-filled">check_circle</span>
+                <span>Selesai (Order Walk-In)</span>
+              </span>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    /* Operational Actions & Simulations */
+    function stopTrackingSimulationTimer() {
+      if (window._trackingSimTimer) {
+        clearInterval(window._trackingSimTimer);
+        window._trackingSimTimer = null;
+      }
+      state.isSimulatingTracking = false;
+    }
+
+    function openTrackingMapModal(jobId) {
+      stopTrackingSimulationTimer();
+      state.activeTrackingJobId = jobId;
+      renderTrackingMapModalContent();
+      document.getElementById('tracking-map-modal').classList.remove('hidden');
+      startTrackingSimulation(jobId, true);
+    }
+
+    function closeTrackingMapModal() {
+      stopTrackingSimulationTimer();
+      state.activeTrackingJobId = null;
+      document.getElementById('tracking-map-modal').classList.add('hidden');
+    }
+
+    function toggleTrackingSimulation(jobId) {
+      if (state.isSimulatingTracking) {
+        stopTrackingSimulationTimer();
+        renderTrackingMapModalContent();
+      } else {
+        startTrackingSimulation(jobId, false);
+      }
+    }
+
+    function resetTrackingSimulation(jobId) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job || !job.tracking) return;
+      stopTrackingSimulationTimer();
+      job.tracking.progressPercent = 10;
+      job.tracking.distanceRemainingKm = 4.1;
+      job.tracking.etaMinutes = 16;
+      job.tracking.currentStreet = 'Jl. Semeru (Menuju Jl. Dempo Luar)';
+      renderApp();
+      renderTrackingMapModalContent();
+      startTrackingSimulation(jobId, false);
+    }
+
+    function startTrackingSimulation(jobId, silent = false) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job || !job.tracking) return;
+      if (job.tracking.progressPercent >= 100) {
+        if (!silent) {
+          showSnackbar('Mekanik sudah tiba di bengkel. Klik "Ulangi Simulasi" untuk memutar ulang.', 'info');
+        }
+        return;
+      }
+
+      stopTrackingSimulationTimer();
+      state.isSimulatingTracking = true;
+      renderTrackingMapModalContent();
+
+      window._trackingSimTimer = setInterval(() => {
+        const activeJob = state.jobs.find(j => j.jobId === jobId);
+        if (!activeJob || !activeJob.tracking || state.activeTrackingJobId !== jobId) {
+          stopTrackingSimulationTimer();
+          return;
+        }
+
+        activeJob.tracking.progressPercent = Math.min(100, +(activeJob.tracking.progressPercent + 2.5).toFixed(1));
+        const remainingRatio = Math.max(0, (100 - activeJob.tracking.progressPercent) / 100);
+        activeJob.tracking.distanceRemainingKm = +(remainingRatio * 4.5).toFixed(1);
+        activeJob.tracking.etaMinutes = activeJob.tracking.progressPercent >= 100 ? 0 : Math.max(1, Math.round(remainingRatio * 18));
+
+        if (activeJob.tracking.progressPercent >= 100) {
+          activeJob.tracking.currentStreet = 'Tiba di Dokter Mobil Palembang (Jl. Letkol Iskandar No.682 B)';
+          stopTrackingSimulationTimer();
+          renderApp();
+          renderTrackingMapModalContent();
+          showSnackbar(`${activeJob.assignedMechanicName} telah tiba di depan bengkel Dokter Mobil Palembang!`, 'check_circle');
+          return;
+        } else if (activeJob.tracking.progressPercent >= 78) {
+          activeJob.tracking.currentStreet = 'Jl. Letkol Iskandar (Mendekati Dokter Mobil Palembang)';
+        } else if (activeJob.tracking.progressPercent >= 50) {
+          activeJob.tracking.currentStreet = 'Simpang ibis Palembang Sanggar → Jl. Letkol Iskandar';
+        } else if (activeJob.tracking.progressPercent >= 25) {
+          activeJob.tracking.currentStreet = 'Jl. Dempo Luar (Menuju Jl. Letkol Iskandar)';
+        } else {
+          activeJob.tracking.currentStreet = 'Jl. Semeru (Menuju Jl. Dempo Luar)';
+        }
+
+        renderApp();
+        renderTrackingMapModalContent();
+      }, 650);
+    }
+
+    function renderTrackingMapModalContent() {
+      const job = state.jobs.find(j => j.jobId === state.activeTrackingJobId);
+      if (!job || !job.tracking) {
+        closeTrackingMapModal();
+        return;
+      }
+
+      document.getElementById('tracking-modal-title').textContent = `Perjalanan ${job.assignedMechanicName} (${job.jobId})`;
+      document.getElementById('tracking-modal-subtitle').textContent = `${job.title} • Tujuan: ${job.locationName}`;
+
+      const routePts = [
+        { x: 10.6, y: 18.4 },
+        { x: 16.5, y: 37.4 },
+        { x: 24.4, y: 63.2 },
+        { x: 38.8, y: 58.4 },
+        { x: 49.5, y: 54.0 }
+      ];
+
+      const segLengths = [];
+      let totalLength = 0;
+      for (let i = 0; i < routePts.length - 1; i++) {
+        const dx = routePts[i + 1].x - routePts[i].x;
+        const dy = routePts[i + 1].y - routePts[i].y;
+        const len = Math.hypot(dx, dy);
+        segLengths.push(len);
+        totalLength += len;
+      }
+
+      const progress = Math.min(1, Math.max(0, job.tracking.progressPercent / 100));
+      let targetDist = progress * totalLength;
+      let mechX = routePts[routePts.length - 1].x;
+      let mechY = routePts[routePts.length - 1].y;
+      const remainingSvgPoints = [];
+
+      for (let i = 0; i < segLengths.length; i++) {
+        if (targetDist <= segLengths[i]) {
+          const segT = segLengths[i] === 0 ? 0 : targetDist / segLengths[i];
+          mechX = routePts[i].x + (routePts[i + 1].x - routePts[i].x) * segT;
+          mechY = routePts[i].y + (routePts[i + 1].y - routePts[i].y) * segT;
+          remainingSvgPoints.push(`${(mechX * 8).toFixed(1)},${(mechY * 3.8).toFixed(1)}`);
+          for (let j = i + 1; j < routePts.length; j++) {
+            remainingSvgPoints.push(`${(routePts[j].x * 8).toFixed(1)},${(routePts[j].y * 3.8).toFixed(1)}`);
+          }
+          break;
+        }
+        targetDist -= segLengths[i];
+      }
+
+      if (remainingSvgPoints.length === 0) {
+        remainingSvgPoints.push('396,205.2');
+      }
+      const activeRoutePointsAttr = remainingSvgPoints.join(' ');
+      const isArrivedAtGate = progress >= 0.99;
+
+      document.getElementById('tracking-modal-body').innerHTML = `
+        <div class="relative h-[380px] bg-[#F2EFE9] overflow-hidden select-none">
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 800 380" preserveAspectRatio="none">
+            <rect width="800" height="380" fill="#F2EFE9" />
+            <polygon points="18,132 54,120 66,154 28,166" fill="#C8E6C9" />
+            <path d="M 678 0 C 662 62, 650 115, 654 170 C 658 220, 682 265, 735 315 L 800 365 L 800 342 L 750 302 C 700 255, 678 212, 674 166 C 670 112, 682 60, 698 0 Z" fill="#9CCCF4" />
+            <path d="M 664 155 C 710 130, 755 110, 800 92 L 800 105 C 755 123, 712 142, 668 167 Z" fill="#9CCCF4" />
+            <g fill="none" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M 48 48 L 195 0" />
+              <path d="M 105 95 L 235 45" />
+              <path d="M 250 18 L 285 182" />
+              <path d="M 320 42 L 515 72" />
+              <path d="M 278 185 L 405 162 L 420 202" />
+              <path d="M 192 222 L 268 198" />
+              <path d="M 320 225 L 352 315" />
+              <path d="M 365 258 L 435 232" />
+              <path d="M 465 232 L 485 380" />
+              <path d="M 476 292 L 560 278" />
+              <path d="M 555 218 L 695 172 L 800 152" />
+              <path d="M 548 338 L 665 305 L 785 375" />
+            </g>
+            <path d="M 132 142 L 260 232 L 368 380" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 322 252 L 408 380" fill="none" stroke="#F8D26A" stroke-width="9" stroke-linecap="round"/>
+            <path d="M 322 252 L 408 380" fill="none" stroke="#FDE69A" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 38 0 L 132 142 L 195 240 L 295 380" fill="none" stroke="#CBD5E1" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 38 0 L 132 142 L 195 240 L 295 380" fill="none" stroke="#E2E8F0" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 0 302 L 195 240 L 396 205 L 555 152 L 660 112" fill="none" stroke="#F3BC3C" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 0 302 L 195 240 L 396 205 L 555 152 L 660 112" fill="none" stroke="#FDE293" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <text x="48" y="65" fill="#5F6368" font-size="9.5" font-weight="600" font-family="Inter, sans-serif" transform="rotate(56 48,65)">Jl. Jend. Sudirman</text>
+            <text x="172" y="232" fill="#5F6368" font-size="9.5" font-weight="600" font-family="Inter, sans-serif" transform="rotate(55 172,232)">Jl. Lintas Sumatera</text>
+            <text x="122" y="150" fill="#5F6368" font-size="9" font-weight="600" font-family="Inter, sans-serif" transform="rotate(35 122,150)">Jl. Kolonel Atmo</text>
+            <text x="348" y="318" fill="#5F6368" font-size="9" font-weight="600" font-family="Inter, sans-serif" transform="rotate(56 348,318)">Jl. Kolonel Atmo</text>
+            <text x="262" y="108" fill="#5F6368" font-size="9" font-weight="600" font-family="Inter, sans-serif" transform="rotate(79 262,108)">Jl. Semeru</text>
+            <text x="305" y="176" fill="#5F6368" font-size="9" font-weight="600" font-family="Inter, sans-serif" transform="rotate(-11 305,176)">Jl. Dempo Luar</text>
+            <text x="85" y="288" fill="#5F6368" font-size="9.5" font-weight="600" font-family="Inter, sans-serif" transform="rotate(-18 85,288)">Jl. Letkol Iskandar</text>
+            <text x="462" y="174" fill="#5F6368" font-size="9" font-weight="600" font-family="Inter, sans-serif" transform="rotate(-19 462,174)">Jl. Lingkaran 1</text>
+
+            <polyline points="84.8,69.9 132,142.1 195.2,240.2 310.4,221.9 396,205.2"
+                  fill="none" stroke="#9AA0A6" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 5" opacity="0.75"/>
+            <polyline points="${activeRoutePointsAttr}"
+                  fill="none" stroke="#185ABC" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="${activeRoutePointsAttr}"
+                  fill="none" stroke="#4285F4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+
+          <!-- Top Floating Street Banner & Simulation Control -->
+          <div class="relative z-10 p-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white shadow-md text-xs font-semibold text-gray-800 border border-gray-100">
+              <span class="material-symbols-outlined text-base text-blue-600">navigation</span>
+              <span>${job.tracking.currentStreet}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              ${isArrivedAtGate ? `
+                <button onclick="resetTrackingSimulation('${job.jobId}')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 shadow-md m3-transition">
+                  <span class="material-symbols-outlined text-sm">replay</span>
+                  <span>Ulangi Simulasi</span>
+                </button>
+              ` : `
+                <button onclick="toggleTrackingSimulation('${job.jobId}')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold ${state.isSimulatingTracking ? 'bg-amber-600 hover:bg-amber-700' : 'bg-blue-600 hover:bg-blue-700'} text-white shadow-md m3-transition">
+                  <span class="material-symbols-outlined text-sm">${state.isSimulatingTracking ? 'pause' : 'play_arrow'}</span>
+                  <span>${state.isSimulatingTracking ? 'Simulasi Berjalan (Jeda)' : 'Lanjutkan Simulasi'}</span>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Destination Pin -->
+          <div class="absolute z-10 flex items-center gap-1.5 transform -translate-x-4 -translate-y-8" style="left: 49.5%; top: 54%;">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded-full bg-[#EA4335] text-white flex items-center justify-center shadow-lg border-2 border-white">
+                <span class="material-symbols-outlined text-lg icon-filled">build</span>
+              </div>
+              <div class="w-2 h-1 bg-black/25 rounded-full mt-0.5"></div>
+            </div>
+            <div class="bg-white/95 backdrop-blur-xs px-2 py-1 rounded-lg shadow-md border border-gray-200 max-w-[175px]">
+              <p class="text-[10.5px] font-bold text-[#C5221F] leading-tight">Dokter Mobil Palembang</p>
+              <p class="text-[9px] text-gray-600 leading-tight truncate">- Spesialis Service AC...</p>
+            </div>
+          </div>
+
+          <!-- Moving Mechanic Marker -->
+          <div class="absolute z-20 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-linear" style="left: ${mechX.toFixed(1)}%; top: ${mechY.toFixed(1)}%;">
+            <div class="flex flex-col items-center">
+              <div class="px-2.5 py-1 rounded-lg ${isArrivedAtGate ? 'bg-emerald-700' : 'bg-gray-900/90'} text-white text-[10px] font-semibold shadow-md mb-1 whitespace-nowrap">
+                ${job.assignedMechanicName} • ${isArrivedAtGate ? 'Tiba di Lokasi' : job.tracking.speedKmh + ' km/j'}
+              </div>
+              <div class="relative flex items-center justify-center">
+                <span class="absolute w-10 h-10 rounded-full ${isArrivedAtGate ? 'bg-emerald-500/45' : 'bg-blue-500/45'} radar-ring"></span>
+                <div class="w-8 h-8 rounded-full ${isArrivedAtGate ? 'bg-emerald-600' : 'bg-blue-600'} text-white flex items-center justify-center shadow-lg border-2 border-white relative">
+                  <span class="material-symbols-outlined text-base">two_wheeler</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-4 text-xs">
+            <div class="px-3.5 py-2 rounded-2xl bg-blue-50 border border-blue-200">
+              <span class="text-blue-800 block text-[11px]">Estimasi Waktu Tiba (ETA)</span>
+              <strong class="text-base font-bold text-blue-900">${job.tracking.etaMinutes} Menit (${job.tracking.distanceRemainingKm} km)</strong>
+            </div>
+            <div>
+              <span class="text-md-onSurfaceVariant block">Kendaraan & Keluhan:</span>
+              <strong class="text-md-onSurface">${job.vehicleSummary}</strong>
+              <span class="block text-[11px] text-md-onSurfaceVariant">Ambil order pukul ${job.acceptedAt} • WA: ${job.assignedMechanicPhone}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="reopenJob('${job.jobId}', 'Pelepasan manual oleh Admin DM'); closeTrackingMapModal();" class="px-4 py-2.5 rounded-full text-xs font-medium text-md-primary border border-md-outlineVariant hover:bg-md-primaryContainer/40">
+              Rilis Ulang
+            </button>
+            <button onclick="confirmMechanicArrived('${job.jobId}'); closeTrackingMapModal();" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-semibold bg-md-tertiary text-white hover:bg-md-tertiary/90 shadow-xs">
+              <span class="material-symbols-outlined text-base">play_circle</span>
+              <span>Mekanik Tiba — Mulai Kerja</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function simulateMechanicTakeJob(jobId) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job) return;
+      const availableMech = state.mechanics.find(m => m.isVerified && !m.isSuspended && m.isAvailableForWorkshop) || state.mechanics[0];
+      job.status = 'ON_THE_WAY';
+      job.assignedMechanicId = availableMech.uid;
+      job.assignedMechanicName = availableMech.name;
+      job.assignedMechanicPhone = availableMech.phone;
+      job.acceptedAt = 'Baru saja';
+      job.tracking = {
+        progressPercent: 18,
+        distanceRemainingKm: 3.7,
+        etaMinutes: 15,
+        currentStreet: 'Jl. Semeru (Menuju Jl. Dempo Luar)',
+        speedKmh: 36
+      };
+      renderApp();
+      showSnackbar(`${availableMech.name} mengambil pekerjaan ${jobId} (Total Jasa ${formatRupiah(job.totalPrice)}).`);
+    }
+
+    function confirmMechanicArrived(jobId) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job) return;
+      stopTrackingSimulationTimer();
+      job.status = 'IN_PROGRESS';
+      job.startedAt = 'Baru saja';
+      job.arrivalDurationMinutes = Math.max(12, 28 - (job.tracking ? job.tracking.etaMinutes : 5));
+      job.liveWorkElapsedMinutes = 1;
+      delete job.tracking;
+      renderApp();
+      showSnackbar(`${job.assignedMechanicName} tiba di bengkel (${job.arrivalDurationMinutes} mnt). Pengerjaan dimulai.`, 'build');
+    }
+
+    function reopenJob(jobId, reason) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job) return;
+      stopTrackingSimulationTimer();
+      if (job.assignedMechanicId) {
+        const mech = state.mechanics.find(m => m.uid === job.assignedMechanicId);
+        if (mech) mech.cancelledJobsCount += 1;
+      }
+      job.status = 'OPEN';
+      job.assignedMechanicId = null;
+      job.assignedMechanicName = null;
+      job.assignedMechanicPhone = null;
+      job.acceptedAt = null;
+      delete job.tracking;
+      renderApp();
+      showSnackbar(`${jobId} dikembalikan ke bursa terbuka (${reason}).`, 'replay');
+    }
+
+    function completeJob(jobId) {
+      const job = state.jobs.find(j => j.jobId === jobId);
+      if (!job) return;
+      const workMins = job.liveWorkElapsedMinutes || 65;
+      job.status = 'COMPLETED';
+      job.completedAt = 'Baru saja';
+      job.workDurationMinutes = workMins;
+
+      if (job.bookingId) {
+        const bk = state.bookings.find(b => b.bookingId === job.bookingId);
+        if (bk) bk.status = 'COMPLETED';
+      }
+
+      const mech = state.mechanics.find(m => m.uid === job.assignedMechanicId);
+      if (mech) {
+        const prevCount = mech.completedJobsCount;
+        mech.completedJobsCount = prevCount + 1;
+        mech.avgArrivalMinutes = Math.round(((mech.avgArrivalMinutes * prevCount) + (job.arrivalDurationMinutes || 25)) / mech.completedJobsCount);
+        mech.avgWorkDurationMinutes = Math.round(((mech.avgWorkDurationMinutes * prevCount) + workMins) / mech.completedJobsCount);
+      }
+
+      renderApp();
+      showSnackbar(`Pekerjaan ${jobId} selesai (${workMins} mnt). Pembayaran di kasir bengkel & bagi hasil terkunci.`);
+    }
+
+    /* ==========================================================================
+       5. TAB 2: BOOKING PELANGGAN
+       ========================================================================== */
+    function renderBookingsTab() {
+      document.getElementById('page-title').textContent = 'Antrean Booking Pelanggan';
+      document.getElementById('page-subtitle').textContent = 'Periksa ketersediaan slot bengkel, beri tanggapan/jadwal alternatif, atau teruskan ke bursa mekanik.';
+
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${state.bookings.map(bk => {
+            const isPending = bk.status === 'PENDING';
+            const isConfirmed = bk.status === 'CONFIRMED';
+            const isReschedule = bk.status === 'RESCHEDULE_OFFERED';
+            const isCompleted = bk.status === 'COMPLETED';
+              const isCancelled = bk.status === 'CANCELLED';
+            return `
+              <div class="bg-white rounded-[24px] p-5 border border-md-outlineVariant/60 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold ${
+                      isPending ? 'bg-amber-100 text-amber-900' :
+                      isConfirmed ? 'bg-blue-100 text-blue-900' :
+                      isReschedule ? 'bg-orange-100 text-orange-900' :
+                      isCompleted ? 'bg-gray-200 text-gray-800' :
+                          isCancelled ? 'bg-red-100 text-red-800' :
+                      'bg-emerald-100 text-emerald-900'
+                    }">
+                      ${isPending ? 'PENDING • Perlu Tanggapan Admin' :
+                        isConfirmed ? 'CONFIRMED • Siap Dilempar ke Mekanik' :
+                        isReschedule ? 'SLOT PENUH • Menunggu Konfirmasi Jadwal Baru' :
+                        isCompleted ? 'COMPLETED • Servis Selesai' :
+                           isCancelled ? 'CANCELLED • Dibatalkan' :
+                        'CONVERTED_TO_JOB • Pekerjaan (' + bk.linkedJobId + ')'}
+                    </span>
+                    <span class="font-mono text-xs text-md-onSurfaceVariant">${bk.bookingId}</span>
+                  </div>
+
+                  <h4 class="font-bold text-base text-md-onSurface">${bk.customerName}</h4>
+                  <p class="text-xs text-md-secondary font-medium mt-0.5">${bk.vehicleInfo}</p>
+
+                  <div class="mt-3 p-3.5 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-1.5">
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Cabang Bengkel:</span>
+                      <span class="font-semibold">${bk.locationName}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Jadwal Diminta:</span>
+                      <span class="font-semibold text-md-primary">${bk.scheduledDate}</span>
+                    </div>
+                    ${bk.proposedSchedule ? `
+                      <div class="flex justify-between">
+                        <span class="text-md-onSurfaceVariant">Jadwal Alternatif DM:</span>
+                        <span class="font-semibold text-orange-800">${bk.proposedSchedule}</span>
+                      </div>
+                    ` : ''}
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Kategori & Kontak:</span>
+                      <span>${bk.categoryName} • ${bk.customerPhone}</span>
+                    </div>
+                  </div>
+
+                  <div class="mt-3">
+                    <span class="text-[11px] font-semibold text-md-onSurfaceVariant uppercase">Keluhan Pelanggan:</span>
+                    <p class="text-xs text-md-onSurface mt-1 bg-md-surface p-3 rounded-xl border border-md-outlineVariant/50">"${bk.complaint}"</p>
+                  </div>
+
+                  ${bk.adminResponseNote ? `
+                    <div class="mt-3 p-3 rounded-xl ${isReschedule ? 'bg-orange-50 border border-orange-200 text-orange-950' : 'bg-blue-50/70 border border-blue-200 text-blue-950'} text-xs">
+                      <span class="text-[10px] font-bold uppercase block mb-0.5">Komentar / Tanggapan Admin DM:</span>
+                      <p class="leading-relaxed">"${bk.adminResponseNote}"</p>
+                    </div>
+                  ` : ''}
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-md-outlineVariant/50 flex flex-wrap items-center justify-end gap-2">
+                  ${(isPending || isReschedule) ? `
+                    <button onclick="openBookingResponseModal('${bk.bookingId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90">
+                      <span class="material-symbols-outlined text-sm">rate_review</span>
+                      <span>${isReschedule ? 'Ubah Tanggapan' : 'Tanggapi & Konfirmasi'}</span>
+                    </button>
+                  ` : ''}
+                  ${isConfirmed ? `
+                    <button onclick="openBookingResponseModal('${bk.bookingId}')" class="px-3.5 py-2 rounded-full text-xs font-medium text-md-secondary border border-md-outlineVariant hover:bg-md-surfaceContainerHigh">
+                      Ubah Catatan
+                    </button>
+                    <button onclick="openCreateJobFromBooking('${bk.bookingId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90">
+                      <span class="material-symbols-outlined text-sm">publish</span>
+                      <span>Lempar ke Bursa Mekanik</span>
+                    </button>
+                  ` : ''}
+                  ${isCancelled ? `<span class="text-xs font-semibold text-red-800">Booking dibatalkan</span>` : ''}
+                    ${!isPending && !isConfirmed && !isReschedule && !isCancelled ? `
+                    <span class="text-xs font-semibold text-md-tertiary flex items-center gap-1">
+                      <span class="material-symbols-outlined text-base">check_circle</span>
+                      <span>Sudah Dikonversi ke Pekerjaan (${bk.linkedJobId || '-'})</span>
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openBookingResponseModal(bookingId) {
+      const bk = state.bookings.find(b => b.bookingId === bookingId);
+      if (!bk) return;
+
+      const defaultDecision = bk.status === 'RESCHEDULE_OFFERED' ? 'RESCHEDULE' : 'CONFIRM';
+
+      document.getElementById('entity-modal-title').textContent = `Tanggapan Jadwal Booking (${bk.bookingId})`;
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitBookingResponse(event, '${bk.bookingId}')" class="space-y-3.5 text-xs">
+          <div class="p-3 rounded-2xl bg-md-surfaceContainerLow space-y-1">
+            <p class="font-bold text-sm text-md-onSurface">${bk.customerName} • ${bk.vehicleInfo}</p>
+            <p class="text-md-onSurfaceVariant">Jadwal Diminta Pelanggan: <strong class="text-md-primary">${bk.scheduledDate}</strong> (${bk.categoryName})</p>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1.5">Status Ketersediaan Slot Bengkel *</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="p-3 rounded-2xl border border-md-outlineVariant cursor-pointer flex items-start gap-2 has-[:checked]:border-md-tertiary has-[:checked]:bg-emerald-50/70">
+                <input type="radio" name="bk-decision" value="CONFIRM" ${defaultDecision === 'CONFIRM' ? 'checked' : ''} onchange="toggleRescheduleInput(false)" class="mt-0.5" />
+                <div>
+                  <span class="font-bold text-md-onSurface block">Terima & Konfirmasi</span>
+                  <span class="text-[11px] text-md-onSurfaceVariant">Slot jam tersedia</span>
+                </div>
+              </label>
+              <label class="p-3 rounded-2xl border border-md-outlineVariant cursor-pointer flex items-start gap-2 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/70">
+                <input type="radio" name="bk-decision" value="RESCHEDULE" ${defaultDecision === 'RESCHEDULE' ? 'checked' : ''} onchange="toggleRescheduleInput(true)" class="mt-0.5" />
+                <div>
+                  <span class="font-bold text-md-onSurface block">Slot Penuh / Ubah Jam</span>
+                  <span class="text-[11px] text-md-onSurfaceVariant">Ajukan jam pengganti</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div id="bk-reschedule-field" class="${defaultDecision === 'RESCHEDULE' ? '' : 'hidden'}">
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Usulan Jadwal Alternatif Tersedia *</label>
+            <input type="text" id="bk-proposed-schedule" value="${bk.proposedSchedule || 'Hari Ini, 16:30 WIB atau Besok, 09:30 WIB'}" placeholder="Contoh: Besok, 10:00 WIB" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-xs font-semibold" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Komentar / Pesan untuk Pelanggan *</label>
+            <textarea id="bk-admin-note" rows="3" required placeholder="Tulis konfirmasi slot atau penjelasan bahwa jam tersebut penuh beserta saran jadwal lain..." class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-xs">${bk.adminResponseNote || (defaultDecision === 'CONFIRM' ? 'Slot tersedia sesuai jadwal yang dipilih. Silakan datang 10 menit lebih awal.' : '')}</textarea>
+          </div>
+
+          <div class="pt-2 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full font-medium text-md-onSurfaceVariant hover:bg-md-surfaceContainerHigh">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full font-semibold bg-md-primary text-white shadow-xs">Kirim Tanggapan ke Pelanggan</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function toggleRescheduleInput(show) {
+      const field = document.getElementById('bk-reschedule-field');
+      const noteEl = document.getElementById('bk-admin-note');
+      if (show) {
+        field.classList.remove('hidden');
+        if (!noteEl.value || noteEl.value.includes('Slot tersedia')) {
+          noteEl.value = 'Mohon maaf, slot bengkel pada jam tersebut sudah penuh dengan antrean servis lain. Kami sarankan jadwal pengganti di atas.';
+        }
+      } else {
+        field.classList.add('hidden');
+        if (!noteEl.value || noteEl.value.includes('Mohon maaf')) {
+          noteEl.value = 'Slot tersedia sesuai jadwal yang dipilih. Silakan datang 10 menit lebih awal.';
+        }
+      }
+    }
+
+    function submitBookingResponse(e, bookingId) {
+      e.preventDefault();
+      const bk = state.bookings.find(b => b.bookingId === bookingId);
+      if (!bk) return;
+
+      const decision = document.querySelector('input[name="bk-decision"]:checked').value;
+      const note = document.getElementById('bk-admin-note').value.trim();
+
+      if (decision === 'CONFIRM') {
+        bk.status = 'CONFIRMED';
+        bk.adminResponseNote = note;
+        bk.proposedSchedule = null;
+        closeEntityModal();
+        renderApp();
+        showSnackbar(`Booking ${bookingId} dikonfirmasi beserta catatan untuk ${bk.customerName}.`);
+      } else {
+        const proposed = document.getElementById('bk-proposed-schedule').value.trim();
+        if (!proposed) {
+          showSnackbar('Harap isi usulan jadwal alternatif untuk pelanggan.', 'warning');
+          return;
+        }
+        bk.status = 'RESCHEDULE_OFFERED';
+        bk.proposedSchedule = proposed;
+        bk.adminResponseNote = note;
+        closeEntityModal();
+        renderApp();
+        showSnackbar(`Informasi slot penuh & usulan jadwal baru dikirim ke ${bk.customerName}.`, 'schedule');
+      }
+    }
+
+    function simulateIncomingBooking() {
+      const nextNum = 83 + state.bookings.length;
+      const newBkId = `BK-2026-0${nextNum}`;
+      const activeLoc = getActiveLocations()[0];
+      state.bookings.unshift({
+        bookingId: newBkId,
+        locationId: activeLoc.locationId,
+        locationName: activeLoc.name,
+        customerId: 'cust_01',
+        customerName: 'Andi Saputra',
+        customerPhone: '08XX-XXXX-0001',
+        vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+        categoryId: 'elektrikal',
+        categoryName: 'Elektrikal',
+        complaint: 'Indikator aki menyala di speedometer saat kecepatan tinggi.',
+        scheduledDate: 'Besok, 10:00 WIB',
+        status: 'PENDING',
+        adminResponseNote: '',
+        proposedSchedule: null,
+        linkedJobId: null
+      });
+      state.activeTab = 'bookings';
+      renderApp();
+      showSnackbar(`Booking baru masuk dari aplikasi D-Mobil (${newBkId})!`, 'notifications_active');
+    }
+
+    /* ==========================================================================
+       6. TAB 3: DATA PELANGGAN BENGKEL (WALK-IN & APLIKASI D-MOBIL)
+       ========================================================================== */
+    function renderCustomersTab() {
+      document.getElementById('page-title').textContent = 'Data Pelanggan Bengkel';
+      document.getElementById('page-subtitle').textContent = 'Kelola data pelanggan dari pendaftaran langsung saat datang ke bengkel (Walk-In) maupun pendaftaran mandiri lewat aplikasi D-Mobil.';
+
+      const q = state.customerSearchQuery.trim().toLowerCase();
+      const filtered = state.customers.filter(c => {
+        const matchSource = state.customerSourceFilter === 'ALL' || c.registrationSource === state.customerSourceFilter;
+        const matchQuery = !q ||
+          c.name.toLowerCase().includes(q) ||
+          c.phone.toLowerCase().includes(q) ||
+          (c.email && c.email.toLowerCase().includes(q)) ||
+          c.vehicles.some(v =>
+            v.plateNumber.toLowerCase().includes(q) ||
+            v.brand.toLowerCase().includes(q) ||
+            v.model.toLowerCase().includes(q)
+          );
+        return matchSource && matchQuery;
+      });
+
+      const appCount = state.customers.filter(c => c.registrationSource === 'APP_SELF_REGISTER').length;
+      const walkInCount = state.customers.filter(c => c.registrationSource === 'WALK_IN_ADMIN').length;
+
+      return `
+        <!-- Top Action & Summary Bar -->
+        <div class="bg-white rounded-[28px] p-5 border border-md-outlineVariant/60 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3 text-xs">
+            <span class="px-3.5 py-1.5 rounded-full bg-md-surfaceContainer font-semibold text-md-onSurface">
+              Total Pelanggan: <strong>${state.customers.length}</strong>
+            </span>
+            <span class="px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-800 font-semibold">
+              Daftar via Aplikasi: <strong>${appCount}</strong>
+            </span>
+            <span class="px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-900 font-semibold">
+              Daftar Walk-In di Bengkel: <strong>${walkInCount}</strong>
+            </span>
+          </div>
+
+          <button onclick="openCustomerModal()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90 shadow-xs shrink-0">
+            <span class="material-symbols-outlined text-base">person_add</span>
+            <span>Daftarkan Pelanggan Walk-In</span>
+          </button>
+        </div>
+
+        <!-- Search & Source Filter -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-5">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined text-md-onSurfaceVariant text-lg absolute left-3.5 top-1/2 -translate-y-1/2">search</span>
+            <input type="text" value="${state.customerSearchQuery}" oninput="state.customerSearchQuery = this.value; renderApp();" placeholder="Cari nama pelanggan, nomor HP/WA, atau nomor plat kendaraan..." class="w-full rounded-full border border-md-outlineVariant bg-white pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-md-primary" />
+          </div>
+          <div class="flex items-center gap-1.5 bg-white p-1 rounded-full border border-md-outlineVariant/60 shrink-0">
+            <button onclick="state.customerSourceFilter = 'ALL'; renderApp();" class="px-3.5 py-1.5 rounded-full text-xs font-medium ${state.customerSourceFilter === 'ALL' ? 'bg-md-secondaryContainer text-md-onSecondaryContainer font-semibold' : 'text-md-onSurfaceVariant'}">Semua</button>
+            <button onclick="state.customerSourceFilter = 'WALK_IN_ADMIN'; renderApp();" class="px-3.5 py-1.5 rounded-full text-xs font-medium ${state.customerSourceFilter === 'WALK_IN_ADMIN' ? 'bg-md-secondaryContainer text-md-onSecondaryContainer font-semibold' : 'text-md-onSurfaceVariant'}">Walk-In Bengkel</button>
+            <button onclick="state.customerSourceFilter = 'APP_SELF_REGISTER'; renderApp();" class="px-3.5 py-1.5 rounded-full text-xs font-medium ${state.customerSourceFilter === 'APP_SELF_REGISTER' ? 'bg-md-secondaryContainer text-md-onSecondaryContainer font-semibold' : 'text-md-onSurfaceVariant'}">Aplikasi D-Mobil</button>
+          </div>
+        </div>
+
+        <!-- Customer Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${filtered.map(c => {
+            const isApp = c.registrationSource === 'APP_SELF_REGISTER';
+            return `
+              <div class="bg-white rounded-[24px] p-5 border border-md-outlineVariant/60 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full ${isApp ? 'bg-md-secondaryContainer text-md-onSecondaryContainer' : 'bg-amber-100 text-amber-900'} font-bold text-xs flex items-center justify-center shrink-0">
+                        ${c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <h4 class="font-bold text-base text-md-onSurface">${c.name}</h4>
+                        <p class="text-xs text-md-onSurfaceVariant">${c.phone} ${c.email ? '• ' + c.email : ''}</p>
+                      </div>
+                    </div>
+
+                    <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${isApp ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-900'} shrink-0">
+                      ${isApp ? 'Aplikasi D-Mobil' : 'Daftar Walk-In'}
+                    </span>
+                  </div>
+
+                  <!-- Multi-Vehicle List -->
+                  <div class="p-3 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="font-semibold text-md-onSurface">Daftar Mobil Terdaftar (${c.vehicles.length} Unit):</span>
+                      <button onclick="openAddVehicleModal('${c.customerId}')" class="inline-flex items-center gap-1 text-[11px] font-semibold text-md-secondary hover:underline">
+                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                        <span>Tambah Mobil</span>
+                      </button>
+                    </div>
+                    <div class="space-y-1.5">
+                      ${c.vehicles.map((v, vIdx) => `
+                        <div class="flex items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-md-outlineVariant/50">
+                          <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="material-symbols-outlined text-sm text-md-secondary shrink-0">directions_car</span>
+                            <span class="font-bold text-md-onSurface shrink-0">${v.plateNumber}</span>
+                            <span class="text-md-onSurfaceVariant truncate">— ${v.brand} ${v.model} (${v.year})</span>
+                          </div>
+                          ${c.vehicles.length > 1 ? `
+                            <button onclick="removeCustomerVehicle('${c.customerId}', ${vIdx})" title="Hapus unit mobil ini" class="text-gray-400 hover:text-md-primary shrink-0">
+                              <span class="material-symbols-outlined text-sm">close</span>
+                            </button>
+                          ` : ''}
+                        </div>
+                      `).join('')}
+                    </div>
+
+                    <div class="flex justify-between pt-1 border-t border-md-outlineVariant/40">
+                      <span class="text-md-onSurfaceVariant">Riwayat Kunjungan: <strong class="text-md-onSurface">${c.totalVisits}x Servis</strong></span>
+                      <span class="text-md-onSurfaceVariant">${isApp ? 'Akun Aplikasi Aktif' : 'Oleh ' + c.registeredByAdmin}</span>
+                    </div>
+                  </div>
+
+                  ${c.notes ? `<p class="text-[11px] text-md-onSurfaceVariant italic mt-2.5">Catatan: ${c.notes}</p>` : ''}
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-md-outlineVariant/50 flex items-center justify-start gap-2">
+                  <button onclick="openCustomerModal('${c.customerId}')" class="px-3.5 py-2 rounded-full text-xs font-medium border border-md-outlineVariant hover:bg-md-surfaceContainerHigh">
+                    Edit Profil
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openCustomerModal(customerId = null, returnToCreateJob = false) {
+      const existing = customerId ? state.customers.find(c => c.customerId === customerId) : null;
+      const v0 = existing && existing.vehicles[0] ? existing.vehicles[0] : { plateNumber: '', brand: '', model: '', year: '2022' };
+      document.getElementById('entity-modal-title').textContent = existing ? 'Edit Data Pelanggan' : 'Daftarkan Pelanggan Walk-In Baru';
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitCustomerForm(event, '${customerId || ''}', ${returnToCreateJob})" class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Nama Lengkap Pelanggan *</label>
+              <input type="text" id="cust-name" required value="${existing ? existing.name : ''}" placeholder="Contoh: Hendri Gunawan" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Nomor HP / WhatsApp *</label>
+              <input type="text" id="cust-phone" required value="${existing ? existing.phone : ''}" placeholder="0812-XXXX-XXXX" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Email Google (Opsional — untuk sinkronisasi jika instal aplikasi D-Mobil)</label>
+            <input type="email" id="cust-email" value="${existing && existing.email ? existing.email : ''}" placeholder="pelanggan@example.com" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+          </div>
+
+          <div class="p-3 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant/60 space-y-2.5">
+            <span class="block text-xs font-bold text-md-onSurface">${existing ? 'Kendaraan Utama Pelanggan' : 'Kendaraan Pertama (Mobil lain bisa ditambahkan setelah disimpan)'}</span>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Nomor Plat Kendaraan *</label>
+                <input type="text" id="cust-plate" required value="${v0.plateNumber}" placeholder="BG 1234 XX" class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs uppercase font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
+                <input type="text" id="cust-brand" required value="${v0.brand}" placeholder="Toyota" class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs" />
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="col-span-2">
+                <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Tipe / Model *</label>
+                <input type="text" id="cust-model" required value="${v0.model}" placeholder="Avanza Veloz" class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Tahun *</label>
+                <input type="text" id="cust-year" required value="${v0.year}" placeholder="2022" class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Catatan Tambahan</label>
+            <input type="text" id="cust-notes" value="${existing ? (existing.notes || '') : ''}" placeholder="Contoh: Pelanggan walk-in baru cabang Palembang" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+          </div>
+          <div class="pt-3 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full text-xs font-semibold bg-md-primary text-white">Simpan Data Pelanggan</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function submitCustomerForm(e, customerId, returnToCreateJob) {
+      e.preventDefault();
+      const firstVehicle = {
+        plateNumber: document.getElementById('cust-plate').value.trim().toUpperCase(),
+        brand: document.getElementById('cust-brand').value.trim(),
+        model: document.getElementById('cust-model').value.trim(),
+        year: document.getElementById('cust-year').value.trim()
+      };
+      const payload = {
+        name: document.getElementById('cust-name').value.trim(),
+        phone: document.getElementById('cust-phone').value.trim(),
+        email: document.getElementById('cust-email').value.trim() || null,
+        notes: document.getElementById('cust-notes').value.trim()
+      };
+
+      let savedId = customerId;
+      if (customerId) {
+        const cust = state.customers.find(c => c.customerId === customerId);
+        if (cust) {
+          Object.assign(cust, payload);
+          if (cust.vehicles.length > 0) {
+            cust.vehicles[0] = firstVehicle;
+          } else {
+            cust.vehicles = [firstVehicle];
+          }
+        }
+        showSnackbar(`Profil pelanggan "${payload.name}" berhasil diperbarui.`);
+      } else {
+        savedId = 'cust_' + (state.customers.length + 1);
+        state.customers.unshift({
+          customerId: savedId,
+          ...payload,
+          vehicles: [firstVehicle],
+          registrationSource: 'WALK_IN_ADMIN',
+          registeredByAdmin: state.currentUser.name,
+          isAccountClaimed: false,
+          totalVisits: 1,
+          lastVisit: 'Hari Ini'
+        });
+        showSnackbar(`Pelanggan Walk-In "${payload.name}" berhasil didaftarkan ke sistem.`);
+      }
+
+      closeEntityModal();
+      renderApp();
+
+      if (returnToCreateJob) {
+        populateJobCustomerSelect(savedId);
+        handleJobCustomerChange(0);
+      }
+    }
+
+    function openAddVehicleModal(customerId, returnToCreateJob = false) {
+      const cust = state.customers.find(c => c.customerId === customerId);
+      if (!cust) return;
+      document.getElementById('entity-modal-title').textContent = `Tambah Mobil — ${cust.name}`;
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitAddVehicle(event, '${customerId}', ${returnToCreateJob})" class="space-y-3">
+          <p class="text-xs text-md-onSurfaceVariant">Pelanggan saat ini memiliki <strong>${cust.vehicles.length} unit mobil</strong> terdaftar.</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor *</label>
+              <input type="text" id="add-veh-plate" required placeholder="BG 5511 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs uppercase font-semibold" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
+              <input type="text" id="add-veh-brand" required placeholder="Honda" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Tipe / Model *</label>
+              <input type="text" id="add-veh-model" required placeholder="CR-V Turbo" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Tahun *</label>
+              <input type="text" id="add-veh-year" required value="2022" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            </div>
+          </div>
+          <div class="pt-3 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white">Simpan Mobil</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function submitAddVehicle(e, customerId, returnToCreateJob) {
+      e.preventDefault();
+      const cust = state.customers.find(c => c.customerId === customerId);
+      if (!cust) return;
+      cust.vehicles.push({
+        plateNumber: document.getElementById('add-veh-plate').value.trim().toUpperCase(),
+        brand: document.getElementById('add-veh-brand').value.trim(),
+        model: document.getElementById('add-veh-model').value.trim(),
+        year: document.getElementById('add-veh-year').value.trim()
+      });
+      const newIdx = cust.vehicles.length - 1;
+      closeEntityModal();
+      renderApp();
+      if (returnToCreateJob) {
+        populateJobCustomerSelect(customerId);
+        handleJobCustomerChange(newIdx);
+      }
+      showSnackbar(`Unit mobil baru ditambahkan ke profil ${cust.name} (Total ${cust.vehicles.length} mobil).`);
+    }
+
+    function removeCustomerVehicle(customerId, vehicleIndex) {
+      const cust = state.customers.find(c => c.customerId === customerId);
+      if (!cust || cust.vehicles.length <= 1) return;
+      const removed = cust.vehicles.splice(vehicleIndex, 1)[0];
+      renderApp();
+      showSnackbar(`Unit mobil ${removed.plateNumber} dihapus dari profil ${cust.name}.`);
+    }
+
+    /* ==========================================================================
+       7. TAB 4: MITRA MEKANIK & KURASI REKOMENDASI ON-SITE
+       ========================================================================== */
+    function renderMechanicsTab() {
+      document.getElementById('page-title').textContent = 'Mitra Mekanik & Kurasi Rekomendasi On-Site';
+      document.getElementById('page-subtitle').textContent = 'Verifikasi berkas KTP/sertifikat serta kontrol status Rekomendasi Layanan di Tempat berdasarkan kinerja.';
+
+      return `
+        <!-- Info Banner -->
+        <div class="p-4 rounded-3xl bg-md-secondaryContainer/60 border border-md-secondary/20 mb-6 flex items-start gap-3">
+          <span class="material-symbols-outlined text-md-secondary text-2xl mt-0.5">verified_user</span>
+          <div class="text-xs text-md-onSecondaryContainer leading-relaxed">
+            <strong>Aturan Kurasi Layanan On-Site:</strong> Hanya mekanik yang telah <strong>Terverifikasi</strong> dan diberi status <strong>"Direkomendasikan On-Site"</strong> oleh Admin DM berdasarkan rekam jejak kinerja yang akan muncul pada daftar rekomendasi pelanggan di aplikasi <strong>D-Mobil</strong> (sebagai direktori rujukan).
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${state.mechanics.map(m => {
+            const skillNames = m.skillIds.map(id => getCategoryNameById(id));
+            return `
+              <div class="bg-white rounded-[24px] p-5 border ${!m.isVerified ? 'border-amber-300 ring-2 ring-amber-100' : 'border-md-outlineVariant/60'} flex flex-col justify-between">
+                <div>
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-11 h-11 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer font-bold text-sm flex items-center justify-center shrink-0">
+                        ${m.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                      <div>
+                        <div class="flex items-center gap-1.5">
+                          <h4 class="font-bold text-base text-md-onSurface">${m.name}</h4>
+                          ${m.isVerified ? `<span class="material-symbols-outlined text-base text-md-tertiary icon-filled" title="Terverifikasi">verified</span>` : ''}
+                        </div>
+                        <p class="text-xs text-md-onSurfaceVariant">${m.phone} • ${m.email}</p>
+                      </div>
+                    </div>
+
+                    <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+                      !m.isVerified ? 'bg-amber-100 text-amber-900' :
+                      m.isAvailableForWorkshop ? 'bg-emerald-100 text-emerald-900' :
+                      'bg-gray-100 text-gray-600'
+                    }">
+                      ${!m.isVerified ? 'Menunggu Verifikasi' : m.isAvailableForWorkshop ? 'Siap Terima Pekerjaan' : 'Offline'}
+                    </span>
+                  </div>
+
+                  <!-- Skills Chips -->
+                  <div class="flex flex-wrap gap-1.5 mt-3">
+                    ${skillNames.map(s => `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-md-surfaceContainer text-md-onSurfaceVariant">${s}</span>`).join('')}
+                    ${m.hasCertificate ? `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700">Bersertifikat</span>` : ''}
+                  </div>
+
+                  <!-- Performance Metrics -->
+                  <div class="grid grid-cols-4 gap-2 mt-4 p-3 rounded-2xl bg-md-surfaceContainerLow text-center">
+                    <div>
+                      <span class="text-[10px] text-md-onSurfaceVariant block">Rating</span>
+                      <strong class="text-xs font-bold text-amber-600">${m.ratingCount > 0 ? m.ratingAvg.toFixed(1) + ' ★' : '-'}</strong>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-md-onSurfaceVariant block">Selesai</span>
+                      <strong class="text-xs font-bold">${m.completedJobsCount} Pekerjaan</strong>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-md-onSurfaceVariant block">Rata2 Tiba</span>
+                      <strong class="text-xs font-bold">${m.avgArrivalMinutes > 0 ? m.avgArrivalMinutes + ' mnt' : '-'}</strong>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-md-onSurfaceVariant block">Rata2 Kerja</span>
+                      <strong class="text-xs font-bold">${m.avgWorkDurationMinutes > 0 ? m.avgWorkDurationMinutes + ' mnt' : '-'}</strong>
+                    </div>
+                  </div>
+
+                  <!-- On-Site Recommendation Toggle Box -->
+                  ${m.isVerified ? `
+                    <div class="mt-3.5 p-3.5 rounded-2xl border ${m.isRecommendedForOnSite ? 'bg-md-tertiaryContainer/35 border-md-tertiary/40' : 'bg-gray-50 border-md-outlineVariant/60'} flex items-center justify-between gap-3">
+                      <div>
+                        <p class="text-xs font-bold text-md-onSurface">Rekomendasi Layanan On-Site</p>
+                        <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">
+                          ${m.isRecommendedForOnSite
+                            ? 'Tampil di daftar rekomendasi pelanggan D-Mobil.'
+                            : 'Tidak ditampilkan di daftar rekomendasi pelanggan.'}
+                        </p>
+                      </div>
+                      <button onclick="toggleOnSiteRecommendation('${m.uid}')" class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${m.isRecommendedForOnSite ? 'bg-md-tertiary' : 'bg-gray-300'}">
+                        <span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-200 ease-in-out ${m.isRecommendedForOnSite ? 'translate-x-5' : 'translate-x-0'}"></span>
+                      </button>
+                    </div>
+                  ` : ''}
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="mt-4 pt-3 border-t border-md-outlineVariant/50 flex items-center justify-between gap-2">
+                  <button onclick="openDocPreviewModal('${m.uid}')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium border border-md-outlineVariant hover:bg-md-surfaceContainerHigh">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    <span>Cek KTP${m.hasCertificate ? ' & Sertifikat' : ''}</span>
+                  </button>
+
+                  ${!m.isVerified ? `
+                    <button onclick="verifyMechanic('${m.uid}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-tertiary text-white hover:bg-md-tertiary/90">
+                      <span class="material-symbols-outlined text-sm">how_to_reg</span>
+                      <span>Setujui Verifikasi</span>
+                    </button>
+                  ` : `
+                    <span class="text-[11px] text-md-onSurfaceVariant">Status On-Site Mekanik: <strong>${m.isAvailableForOnSite ? 'Aktif' : 'Nonaktif'}</strong></span>
+                  `}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function toggleOnSiteRecommendation(uid) {
+      const m = state.mechanics.find(item => item.uid === uid);
+      if (!m) return;
+      m.isRecommendedForOnSite = !m.isRecommendedForOnSite;
+      renderApp();
+      showSnackbar(
+        m.isRecommendedForOnSite
+          ? `${m.name} kini DIREKOMENDASIKAN untuk layanan di tempat (On-Site).`
+          : `Status rekomendasi On-Site untuk ${m.name} dicabut.`
+      );
+    }
+
+    function verifyMechanic(uid) {
+      const m = state.mechanics.find(item => item.uid === uid);
+      if (!m) return;
+      m.isVerified = true;
+      m.isAvailableForWorkshop = true;
+      closeDocPreviewModal();
+      renderApp();
+      showSnackbar(`Akun mekanik ${m.name} telah diverifikasi & aktif menerima pekerjaan bengkel DM.`);
+    }
+
+    /* ==========================================================================
+       8. TAB 5: LAPORAN BAGI HASIL, EVALUASI KINERJA & LOG ON-SITE
+       ========================================================================== */
+    function renderReportsTab() {
+      document.getElementById('page-title').textContent = 'Laporan Bagi Hasil & Evaluasi Kinerja';
+      document.getElementById('page-subtitle').textContent = 'Rekapitulasi pembagian hasil bengkel DM, statistik waktu kerja mekanik, dan analitik klik rekomendasi on-site.';
+
+      const completed = state.jobs.filter(j => j.status === 'COMPLETED');
+      const totalGross = completed.reduce((acc, j) => acc + j.totalPrice, 0);
+      const totalMech = completed.reduce((acc, j) => acc + j.revenueSplit.mechanicAmount, 0);
+      const totalDm = completed.reduce((acc, j) => acc + j.revenueSplit.dmAmount, 0);
+      const totalPlatform = completed.reduce((acc, j) => acc + j.revenueSplit.platformAmount, 0);
+
+      return `
+        <!-- Financial Split Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white rounded-3xl p-5 border border-md-outlineVariant/60">
+            <span class="text-xs font-medium text-md-onSurfaceVariant">Total Jasa Kasir DM (Selesai)</span>
+            <p class="text-xl font-bold text-md-onSurface mt-1">${formatRupiah(totalGross)}</p>
+            <span class="text-[11px] text-md-onSurfaceVariant mt-1 block">Dari ${completed.length} pekerjaan selesai</span>
+          </div>
+          <div class="bg-white rounded-3xl p-5 border border-md-outlineVariant/60">
+            <span class="text-xs font-medium text-md-onSurfaceVariant">Porsi ${state.globalConfig.mechanicLabel} (${state.globalConfig.mechanicPercentage}%)</span>
+            <p class="text-xl font-bold text-md-tertiary mt-1">${formatRupiah(totalMech)}</p>
+            <span class="text-[11px] text-md-onSurfaceVariant mt-1 block">Dibayarkan offline sesuai SOP</span>
+          </div>
+          <div class="bg-white rounded-3xl p-5 border border-md-outlineVariant/60">
+            <span class="text-xs font-medium text-md-onSurfaceVariant">Porsi ${state.globalConfig.dmLabel} (${state.globalConfig.dmPercentage}%)</span>
+            <p class="text-xl font-bold text-md-secondary mt-1">${formatRupiah(totalDm)}</p>
+            <span class="text-[11px] text-md-onSurfaceVariant mt-1 block">Pendapatan bengkel DM</span>
+          </div>
+          <div class="bg-white rounded-3xl p-5 border border-md-outlineVariant/60">
+            <span class="text-xs font-medium text-md-onSurfaceVariant">Porsi ${state.globalConfig.platformLabel} (${state.globalConfig.platformPercentage}%)</span>
+            <p class="text-xl font-bold text-md-primary mt-1">${formatRupiah(totalPlatform)}</p>
+            <span class="text-[11px] text-md-onSurfaceVariant mt-1 block">Fee pengelolaan sistem</span>
+          </div>
+        </div>
+
+        <!-- Tabel Evaluasi Kinerja Mekanik -->
+        <div class="bg-white rounded-[28px] border border-md-outlineVariant/60 overflow-hidden mb-8">
+          <div class="p-5 border-b border-md-outlineVariant/50 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="font-bold text-base text-md-onSurface">Evaluasi Kinerja Mitra Mekanik</h3>
+              <p class="text-xs text-md-onSurfaceVariant">Dasar penilaian Admin DM dalam memberikan status rekomendasi layanan on-site.</p>
+            </div>
+            <button onclick="showSnackbar('Laporan berhasil diunduh.', 'download')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold border border-md-outline hover:bg-md-surfaceContainerHigh">
+              <span class="material-symbols-outlined text-base">download</span>
+              <span>Ekspor Laporan</span>
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-md-surfaceContainerLow text-md-onSurfaceVariant border-b border-md-outlineVariant/60">
+                  <th class="py-3.5 px-5 font-semibold">Nama Mekanik</th>
+                  <th class="py-3.5 px-4 font-semibold">Pekerjaan Selesai</th>
+                  <th class="py-3.5 px-4 font-semibold">Batal</th>
+                  <th class="py-3.5 px-4 font-semibold">Rata2 Waktu Tiba</th>
+                  <th class="py-3.5 px-4 font-semibold">Rata2 Durasi Kerja</th>
+                  <th class="py-3.5 px-4 font-semibold">Rating Rata2</th>
+                  <th class="py-3.5 px-5 font-semibold">Status Rekomendasi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-md-outlineVariant/40">
+                ${state.mechanics.filter(m => m.isVerified).map(m => `
+                  <tr class="hover:bg-md-surfaceContainerLow/40">
+                    <td class="py-3.5 px-5 font-semibold text-md-onSurface">${m.name}</td>
+                    <td class="py-3.5 px-4 font-medium">${m.completedJobsCount}</td>
+                    <td class="py-3.5 px-4 ${m.cancelledJobsCount > 0 ? 'text-md-primary font-semibold' : ''}">${m.cancelledJobsCount}</td>
+                    <td class="py-3.5 px-4">${m.avgArrivalMinutes} menit</td>
+                    <td class="py-3.5 px-4">${m.avgWorkDurationMinutes} menit</td>
+                    <td class="py-3.5 px-4 font-bold text-amber-600">${m.ratingAvg.toFixed(1)} ★ (${m.ratingCount})</td>
+                    <td class="py-3.5 px-5">
+                      ${m.isRecommendedForOnSite
+                        ? '<span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-md-tertiaryContainer text-md-onTertiaryContainer">Direkomendasikan</span>'
+                        : '<span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-gray-100 text-gray-600">Belum Direkomendasikan</span>'}
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Log Rekomendasi On-Site -->
+        <div class="bg-white rounded-[28px] border border-md-outlineVariant/60 overflow-hidden">
+          <div class="p-5 border-b border-md-outlineVariant/50">
+            <h3 class="font-bold text-base text-md-onSurface">Log Rujukan Kontak Layanan On-Site</h3>
+            <p class="text-xs text-md-onSurfaceVariant">Catatan interaksi pelanggan di aplikasi D-Mobil saat menghubungi mekanik rekomendasi (transaksi berlangsung langsung di luar platform).</p>
+          </div>
+          <div class="divide-y divide-md-outlineVariant/40">
+            ${state.onsiteLogs.map(log => `
+              <div class="p-4 px-5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div>
+                  <span class="font-semibold text-md-onSurface">${log.customerName}</span>
+                  <span class="text-md-onSurfaceVariant"> menghubungi </span>
+                  <span class="font-semibold text-md-secondary">${log.mechanicName}</span>
+                  <span class="text-md-onSurfaceVariant"> (${log.categoryName} • jarak ${log.distanceKm} km)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium ${log.method === 'WHATSAPP' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">
+                    ${log.method === 'WHATSAPP' ? 'WhatsApp' : 'Telepon Seluler'}
+                  </span>
+                  <span class="text-md-onSurfaceVariant">${log.time}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /* ==========================================================================
+       9. TAB 6: SETTINGS SISTEM (Lokasi Cabang, Kategori per Cabang, Bagi Hasil)
+       ========================================================================== */
+    function renderSettingsTab() {
+      document.getElementById('page-title').textContent = 'Settings Sistem & Skalabilitas';
+      document.getElementById('page-subtitle').textContent = 'Pengaturan lokasi bengkel (multi-cabang), kategori layanan per cabang, skema bagi hasil, dan whitelist admin.';
+
+      const cfg = state.globalConfig;
+      const isSuperAdmin = state.currentUser.role === 'SUPER_ADMIN';
+
+      return `
+        ${!isSuperAdmin ? `
+          <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 mb-6 flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-amber-600">lock</span>
+            <span>Anda login sebagai <strong>Admin Bengkel</strong>. Beberapa pengaturan global hanya dapat diubah oleh <strong>Super Admin</strong> (ganti peran di menu Logout untuk menguji).</span>
+          </div>
+        ` : ''}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 1. MANAJEMEN LOKASI / CABANG BENGKEL -->
+          <div class="bg-white rounded-[28px] p-6 border border-md-outlineVariant/60 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  <h3 class="font-bold text-base text-md-onSurface">Lokasi / Cabang Bengkel DM</h3>
+                  <p class="text-xs text-md-onSurfaceVariant mt-0.5">Saat ini ${getActiveLocations().length} bengkel aktif. Tiap cabang dapat memiliki daftar kategori layanan tersendiri.</p>
+                </div>
+                <button onclick="openAddLocationModal()" ${!isSuperAdmin ? 'disabled' : ''} class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90 disabled:opacity-40 shrink-0">
+                  <span class="material-symbols-outlined text-base">add_location_alt</span>
+                  <span>Tambah Lokasi</span>
+                </button>
+              </div>
+
+              <div class="space-y-3">
+                ${state.locations.map(loc => {
+                  const catLabels = (loc.supportedCategoryIds || []).map(id => getCategoryNameById(id));
+                  return `
+                    <div class="p-4 rounded-2xl border ${loc.isActive ? 'border-md-outlineVariant bg-md-surfaceContainerLow/50' : 'border-dashed border-gray-300 bg-gray-50 opacity-70'}">
+                      <div class="flex items-start justify-between gap-2">
+                        <div>
+                          <div class="flex flex-wrap items-center gap-1.5">
+                            <h4 class="font-bold text-sm text-md-onSurface">${loc.name}</h4>
+                            ${loc.isPrimary ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-md-secondaryContainer text-md-onSecondaryContainer">Utama</span>' : ''}
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${loc.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-700'}">
+                              ${loc.isActive ? 'Aktif' : 'Nonaktif'}
+                            </span>
+                          </div>
+                          <p class="text-xs text-md-onSurfaceVariant mt-1">${loc.address}</p>
+                          <p class="text-[11px] font-mono text-md-secondary mt-1">Titik Peta: ${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}</p>
+                          <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Telp: ${loc.phone} • Jam: ${loc.operatingHours}</p>
+                          <div class="flex flex-wrap items-center gap-1 mt-2">
+                            <span class="text-[10px] font-semibold text-md-onSurfaceVariant mr-1">Kategori Cabang:</span>
+                            ${catLabels.map(lbl => `<span class="px-2 py-0.5 rounded-md bg-white border border-md-outlineVariant/70 text-[10px] font-semibold text-md-onSurface">${lbl}</span>`).join('')}
+                          </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1.5 shrink-0">
+                          <button onclick="openBranchCategoriesModal('${loc.locationId}')" ${!isSuperAdmin ? 'disabled' : ''} class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white border border-md-outlineVariant hover:bg-md-surfaceContainerHigh text-md-secondary disabled:opacity-40">
+                            Atur Kategori
+                          </button>
+                          <button onclick="toggleLocationActive('${loc.locationId}')" ${!isSuperAdmin ? 'disabled' : ''} class="text-[11px] font-semibold text-md-primary hover:underline disabled:opacity-40">
+                            ${loc.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <p class="text-[11px] text-md-onSurfaceVariant mt-4 pt-3 border-t border-md-outlineVariant/40">
+              * Sistem menjaga minimal <strong>1 lokasi aktif</strong> agar aplikasi pelanggan tidak pernah kosong.
+            </p>
+          </div>
+
+          <!-- 2. MANAJEMEN KATEGORI LAYANAN DINAMIS -->
+          <div class="bg-white rounded-[28px] p-6 border border-md-outlineVariant/60 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  <h3 class="font-bold text-base text-md-onSurface">Master Kategori Layanan</h3>
+                  <p class="text-xs text-md-onSurfaceVariant mt-0.5">Kelola daftar induk kategori layanan yang dapat diaktifkan di masing-masing cabang.</p>
+                </div>
+                <button onclick="openCategoryModal()" ${!isSuperAdmin ? 'disabled' : ''} class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90 disabled:opacity-40 shrink-0">
+                  <span class="material-symbols-outlined text-base">add</span>
+                  <span>Tambah Kategori</span>
+                </button>
+              </div>
+
+              <div class="space-y-2.5">
+                ${state.categories.map(cat => `
+                  <div class="p-3.5 rounded-2xl border ${cat.isActive ? 'border-md-outlineVariant/70 bg-white' : 'border-dashed border-gray-300 bg-gray-50 opacity-65'} flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-sm text-md-onSurface">${cat.name}</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${cat.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-700'}">
+                          ${cat.isActive ? 'Aktif' : 'Nonaktif'}
+                        </span>
+                      </div>
+                      <p class="text-xs text-md-onSurfaceVariant truncate mt-0.5">${cat.description || '-'}</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button onclick="openCategoryModal('${cat.categoryId}')" ${!isSuperAdmin ? 'disabled' : ''} class="p-1.5 rounded-full hover:bg-md-surfaceContainerHigh text-md-onSurfaceVariant disabled:opacity-40" title="Ubah Kategori">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                      </button>
+                      <button onclick="toggleCategoryActive('${cat.categoryId}')" ${!isSuperAdmin ? 'disabled' : ''} class="text-xs font-semibold text-md-primary hover:underline disabled:opacity-40">
+                        ${cat.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <p class="text-[11px] text-md-onSurfaceVariant mt-4 pt-3 border-t border-md-outlineVariant/40">
+              * Perubahan kategori langsung memperbarui pilihan di form Posting Pekerjaan, Booking Pelanggan, dan Profil Keahlian Mekanik.
+            </p>
+          </div>
+
+          <!-- 3. PENGATURAN SKEMA BAGI HASIL DINAMIS (INTERNAL ADMIN) -->
+          <div class="bg-white rounded-[28px] p-6 border border-md-outlineVariant/60">
+            <h3 class="font-bold text-base text-md-onSurface">Skema Rincian Bagi Hasil (Total Wajib 100%)</h3>
+            <p class="text-xs text-md-onSurfaceVariant mt-0.5 mb-4">Kustomisasi label dan persentase pembagian jasa untuk koleksi terisolasi <code class="font-mono">job_financials</code>.</p>
+
+            <form onsubmit="saveRevenueSettings(event)" class="space-y-3">
+              <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Label Item 1</label>
+                  <input type="text" id="cfg-mech-label" value="${cfg.mechanicLabel}" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Persentase (%)</label>
+                  <input type="number" id="cfg-mech-pct" value="${cfg.mechanicPercentage}" min="0" max="100" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs font-bold" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Label Item 2</label>
+                  <input type="text" id="cfg-dm-label" value="${cfg.dmLabel}" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Persentase (%)</label>
+                  <input type="number" id="cfg-dm-pct" value="${cfg.dmPercentage}" min="0" max="100" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs font-bold" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Label Item 3</label>
+                  <input type="text" id="cfg-plat-label" value="${cfg.platformLabel}" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-md-onSurfaceVariant mb-1">Persentase (%)</label>
+                  <input type="number" id="cfg-plat-pct" value="${cfg.platformPercentage}" min="0" max="100" ${!isSuperAdmin ? 'disabled' : ''} class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs font-bold" />
+                </div>
+              </div>
+
+              <div class="pt-2 flex items-center justify-between">
+                <span class="text-xs text-md-onSurfaceVariant">Toleransi Keterlambatan: <strong>${cfg.maxArrivalMinutes} menit</strong></span>
+                <button type="submit" ${!isSuperAdmin ? 'disabled' : ''} class="px-5 py-2.5 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90 disabled:opacity-40">
+                  Simpan Bagi Hasil
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 4. WHITELIST AKUN GOOGLE ADMIN -->
+          <div class="bg-white rounded-[28px] p-6 border border-md-outlineVariant/60">
+            <h3 class="font-bold text-base text-md-onSurface">Whitelist Akun Google Admin</h3>
+            <p class="text-xs text-md-onSurfaceVariant mt-0.5 mb-4">Hanya email Google di bawah ini yang dapat masuk ke Web Admin D-Mobil.</p>
+
+            <div class="space-y-2.5 mb-4">
+              ${state.adminUsers.map(adm => `
+                <div class="p-3 rounded-2xl bg-md-surfaceContainerLow flex items-center justify-between text-xs">
+                  <div>
+                    <p class="font-semibold text-md-onSurface">${adm.name}</p>
+                    <p class="font-mono text-[11px] text-md-onSurfaceVariant">${adm.email}</p>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold ${adm.role === 'SUPER_ADMIN' ? 'bg-md-primaryContainer text-md-onPrimaryContainer' : 'bg-md-secondaryContainer text-md-onSecondaryContainer'}">
+                    ${adm.role}
+                  </span>
+                </div>
+              `).join('')}
+            </div>
+
+            <form onsubmit="addAdminWhitelist(event)" class="flex gap-2">
+              <input type="email" id="new-admin-email" required placeholder="email.staf@example.com" ${!isSuperAdmin ? 'disabled' : ''} class="flex-1 rounded-full border border-md-outline px-4 py-2 text-xs focus:outline-none focus:border-md-primary" />
+              <button type="submit" ${!isSuperAdmin ? 'disabled' : ''} class="px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90 disabled:opacity-40">
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      `;
+    }
+
+    function openBranchCategoriesModal(locationId) {
+      const loc = state.locations.find(l => l.locationId === locationId);
+      if (!loc) return;
+      const activeCats = getActiveCategories();
+
+      document.getElementById('entity-modal-title').textContent = `Kategori Layanan — ${loc.name}`;
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitBranchCategories(event, '${locationId}')" class="space-y-3 text-xs">
+          <p class="text-md-onSurfaceVariant">Pilih kategori layanan yang tersedia di cabang ini (minimal 1 kategori):</p>
+          <div class="space-y-2">
+            ${activeCats.map(cat => {
+              const checked = (loc.supportedCategoryIds || []).includes(cat.categoryId);
+              return `
+                <label class="flex items-start gap-2.5 p-3 rounded-2xl border border-md-outlineVariant bg-md-surfaceContainerLow cursor-pointer">
+                  <input type="checkbox" name="branch-cat-item" value="${cat.categoryId}" ${checked ? 'checked' : ''} class="mt-0.5 rounded text-md-primary" />
+                  <div>
+                    <span class="font-bold text-md-onSurface block">${cat.name}</span>
+                    <span class="text-[11px] text-md-onSurfaceVariant">${cat.description || '-'}</span>
+                  </div>
+                </label>
+              `;
+            }).join('')}
+          </div>
+          <div class="pt-3 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full font-medium text-md-onSurfaceVariant">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full font-semibold bg-md-primary text-white">Simpan Pengaturan Cabang</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function submitBranchCategories(e, locationId) {
+      e.preventDefault();
+      const loc = state.locations.find(l => l.locationId === locationId);
+      if (!loc) return;
+      const selected = Array.from(document.querySelectorAll('input[name="branch-cat-item"]:checked')).map(el => el.value);
+      if (selected.length === 0) {
+        showSnackbar('Minimal 1 kategori layanan harus aktif di cabang ini.', 'warning');
+        return;
+      }
+      loc.supportedCategoryIds = selected;
+      closeEntityModal();
+      renderApp();
+      showSnackbar(`Kategori layanan untuk "${loc.name}" berhasil diperbarui.`);
+    }
+
+    /* Settings Actions */
+    function saveRevenueSettings(e) {
+      e.preventDefault();
+      const mPct = Number(document.getElementById('cfg-mech-pct').value);
+      const dPct = Number(document.getElementById('cfg-dm-pct').value);
+      const pPct = Number(document.getElementById('cfg-plat-pct').value);
+
+      if (mPct + dPct + pPct !== 100) {
+        showSnackbar(`Total persentase harus 100% (Saat ini: ${mPct + dPct + pPct}%).`, 'error');
+        return;
+      }
+
+      state.globalConfig.mechanicLabel = document.getElementById('cfg-mech-label').value.trim();
+      state.globalConfig.mechanicPercentage = mPct;
+      state.globalConfig.dmLabel = document.getElementById('cfg-dm-label').value.trim();
+      state.globalConfig.dmPercentage = dPct;
+      state.globalConfig.platformLabel = document.getElementById('cfg-plat-label').value.trim();
+      state.globalConfig.platformPercentage = pPct;
+
+      renderApp();
+      showSnackbar(`Pengaturan bagi hasil diperbarui (${mPct}% / ${dPct}% / ${pPct}%) untuk pekerjaan baru.`);
+    }
+
+    function addAdminWhitelist(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('new-admin-email');
+      const email = emailInput.value.trim().toLowerCase();
+      if (!email) return;
+      state.adminUsers.push({
+        email,
+        name: email.split('@')[0],
+        role: 'ADMIN_BENGKEL',
+        isActive: true
+      });
+      emailInput.value = '';
+      renderApp();
+      showSnackbar(`Email ${email} berhasil ditambahkan ke daftar akses Admin.`);
+    }
+
+    function toggleLocationActive(locationId) {
+      const target = state.locations.find(l => l.locationId === locationId);
+      if (!target) return;
+      if (target.isActive && getActiveLocations().length <= 1) {
+        showSnackbar('Gagal: Minimal harus selalu terdapat 1 lokasi bengkel aktif!', 'warning');
+        return;
+      }
+      target.isActive = !target.isActive;
+      state.selectedLocationFilter = 'ALL';
+      renderApp();
+      showSnackbar(`Status lokasi "${target.name}" diubah menjadi ${target.isActive ? 'Aktif' : 'Nonaktif'}.`);
+    }
+
+    function toggleCategoryActive(categoryId) {
+      const target = state.categories.find(c => c.categoryId === categoryId);
+      if (!target) return;
+      if (target.isActive && getActiveCategories().length <= 1) {
+        showSnackbar('Gagal: Minimal harus selalu terdapat 1 kategori layanan aktif!', 'warning');
+        return;
+      }
+      target.isActive = !target.isActive;
+      renderApp();
+      showSnackbar(`Kategori "${target.name}" diubah menjadi ${target.isActive ? 'Aktif' : 'Nonaktif'}.`);
+    }
+
+    /* ==========================================================================
+       10. MODALS LOGIC
+       ========================================================================== */
+    function populateJobCustomerSelect(selectedCustId = '') {
+      const select = document.getElementById('job-customer-select');
+      select.innerHTML = `
+        <option value="">-- Pelanggan Walk-In Umum (Tanpa Profil) --</option>
+        ${state.customers.map(c => {
+          const vehCountLabel = c.vehicles.length > 1
+            ? `${c.vehicles.length} Mobil (${c.vehicles.map(v => v.plateNumber).join(', ')})`
+            : (c.vehicles[0] ? `${c.vehicles[0].brand} ${c.vehicles[0].model} (${c.vehicles[0].plateNumber})` : '0 Mobil');
+          return `<option value="${c.customerId}" ${selectedCustId === c.customerId ? 'selected' : ''}>${c.name} — ${c.phone} [${vehCountLabel}]</option>`;
+        }).join('')}
+      `;
+    }
+
+    function handleJobCustomerChange(selectedVehicleIdx = 0) {
+      const custId = document.getElementById('job-customer-select').value;
+      const vehWrapper = document.getElementById('job-customer-vehicle-wrapper');
+      const vehSelect = document.getElementById('job-customer-vehicle-select');
+
+      if (!custId) {
+        vehWrapper.classList.add('hidden');
+        return;
+      }
+
+      const cust = state.customers.find(c => c.customerId === custId);
+      if (!cust) {
+        vehWrapper.classList.add('hidden');
+        return;
+      }
+
+      vehWrapper.classList.remove('hidden');
+      document.getElementById('job-customer-veh-count').textContent = cust.vehicles.length;
+      document.getElementById('job-add-veh-inline-btn').onclick = () => openAddVehicleModal(cust.customerId, true);
+
+      vehSelect.innerHTML = cust.vehicles.map((v, i) => `
+        <option value="${i}" ${i === selectedVehicleIdx ? 'selected' : ''}>
+          ${v.plateNumber} — ${v.brand} ${v.model} (${v.year})
+        </option>
+      `).join('');
+
+      handleJobVehicleSelectChange();
+    }
+
+    function handleJobVehicleSelectChange() {
+      const custId = document.getElementById('job-customer-select').value;
+      const cust = state.customers.find(c => c.customerId === custId);
+      if (!cust) return;
+      const idx = Number(document.getElementById('job-customer-vehicle-select').value) || 0;
+      const v = cust.vehicles[idx];
+      if (v) {
+        document.getElementById('job-vehicle-input').value = `${v.brand} ${v.model} ${v.year} (${v.plateNumber})`;
+      }
+    }
+
+    function openCreateJobModal() {
+      document.getElementById('job-source-booking-id').value = '';
+      document.getElementById('job-source-label').textContent = 'Pelanggan Datang Langsung (Walk-In)';
+      document.getElementById('job-title-input').value = '';
+      document.getElementById('job-board-summary-input').value = '';
+      document.getElementById('job-vehicle-input').value = '';
+      document.getElementById('job-desc-input').value = '';
+      document.getElementById('job-price-input').value = 500000;
+
+      populateJobCustomerSelect('');
+      handleJobCustomerChange();
+      populateCreateJobFormSelects();
+      updateCreateJobSplitPreview();
+      document.getElementById('create-job-modal').classList.remove('hidden');
+    }
+
+    function openCreateJobFromBooking(bookingId) {
+      const bk = state.bookings.find(b => b.bookingId === bookingId);
+      if (!bk) return;
+
+      document.getElementById('job-source-booking-id').value = bk.bookingId;
+      document.getElementById('job-source-label').textContent = `Booking Aplikasi (${bk.bookingId} — ${bk.customerName})`;
+      document.getElementById('job-title-input').value = `Servis ${bk.categoryName}`;
+      document.getElementById('job-board-summary-input').value = '';
+      document.getElementById('job-desc-input').value = bk.complaint;
+      document.getElementById('job-price-input').value = 550000;
+
+      populateJobCustomerSelect(bk.customerId || '');
+      handleJobCustomerChange(0);
+      document.getElementById('job-vehicle-input').value = bk.vehicleInfo;
+      populateCreateJobFormSelects(bk.locationId, bk.categoryId);
+      updateCreateJobSplitPreview();
+      document.getElementById('create-job-modal').classList.remove('hidden');
+    }
+
+    function populateCreateJobFormSelects(selectedLocId = null, selectedCatId = null) {
+      const activeLocs = getActiveLocations();
+      const locContainer = document.getElementById('job-location-field');
+
+      if (activeLocs.length === 1) {
+        locContainer.innerHTML = `
+          <input type="hidden" id="job-location-select" value="${activeLocs[0].locationId}" />
+          <div class="p-3 rounded-xl bg-md-surfaceContainerLow border border-md-outlineVariant/60 text-xs flex items-center justify-between">
+            <span class="text-md-onSurfaceVariant">Lokasi Bengkel Tujuan:</span>
+            <strong class="text-md-onSurface">${activeLocs[0].name}</strong>
+          </div>
+        `;
+      } else {
+        locContainer.innerHTML = `
+          <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Pilih Cabang Lokasi Bengkel *</label>
+          <select id="job-location-select" onchange="updateJobCategoriesBySelectedBranch()" required class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary">
+            ${activeLocs.map(l => `<option value="${l.locationId}" ${selectedLocId === l.locationId ? 'selected' : ''}>${l.name}</option>`).join('')}
+          </select>
+        `;
+      }
+
+      updateJobCategoriesBySelectedBranch(selectedCatId);
+    }
+
+    function updateJobCategoriesBySelectedBranch(selectedCatId = null) {
+      const locId = document.getElementById('job-location-select').value;
+      const locObj = state.locations.find(l => l.locationId === locId) || getActiveLocations()[0];
+      const allowedIds = locObj && locObj.supportedCategoryIds ? locObj.supportedCategoryIds : null;
+      const activeCats = getActiveCategories().filter(c => !allowedIds || allowedIds.includes(c.categoryId));
+
+      const catSelect = document.getElementById('job-category-select');
+      catSelect.innerHTML = activeCats.map(c => `<option value="${c.categoryId}" ${selectedCatId === c.categoryId ? 'selected' : ''}>${c.name}</option>`).join('');
+    }
+
+    function updateCreateJobSplitPreview() {
+      const price = Number(document.getElementById('job-price-input').value) || 0;
+      const cfg = state.globalConfig;
+      const mAmt = Math.round(price * cfg.mechanicPercentage / 100);
+      const dAmt = Math.round(price * cfg.dmPercentage / 100);
+      const pAmt = price - mAmt - dAmt;
+
+      document.getElementById('create-job-split-preview').innerHTML = `
+        <div class="p-2 rounded-xl bg-emerald-50">
+          <span class="text-[11px] text-emerald-800 block">${cfg.mechanicLabel} (${cfg.mechanicPercentage}%)</span>
+          <strong class="text-xs text-emerald-900">${formatRupiah(mAmt)}</strong>
+        </div>
+        <div class="p-2 rounded-xl bg-blue-50">
+          <span class="text-[11px] text-blue-800 block">${cfg.dmLabel} (${cfg.dmPercentage}%)</span>
+          <strong class="text-xs text-blue-900">${formatRupiah(dAmt)}</strong>
+        </div>
+        <div class="p-2 rounded-xl bg-gray-100">
+          <span class="text-[11px] text-gray-700 block">${cfg.platformLabel} (${cfg.platformPercentage}%)</span>
+          <strong class="text-xs text-gray-900">${formatRupiah(pAmt)}</strong>
+        </div>
+      `;
+    }
+
+    function closeCreateJobModal() {
+      document.getElementById('create-job-modal').classList.add('hidden');
+    }
+
+    function submitCreateJob(e) {
+      e.preventDefault();
+      const bookingId = document.getElementById('job-source-booking-id').value || null;
+      const selectedCustId = document.getElementById('job-customer-select').value || null;
+      const custObj = selectedCustId ? state.customers.find(c => c.customerId === selectedCustId) : null;
+      if (custObj) {
+        custObj.totalVisits += 1;
+        custObj.lastVisit = 'Baru saja';
+      }
+
+      const locationId = document.getElementById('job-location-select').value;
+      const locObj = state.locations.find(l => l.locationId === locationId) || getActiveLocations()[0];
+      const categoryId = document.getElementById('job-category-select').value;
+      const categoryName = getCategoryNameById(categoryId);
+      const price = Number(document.getElementById('job-price-input').value);
+      const cfg = state.globalConfig;
+
+      const mAmt = Math.round(price * cfg.mechanicPercentage / 100);
+      const dAmt = Math.round(price * cfg.dmPercentage / 100);
+      const pAmt = price - mAmt - dAmt;
+
+      const newJobId = `JOB-${106 + state.jobs.length}`;
+
+      state.jobs.unshift({
+        jobId: newJobId,
+        locationId: locObj.locationId,
+        locationName: locObj.name,
+        sourceType: bookingId ? 'APP_BOOKING' : 'WALK_IN',
+        bookingId,
+        customerId: custObj ? custObj.customerId : null,
+        customerName: custObj ? custObj.name : 'Pelanggan Walk-In Umum',
+        title: document.getElementById('job-title-input').value.trim(),
+        categoryId,
+        categoryName,
+        vehicleSummary: document.getElementById('job-vehicle-input').value.trim(),
+        description: document.getElementById('job-desc-input').value.trim(),
+        boardSummary: document.getElementById('job-board-summary-input').value.trim(),
+        status: 'OPEN',
+        assignedMechanicId: null,
+        assignedMechanicName: null,
+        assignedMechanicPhone: null,
+        totalPrice: price,
+        revenueSplit: {
+          mechanicLabel: cfg.mechanicLabel, mechanicPercent: cfg.mechanicPercentage, mechanicAmount: mAmt,
+          dmLabel: cfg.dmLabel, dmPercent: cfg.dmPercentage, dmAmount: dAmt,
+          platformLabel: cfg.platformLabel, platformPercent: cfg.platformPercentage, platformAmount: pAmt
+        },
+        createdAt: 'Baru saja',
+        acceptedAt: null,
+        startedAt: null,
+        completedAt: null,
+        arrivalDurationMinutes: null,
+        workDurationMinutes: null,
+        isReviewed: false
+      });
+
+      if (bookingId) {
+        const bk = state.bookings.find(b => b.bookingId === bookingId);
+        if (bk) {
+          bk.linkedJobId = newJobId;
+          bk.status = 'CONVERTED_TO_JOB';
+        }
+      }
+
+      closeCreateJobModal();
+      state.activeTab = 'operations';
+      renderApp();
+      showSnackbar(`Pekerjaan ${newJobId} diposting. Rincian split tersimpan terpisah di job_financials.`);
+    }
+
+    /* Document Preview Modal */
+    function openDocPreviewModal(uid) {
+      const m = state.mechanics.find(item => item.uid === uid);
+      if (!m) return;
+
+      document.getElementById('doc-modal-title').textContent = `Berkas Verifikasi — ${m.name}`;
+      document.getElementById('doc-modal-body').innerHTML = `
+        <div class="space-y-2">
+          <span class="text-xs font-bold block">1. Foto KTP (Wajib • Private Bucket)</span>
+          <div class="p-6 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-xs text-gray-600">
+            <span class="material-symbols-outlined text-4xl block">badge</span>
+            <strong class="block mt-1">Contoh tempat foto KTP</strong>
+            Dokumen identitas tidak ditampilkan pada prototipe.
+          </div>
+          <p class="text-[11px] text-gray-600">${m.ktpNote}</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-md-onSurface">2. Sertifikat Keahlian (Opsional)</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-200 text-gray-700">${m.hasCertificate ? 'Terlampir' : 'Tidak Diunggah'}</span>
+          </div>
+          ${m.hasCertificate ? `
+            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 flex items-center gap-3">
+              <span class="material-symbols-outlined text-3xl text-amber-600">workspace_premium</span>
+              <div>
+                <p class="font-bold">${m.certNote}</p>
+                <p class="text-[11px] text-amber-800 mt-0.5">Lampiran sertifikat keahlian resmi mitra mekanik.</p>
+              </div>
+            </div>
+          ` : `
+            <p class="text-xs text-md-onSurfaceVariant italic">Mitra mekanik tidak melampirkan sertifikat opsional saat pendaftaran.</p>
+          `}
+        </div>
+      `;
+
+      document.getElementById('doc-modal-footer').innerHTML = `
+        <button onclick="closeDocPreviewModal()" class="px-4 py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant hover:bg-md-surfaceContainerHigh">Tutup</button>
+        ${!m.isVerified ? `
+          <button onclick="verifyMechanic('${m.uid}')" class="px-5 py-2 rounded-full text-xs font-semibold bg-md-tertiary text-white hover:bg-md-tertiary/90">
+            Setujui & Verifikasi Mitra
+          </button>
+        ` : ''}
+      `;
+
+      document.getElementById('doc-preview-modal').classList.remove('hidden');
+    }
+
+    function closeDocPreviewModal() {
+      document.getElementById('doc-preview-modal').classList.add('hidden');
+    }
+
+    /* Add Location & Add/Edit Category Modals (Settings) */
+    function openAddLocationModal() {
+      state.draftPinCoords = { lat: -2.98179, lng: 104.76169, xPct: 49.5, yPct: 54, picked: false };
+      const activeCats = getActiveCategories();
+      document.getElementById('entity-modal-title').textContent = 'Tambah Lokasi / Cabang Bengkel Baru';
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitAddLocation(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Nama Lokasi / Cabang *</label>
+            <input type="text" id="loc-name" required placeholder="Contoh: Dokter Mobil - Cabang Jakabaring" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Alamat Lengkap (Tampilan Teks) *</label>
+            <textarea id="loc-address" rows="2" required placeholder="Jl. Gubernur H. Bastari No. 12, Palembang..." class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm"></textarea>
+          </div>
+
+          <!-- Tombol Ambil Titik Lokasi di Peta -->
+          <div class="p-3.5 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div>
+                <span class="block text-xs font-bold text-md-onSurface">Titik Koordinat Bengkel di Peta *</span>
+                <span id="picked-coords-label" class="text-[11px] font-mono text-md-onSurfaceVariant">Belum ditentukan — klik tombol atau klik peta</span>
+              </div>
+              <button type="button" onclick="toggleLocationMapPicker()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90 shrink-0">
+                <span class="material-symbols-outlined text-sm">add_location</span>
+                <span>Ambil Lokasi di Peta</span>
+              </button>
+            </div>
+
+            <div id="location-picker-map-box" class="hidden mt-2.5">
+              <div onclick="handleMapPinClick(event)" id="picker-map-canvas" class="relative h-48 w-full rounded-xl bg-[#F2EFE9] border border-gray-300 overflow-hidden cursor-crosshair select-none shadow-inner">
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 220" preserveAspectRatio="none">
+                  <rect width="400" height="220" fill="#F2EFE9" />
+                  <path d="M 339 0 C 331 36, 325 66, 327 98 C 329 127, 341 153, 368 182 L 400 211 L 400 198 L 375 175 C 350 148, 339 123, 337 96 C 335 65, 341 35, 349 0 Z" fill="#9CCCF4" />
+                  <path d="M 19 0 L 66 82 L 98 139 L 148 220" fill="none" stroke="#CBD5E1" stroke-width="10" stroke-linecap="round"/>
+                  <path d="M 0 175 L 98 139 L 198 119 L 278 88 L 330 65" fill="none" stroke="#F3BC3C" stroke-width="7.5" stroke-linecap="round"/>
+                </svg>
+
+                <div id="picker-pin-marker" class="absolute transform -translate-x-1/2 -translate-y-full transition-all duration-150 pointer-events-none" style="left: 49.5%; top: 54%;">
+                  <div class="px-2 py-0.5 rounded bg-[#C5221F] text-white text-[9px] font-bold whitespace-nowrap mb-0.5 shadow">
+                    Titik Lokasi Bengkel
+                  </div>
+                  <span class="material-symbols-outlined text-3xl text-[#EA4335] icon-filled drop-shadow block text-center leading-none">location_on</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Kategori Layanan Aktif di Cabang Ini *</label>
+            <div class="flex flex-wrap gap-2">
+              ${activeCats.map(cat => `
+                <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-md-outlineVariant bg-md-surfaceContainerLow text-xs cursor-pointer">
+                  <input type="checkbox" name="new-loc-cat" value="${cat.categoryId}" checked class="rounded text-md-primary" />
+                  <span>${cat.name}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">No. Telepon / WA *</label>
+              <input type="text" id="loc-phone" required value="08XX-XXXX-0010" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Jam Operasional *</label>
+              <input type="text" id="loc-hours" required value="08:00 - 17:00 WIB" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
+            </div>
+          </div>
+          <div class="pt-3 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full text-xs font-semibold bg-md-primary text-white">Simpan Lokasi</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function toggleLocationMapPicker() {
+      const box = document.getElementById('location-picker-map-box');
+      box.classList.remove('hidden');
+      if (!state.draftPinCoords.picked) {
+        state.draftPinCoords.picked = true;
+        document.getElementById('picked-coords-label').innerHTML = `<span class="text-md-tertiary font-semibold">Lat: ${state.draftPinCoords.lat.toFixed(5)}, Lng: ${state.draftPinCoords.lng.toFixed(5)}</span>`;
+      }
+    }
+
+    function handleMapPinClick(event) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const xPct = Math.max(8, Math.min(92, ((event.clientX - rect.left) / rect.width) * 100));
+      const yPct = Math.max(15, Math.min(92, ((event.clientY - rect.top) / rect.height) * 100));
+
+      const lat = +(-2.97100 - (yPct / 100) * 0.018).toFixed(5);
+      const lng = +(104.74800 + (xPct / 100) * 0.020).toFixed(5);
+
+      state.draftPinCoords = { lat, lng, xPct, yPct, picked: true };
+
+      const marker = document.getElementById('picker-pin-marker');
+      marker.style.left = xPct + '%';
+      marker.style.top = yPct + '%';
+
+      document.getElementById('picked-coords-label').innerHTML = `<span class="text-md-tertiary font-semibold">Lat: ${lat}, Lng: ${lng} (Titik Terpilih)</span>`;
+    }
+
+    function submitAddLocation(e) {
+      e.preventDefault();
+      if (!state.draftPinCoords.picked) {
+        toggleLocationMapPicker();
+        showSnackbar('Silakan klik titik lokasi bengkel pada peta terlebih dahulu.', 'location_on');
+        return;
+      }
+      const selectedCats = Array.from(document.querySelectorAll('input[name="new-loc-cat"]:checked')).map(el => el.value);
+      if (selectedCats.length === 0) {
+        showSnackbar('Pilih minimal 1 kategori layanan untuk cabang ini.', 'warning');
+        return;
+      }
+      const name = document.getElementById('loc-name').value.trim();
+      state.locations.push({
+        locationId: 'dm_cabang_' + (state.locations.length + 1),
+        name,
+        address: document.getElementById('loc-address').value.trim(),
+        lat: state.draftPinCoords.lat,
+        lng: state.draftPinCoords.lng,
+        phone: document.getElementById('loc-phone').value.trim(),
+        operatingHours: document.getElementById('loc-hours').value.trim(),
+        supportedCategoryIds: selectedCats,
+        isPrimary: false,
+        isActive: true
+      });
+      closeEntityModal();
+      renderApp();
+      showSnackbar(`Cabang "${name}" berhasil disimpan dengan titik koordinat peta (${state.draftPinCoords.lat}, ${state.draftPinCoords.lng}).`);
+    }
+
+    function openCategoryModal(categoryId = null) {
+      const existing = categoryId ? state.categories.find(c => c.categoryId === categoryId) : null;
+      document.getElementById('entity-modal-title').textContent = existing ? 'Ubah Kategori Layanan' : 'Tambah Kategori Layanan Baru';
+      document.getElementById('entity-modal-body').innerHTML = `
+        <form onsubmit="submitCategoryForm(event, '${categoryId || ''}')" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Nama Kategori Layanan *</label>
+            <input type="text" id="cat-name" required value="${existing ? existing.name : ''}" placeholder="Contoh: Transmisi Matic / Body Repair" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Deskripsi Cakupan Layanan</label>
+            <textarea id="cat-desc" rows="2" placeholder="Penjelasan singkat jenis perbaikan..." class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm">${existing ? (existing.description || '') : ''}</textarea>
+          </div>
+          <div class="pt-3 flex justify-end gap-2">
+            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full text-xs font-medium text-md-onSurfaceVariant">Batal</button>
+            <button type="submit" class="px-5 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white">Simpan Kategori</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('entity-modal').classList.remove('hidden');
+    }
+
+    function submitCategoryForm(e, categoryId) {
+      e.preventDefault();
+      const name = document.getElementById('cat-name').value.trim();
+      const description = document.getElementById('cat-desc').value.trim();
+
+      if (categoryId) {
+        const cat = state.categories.find(c => c.categoryId === categoryId);
+        if (cat) {
+          cat.name = name;
+          cat.description = description;
+        }
+        showSnackbar(`Kategori diperbarui menjadi "${name}". Data historis tetap aman menggunakan snapshot nama.`);
+      } else {
+        const newCatId = name.toLowerCase().replace(/[^a-z0-9]+/g, '_') + '_' + (state.categories.length + 1);
+        state.categories.push({
+          categoryId: newCatId,
+          name,
+          description,
+          sortOrder: state.categories.length + 1,
+          isActive: true
+        });
+        state.locations.forEach(l => {
+          if (l.supportedCategoryIds) l.supportedCategoryIds.push(newCatId);
+        });
+        showSnackbar(`Kategori baru "${name}" ditambahkan & diaktifkan di cabang bengkel.`);
+      }
+
+      closeEntityModal();
+      renderApp();
+    }
+
+    function closeEntityModal() {
+      document.getElementById('entity-modal').classList.add('hidden');
+    }
+
+    /* ==========================================================================
+       11. MAIN RENDER ORCHESTRATOR
+       ========================================================================== */
+    function renderApp() {
+      renderNavigation();
+      renderHeaderLocationIndicator();
+
+      const content = document.getElementById('page-content');
+      if (state.activeTab === 'operations') {
+        content.innerHTML = renderOperationsTab();
+      } else if (state.activeTab === 'bookings') {
+        content.innerHTML = renderBookingsTab();
+      } else if (state.activeTab === 'customers') {
+        content.innerHTML = renderCustomersTab();
+      } else if (state.activeTab === 'mechanics') {
+        content.innerHTML = renderMechanicsTab();
+      } else if (state.activeTab === 'reports') {
+        content.innerHTML = renderReportsTab();
+      } else if (state.activeTab === 'settings') {
+        content.innerHTML = renderSettingsTab();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Starts on Google Sign-In screen by default
+    });
+  </script>
+<div style="position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:40;background:#111827;color:#fff;font:600 11px sans-serif;padding:7px 12px;border-radius:999px;white-space:nowrap;opacity:.92"><a href="index.html" style="color:#93c5fd">&#8592; Menu</a> &middot; Prototipe, data contoh</div>
+</body>
+</html>

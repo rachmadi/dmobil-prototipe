@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D-Mobil Pelanggan v2 — Desain Konsumen Otomotif (Material Design 3)</title>
+  <!-- Favicon SVG Logo Dokter Mobil -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23FFFFFF' stroke='%23E5E7EB' stroke-width='4'/%3E%3Cpath fill='%23E31E24' fill-rule='evenodd' d='M25 18 H53 C72 18 84 31 84 50 C84 69 72 82 53 82 H25 Z M52 32 C41 32 33 40 33 50 C33 57.5 37.2 64 43.5 66.8 L43.5 55.5 C40.5 53.6 38.8 50.2 39.2 46.5 C39.7 41.8 43.2 38.2 47.8 37.5 L47.8 44.5 L52 47.2 L56.2 44.5 L56.2 37.5 C60.8 38.2 64.3 41.8 64.8 46.5 C65.2 50.2 63.5 53.6 60.5 55.5 L60.5 66.8 C66.8 64 71 57.5 71 50 C71 40 63 32 52 32 Z'/%3E%3C/svg%3E" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter + Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            md: {
+              primary: '#D32F2F',
+              onPrimary: '#FFFFFF',
+              primaryContainer: '#FFEBEE',
+              onPrimaryContainer: '#5F1414',
+              secondary: '#1B365D',
+              onSecondary: '#FFFFFF',
+              secondaryContainer: '#E3ECF8',
+              onSecondaryContainer: '#0F2342',
+              tertiary: '#007953',
+              tertiaryContainer: '#DCFCE7',
+              onTertiaryContainer: '#052E16',
+              surface: '#F8F9FB',
+              surfaceContainerLow: '#FFFFFF',
+              surfaceContainer: '#F1F4F8',
+              surfaceContainerHigh: '#E8EDF3',
+              surfaceContainerHighest: '#DCE3EC',
+              outline: '#74777F',
+              outlineVariant: '#D8DEE6',
+              onSurface: '#181C22',
+              onSurfaceVariant: '#4A515E',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .icon-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .m3-transition {
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 font-sans antialiased">
+
+  <!-- ==================== SIMULATOR CONTROL BAR (OUTSIDE PHONE) ==================== -->
+  <div class="w-full max-w-[360px] mb-2.5 flex flex-wrap items-center justify-between gap-2 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-2xl text-xs text-slate-200">
+    <div class="flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+      <span class="font-semibold text-[11px]">Pelanggan v2 • Consumer UI</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button onclick="simulateAdminConfirmBooking()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-md-secondary hover:bg-blue-800 text-white font-semibold text-[11px] shadow-2xs transition active:scale-95" title="Simulasi Admin mengonfirmasi booking & menyelesaikan servis">
+        <span class="material-symbols-outlined text-xs">check_circle</span>
+        <span>Simulasi Admin</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ANDROID DEVICE FRAME (TRUE 360x780 PROPORTION) ==================== -->
+  <div style="width: 356px; height: 760px;" class="relative bg-gradient-to-b from-[#2B2F38] via-[#181A20] to-[#262932] rounded-[46px] p-[9px] shadow-[0_28px_70px_-15px_rgba(0,0,0,0.9),inset_0_0_0_1.5px_rgba(255,255,255,0.14)] flex flex-col select-none shrink-0">
+
+    <!-- Ear Speaker Slit -->
+    <div class="absolute top-[5px] left-1/2 -translate-x-1/2 w-14 h-[3px] rounded-full bg-[#0B0C0F] border-b border-white/10 z-50"></div>
+
+    <!-- Physical Side Buttons -->
+    <div class="hidden sm:block absolute -right-[4px] top-[22%] w-[3.5px] h-11 bg-gradient-to-b from-slate-500 to-slate-700 rounded-r-sm shadow"></div>
+    <div class="hidden sm:block absolute -right-[4px] top-[34%] w-[3.5px] h-20 bg-gradient-to-b from-slate-500 to-slate-700 rounded-r-sm shadow"></div>
+
+    <!-- Inner Android Viewport -->
+    <div class="relative w-full h-full bg-md-surface rounded-[36px] overflow-hidden flex flex-col text-md-onSurface ring-1 ring-black">
+
+      <!-- ANDROID SYSTEM STATUS BAR -->
+      <div id="status-bar" class="relative z-40 h-8 px-5 pt-1 bg-[#162844] text-white flex items-center justify-between text-[11px] font-semibold shrink-0 transition-colors">
+        <div class="flex items-center gap-1.5">
+          <span>14:15</span>
+        </div>
+
+        <!-- Camera Punch-Hole -->
+        <div class="w-3 h-3 rounded-full bg-[#090A0D] ring-1 ring-slate-700/80 flex items-center justify-center">
+          <div class="w-1 h-1 rounded-full bg-[#1C2841]"></div>
+        </div>
+
+        <!-- System Icons -->
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px]">wifi</span>
+          <span class="material-symbols-outlined text-[13px]">signal_cellular_alt</span>
+          <span class="material-symbols-outlined text-[14px] rotate-90">battery_5_bar</span>
+        </div>
+      </div>
+
+      <!-- ==================== APP CONTENT VIEWPORT ==================== -->
+      <div id="app-screen" class="flex-1 overflow-y-auto no-scrollbar flex flex-col"></div>
+
+      <!-- ==================== MATERIAL DESIGN 3 BOTTOM NAVIGATION BAR ==================== -->
+      <nav id="bottom-nav" class="hidden bg-white border-t border-md-outlineVariant/70 px-2 py-1.5 grid grid-cols-4 shrink-0"></nav>
+
+      <!-- ANDROID GESTURE NAVIGATION BAR -->
+      <div class="h-5 bg-white flex items-center justify-center shrink-0">
+        <div class="w-28 h-1 rounded-full bg-md-onSurface/25"></div>
+      </div>
+
+      <!-- ==================== IN-APP MODAL / BOTTOM SHEET ==================== -->
+      <div id="mobile-sheet-backdrop" onclick="closeMobileSheet()" class="hidden absolute inset-0 z-30 bg-black/50 backdrop-blur-[1px] flex items-end">
+        <div onclick="event.stopPropagation()" id="mobile-sheet-content" class="w-full bg-white rounded-t-[28px] p-5 pb-7 shadow-2xl max-h-[86%] overflow-y-auto no-scrollbar"></div>
+      </div>
+
+      <!-- ==================== MOBILE SNACKBAR ==================== -->
+      <div id="mobile-snackbar" class="hidden absolute bottom-20 inset-x-4 z-40 bg-[#1F242D] text-white px-4 py-3 rounded-2xl shadow-lg flex items-center gap-2.5 text-xs">
+        <span id="mobile-sb-icon" class="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
+        <span id="mobile-sb-text" class="flex-1 leading-snug">Notifikasi</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    /* ==========================================================================
+       1. DUMMY DATA STATE (APLIKASI PELANGGAN D-MOBIL v2)
+       ========================================================================== */
+    const state = {
+      isLoggedIn: false,
+      activeTab: 'beranda', // beranda | onsite | garasi | aktivitas
+      selectedVehicleIndex: 0,
+      selectedLocationIndex: 0,
+      selectedOnSiteCategory: 'ALL',
+
+      customer: {
+        customerId: 'cust_01',
+        name: 'Andi Saputra',
+        phone: '08XX-XXXX-0001',
+        email: 'andi.saputra@example.com',
+        vehicles: [
+          { id: 'veh_1', plateNumber: 'BG 1892 XX', brand: 'Toyota', model: 'Innova Reborn', year: '2021', color: 'Hitam', typeTag: 'MPV' },
+          { id: 'veh_2', plateNumber: 'BG 1102 XX', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020', color: 'Putih', typeTag: 'SUV' }
+        ]
+      },
+
+      locations: [
+        {
+          locationId: 'dm_palembang',
+          name: 'Dokter Mobil Palembang',
+          subtitle: 'Spesialis Service AC & Tune Up',
+          address: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Kec. Ilir Tim. I, Kota Palembang',
+          phone: '0851-1137-3307',
+          operatingHours: '09:00 - 17:00 WIB',
+          distanceKm: 2.3
+        }
+      ],
+
+      categories: [
+        { categoryId: 'ac', name: 'AC Mobil', shortName: 'AC', icon: 'ac_unit', color: 'bg-sky-50 text-sky-700 border-sky-200', desc: 'Cuci AC tanpa bongkar, isi freon & kompresor' },
+        { categoryId: 'mesin', name: 'Tune Up', shortName: 'Mesin', icon: 'engineering', color: 'bg-red-50 text-red-700 border-red-200', desc: 'Tune up, gurah mesin & sistem injeksi' },
+        { categoryId: 'kaki_kaki', name: 'Kaki-kaki', shortName: 'Kaki-kaki', icon: 'tire_repair', color: 'bg-amber-50 text-amber-700 border-amber-200', desc: 'Shockbreaker, rack steer, tie rod & spooring' },
+        { categoryId: 'elektrikal', name: 'Elektrikal', shortName: 'Elektrikal', icon: 'bolt', color: 'bg-indigo-50 text-indigo-700 border-indigo-200', desc: 'Scan ECU, alternator, starter & kelistrikan' }
+      ],
+
+      recommendedMechanics: [
+        {
+          uid: 'mech_01',
+          name: 'Agus Setiawan',
+          initials: 'AS',
+          phone: '08XX-XXXX-0002',
+          whatsappNumber: '62-8XX-XXXX-0002',
+          skillIds: ['ac', 'elektrikal'],
+          skillNames: ['AC', 'Elektrikal'],
+          hasCertificate: true,
+          certTitle: 'Sertifikat Teknisi AC Otomotif BNSP',
+          ratingAvg: 4.9,
+          ratingCount: 28,
+          completedJobsCount: 31,
+          distanceKm: 2.4,
+          bio: 'Spesialis diagnosa kelistrikan & perbaikan AC mobil Jepang maupun Eropa langsung di lokasi Anda.'
+        },
+        {
+          uid: 'mech_02',
+          name: 'Dedi Kurniawan',
+          initials: 'DK',
+          phone: '08XX-XXXX-0003',
+          whatsappNumber: '62-8XX-XXXX-0003',
+          skillIds: ['mesin', 'kaki_kaki'],
+          skillNames: ['Mesin', 'Kaki-kaki'],
+          hasCertificate: true,
+          certTitle: 'Sertifikat Mekanik Engine & Chassis',
+          ratingAvg: 4.7,
+          ratingCount: 19,
+          completedJobsCount: 21,
+          distanceKm: 3.8,
+          bio: 'Penanganan darurat mogok di jalan, tune up mesin, serta pengecekan kaki-kaki di rumah/kantor.'
+        }
+      ],
+
+      bookingsAndServices: [
+        {
+          id: 'BK-2026-081',
+          type: 'BOOKING',
+          locationName: 'Dokter Mobil Palembang',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          categoryName: 'AC',
+          complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
+          scheduledDate: 'Hari Ini, 15:00 WIB',
+          status: 'PENDING',
+          cancelDeadlineMs: 0, // Sudah melewati 1 menit
+          adminResponseNote: '',
+          proposedSchedule: null,
+          mechanicName: null,
+          totalPrice: null,
+          isReviewed: false,
+          rating: 0,
+          reviewComment: ''
+        },
+        {
+          id: 'JOB-104',
+          type: 'SERVICE',
+          locationName: 'Dokter Mobil Palembang',
+          vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          categoryName: 'AC',
+          complaint: 'Ganti Evaporator & Flushing AC Total.',
+          scheduledDate: 'Hari Ini, 13:10 WIB',
+          status: 'COMPLETED',
+          cancelDeadlineMs: 0,
+          mechanicName: 'Agus Setiawan',
+          totalPrice: 850000,
+          isReviewed: false,
+          rating: 0,
+          reviewComment: ''
+        },
+        {
+          id: 'JOB-089',
+          type: 'SERVICE',
+          locationName: 'Dokter Mobil Palembang',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          categoryName: 'Mesin',
+          complaint: 'Tune Up Ruang Bakar & Penggantian Oli Mesin.',
+          scheduledDate: '12 Okt 2026',
+          status: 'COMPLETED',
+          cancelDeadlineMs: 0,
+          mechanicName: 'Dedi Kurniawan',
+          totalPrice: 500000,
+          isReviewed: true,
+          rating: 5,
+          reviewComment: 'Tarikan mobil kembali enteng seperti baru, bengkel bersih dan ramah.'
+        }
+      ],
+
+      onsiteContactLogs: []
+    };
+
+    /* ==========================================================================
+       2. HELPER FUNCTIONS & 1-MINUTE CANCEL TIMER
+       ========================================================================== */
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function showMobileSnackbar(msg, icon = 'check_circle') {
+      const sb = document.getElementById('mobile-snackbar');
+      document.getElementById('mobile-sb-text').textContent = msg;
+      document.getElementById('mobile-sb-icon').textContent = icon;
+      sb.classList.remove('hidden');
+      clearTimeout(window._mobSbTimer);
+      window._mobSbTimer = setTimeout(() => {
+        sb.classList.add('hidden');
+      }, 3200);
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      renderApp();
+    }
+
+    function closeMobileSheet() {
+      document.getElementById('mobile-sheet-backdrop').classList.add('hidden');
+    }
+
+    function getSelectedVehicle() {
+      if (state.customer.vehicles.length === 0) return null;
+      if (state.selectedVehicleIndex >= state.customer.vehicles.length) {
+        state.selectedVehicleIndex = 0;
+      }
+      return state.customer.vehicles[state.selectedVehicleIndex];
+    }
+
+    function getSelectedLocation() {
+      if (state.locations.length === 0) return null;
+      if (state.selectedLocationIndex >= state.locations.length) {
+        state.selectedLocationIndex = 0;
+      }
+      return state.locations[state.selectedLocationIndex];
+    }
+
+    function startCancelCountdownLoop() {
+      if (window._cancelTicker) return;
+      window._cancelTicker = setInterval(() => {
+        const now = Date.now();
+        let hasActiveWindow = false;
+        let expiredJustNow = false;
+
+        state.bookingsAndServices.forEach(item => {
+          if (item.status === 'PENDING' && item.cancelDeadlineMs > 0) {
+            const remSec = Math.ceil((item.cancelDeadlineMs - now) / 1000);
+            if (remSec > 0) {
+              hasActiveWindow = true;
+              const labelEl = document.getElementById(`cancel-countdown-${item.id}`);
+              if (labelEl) {
+                labelEl.textContent = `${remSec}d`;
+              }
+            } else {
+              item.cancelDeadlineMs = 0;
+              expiredJustNow = true;
+            }
+          }
+        });
+
+        if (expiredJustNow && state.activeTab === 'aktivitas') {
+          renderApp();
+        }
+        if (!hasActiveWindow) {
+          clearInterval(window._cancelTicker);
+          window._cancelTicker = null;
+        }
+      }, 1000);
+    }
+
+    function cancelBookingWithinWindow(bookingId) {
+      const item = state.bookingsAndServices.find(b => b.id === bookingId);
+      if (!item || item.status !== 'PENDING') return;
+      if (Date.now() > item.cancelDeadlineMs) {
+        item.cancelDeadlineMs = 0;
+        renderApp();
+        showMobileSnackbar('Batas waktu pembatalan 1 menit telah berakhir.', 'error');
+        return;
+      }
+      item.status = 'CANCELLED';
+      item.cancelDeadlineMs = 0;
+      renderApp();
+      showMobileSnackbar(`Booking ${bookingId} berhasil dibatalkan.`, 'cancel');
+    }
+
+    /* ==========================================================================
+       3. AUTHENTICATION (SIGN IN WITH GOOGLE ONLY)
+       ========================================================================== */
+    function renderCustomerLoginScreen() {
+      return `
+        <div class="flex-1 flex flex-col justify-between p-6 bg-white">
+          <div class="pt-10 text-center">
+            <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white border border-gray-200 shadow-md p-2 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" class="w-full h-full">
+                <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+              </svg>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer text-[10px] font-bold uppercase tracking-wider">D-Mobil Consumer App</span>
+            <h1 class="text-xl font-extrabold text-md-onSurface mt-3 tracking-tight">Rawat Mobil Lebih Praktis</h1>
+            <p class="text-xs text-md-onSurfaceVariant mt-2 leading-relaxed">
+              Booking bengkel Dokter Mobil tanpa antre atau panggil mekanik rekomendasi ke lokasi Anda.
+            </p>
+          </div>
+
+          <div class="my-6">
+            <button onclick="openCustomerGoogleAccountChooser()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-semibold py-3.5 px-5 rounded-full shadow-sm m3-transition active:scale-[0.99] text-xs">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+              </svg>
+              <span>Sign in with Google</span>
+            </button>
+          </div>
+
+          <p class="text-[10px] text-center text-md-onSurfaceVariant leading-normal">
+            Masuk sekali ketuk menggunakan akun Google Anda untuk menyinkronkan garasi mobil & riwayat servis Dokter Mobil.
+          </p>
+        </div>
+      `;
+    }
+
+    function openCustomerGoogleAccountChooser() {
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center justify-center gap-2 mb-1">
+          <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+          </svg>
+          <span class="text-xs font-semibold text-gray-600">Sign in with Google</span>
+        </div>
+        <h3 class="text-base font-bold text-center text-md-onSurface">Pilih Akun</h3>
+        <p class="text-[11px] text-center text-md-onSurfaceVariant mt-0.5 mb-4">untuk melanjutkan ke <strong>D-Mobil</strong></p>
+
+        <div class="divide-y divide-gray-200 border border-gray-200 rounded-2xl overflow-hidden">
+          <button onclick="closeMobileSheet(); handleCustomerGoogleSignIn('EXISTING');" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-md-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">AS</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Andi Saputra</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">andi.saputra@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-100 text-emerald-800 shrink-0">Terdaftar</span>
+          </button>
+
+          <button onclick="closeMobileSheet(); handleCustomerGoogleSignIn('NEW');" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0">RA</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Rizka Amelia</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizka.amelia@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-100 text-blue-800 shrink-0">Akun Baru</span>
+          </button>
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function handleCustomerGoogleSignIn(accountType) {
+      if (accountType === 'EXISTING') {
+        state.customer.name = 'Andi Saputra';
+        state.customer.email = 'andi.saputra@example.com';
+        state.customer.phone = '08XX-XXXX-0001';
+        state.selectedVehicleIndex = 0;
+        state.isLoggedIn = true;
+        state.activeTab = 'beranda';
+        renderApp();
+        showMobileSnackbar(`Selamat datang kembali, ${state.customer.name}`);
+      } else {
+        state.customer.name = 'Rizka Amelia';
+        state.customer.email = 'rizka.amelia@example.com';
+        state.customer.phone = '08XX-XXXX-0004';
+        state.customer.vehicles = [];
+        state.selectedVehicleIndex = 0;
+        state.isLoggedIn = true;
+        state.activeTab = 'beranda';
+        renderApp();
+        openNewCustomerOnboardingSheet();
+      }
+    }
+
+    function openNewCustomerOnboardingSheet() {
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <h3 class="text-base font-bold text-md-onSurface">Lengkapi Profil & Kendaraan</h3>
+        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Selamat datang, <strong>${state.customer.name}</strong>! Daftarkan nomor WhatsApp dan minimal 1 mobil Anda.</p>
+
+        <form onsubmit="submitNewCustomerOnboarding(event)" class="mt-4 space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Nomor WhatsApp Aktif *</label>
+            <input type="text" id="onb-phone" required value="${state.customer.phone}" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor Mobil *</label>
+              <input type="text" id="onb-plate" required placeholder="BG 1520 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
+            </div>
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
+              <input type="text" id="onb-brand" required placeholder="Toyota" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="col-span-2">
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Tipe / Model *</label>
+              <input type="text" id="onb-model" required placeholder="Raize GR Sport" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Tahun *</label>
+              <input type="text" id="onb-year" required value="2023" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 px-5 rounded-full font-bold bg-md-primary text-white shadow-sm mt-2">
+            Simpan & Masuk ke Beranda
+          </button>
+        </form>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function submitNewCustomerOnboarding(e) {
+      e.preventDefault();
+      state.customer.phone = document.getElementById('onb-phone').value.trim();
+      state.customer.vehicles = [{
+        id: 'veh_' + Date.now(),
+        plateNumber: document.getElementById('onb-plate').value.trim().toUpperCase(),
+        brand: document.getElementById('onb-brand').value.trim(),
+        model: document.getElementById('onb-model').value.trim(),
+        year: document.getElementById('onb-year').value.trim(),
+        color: 'Putih',
+        typeTag: 'SUV'
+      }];
+      state.selectedVehicleIndex = 0;
+      closeMobileSheet();
+      renderApp();
+      showMobileSnackbar(`Profil & kendaraan ${state.customer.name} berhasil disimpan!`);
+    }
+
+    function logoutCustomer() {
+      closeMobileSheet();
+      state.isLoggedIn = false;
+      renderApp();
+    }
+
+    /* ==========================================================================
+       4. MATERIAL DESIGN 3 BOTTOM NAVIGATION
+       ========================================================================== */
+    function renderBottomNav() {
+      const nav = document.getElementById('bottom-nav');
+      if (!state.isLoggedIn) {
+        nav.classList.add('hidden');
+        return;
+      }
+      nav.classList.remove('hidden');
+      const unreviewedCount = state.bookingsAndServices.filter(b => b.status === 'COMPLETED' && !b.isReviewed).length;
+      const items = [
+        { id: 'beranda', label: 'Beranda', icon: 'home', badge: 0 },
+        { id: 'onsite', label: 'On-Site', icon: 'person_pin_circle', badge: 0 },
+        { id: 'garasi', label: 'Garasi', icon: 'directions_car', badge: state.customer.vehicles.length },
+        { id: 'aktivitas', label: 'Aktivitas', icon: 'receipt_long', badge: unreviewedCount }
+      ];
+
+      nav.innerHTML = items.map(item => {
+        const isActive = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')" class="flex flex-col items-center justify-center py-1 gap-0.5 relative">
+            <div class="relative px-4 py-1 rounded-full m3-transition ${isActive ? 'bg-md-primaryContainer text-md-primary' : 'text-md-onSurfaceVariant'}">
+              <span class="material-symbols-outlined text-[20px] ${isActive ? 'icon-filled' : ''}">${item.icon}</span>
+              ${item.badge > 0 ? `<span class="absolute -top-0.5 right-1.5 min-w-[15px] h-[15px] px-1 rounded-full bg-md-primary text-white text-[9px] font-bold flex items-center justify-center">${item.badge}</span>` : ''}
+            </div>
+            <span class="text-[10px] ${isActive ? 'font-bold text-md-primary' : 'font-medium text-md-onSurfaceVariant'}">${item.label}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    /* ==========================================================================
+       5. TAB 1: BERANDA (AUTOMOTIVE CONSUMER DASHBOARD)
+       ========================================================================== */
+    function renderBerandaTab() {
+      const c = state.customer;
+      const loc = getSelectedLocation();
+      const hasMultipleBranches = state.locations.length > 1;
+      const activeVeh = getSelectedVehicle();
+      const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const unreviewed = state.bookingsAndServices.find(b => b.status === 'COMPLETED' && !b.isReviewed);
+
+      return `
+        <!-- Automotive Deep-Blue Hero Header -->
+        <div class="bg-gradient-to-b from-[#162844] via-[#1E3A5F] to-[#234570] text-white px-4 pt-2 pb-12 rounded-b-[28px] shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-white p-1 flex items-center justify-center shadow-xs">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                  <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-[10px] text-blue-200 leading-none">Dokter Mobil</p>
+                <p class="text-xs font-bold mt-1 leading-none">Halo, ${c.name.split(' ')[0]}</p>
+              </div>
+            </div>
+
+            <button onclick="openCustomerProfileSheet()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white font-bold text-xs flex items-center justify-center">
+              ${initials}
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Active Vehicle Card (Overlaps Hero) -->
+        <div class="px-4 -mt-9 space-y-4 pb-5">
+          ${activeVeh ? `
+            <div class="bg-white rounded-2xl p-3.5 shadow-md border border-md-outlineVariant/70">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-300/70 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl text-md-secondary icon-filled">directions_car</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[10px] font-bold tracking-wider">${activeVeh.plateNumber}</span>
+                      <span class="text-[10px] text-md-onSurfaceVariant font-medium">${activeVeh.year}</span>
+                    </div>
+                    <h2 class="text-sm font-extrabold text-md-onSurface truncate mt-1">${activeVeh.brand} ${activeVeh.model}</h2>
+                  </div>
+                </div>
+
+                <button onclick="openVehicleSwitcherSheet()" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-md-surfaceContainer hover:bg-md-surfaceContainerHigh text-[11px] font-semibold text-md-secondary shrink-0">
+                  <span>Ganti</span>
+                  <span class="material-symbols-outlined text-sm">swap_horiz</span>
+                </button>
+              </div>
+
+              <div class="mt-3 pt-2.5 border-t border-slate-100 grid grid-cols-2 gap-2">
+                <button onclick="openBookingFormSheet()" class="py-2 px-3 rounded-xl bg-md-primary hover:bg-red-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs m3-transition active:scale-[0.98]">
+                  <span class="material-symbols-outlined text-base">event_available</span>
+                  <span>Booking Bengkel</span>
+                </button>
+                <button onclick="switchTab('onsite')" class="py-2 px-3 rounded-xl bg-md-secondaryContainer hover:bg-blue-200/70 text-md-onSecondaryContainer text-xs font-bold flex items-center justify-center gap-1.5 m3-transition active:scale-[0.98]">
+                  <span class="material-symbols-outlined text-base">person_pin_circle</span>
+                  <span>Mekanik On-Site</span>
+                </button>
+              </div>
+            </div>
+          ` : `
+            <div onclick="openAddVehicleSheet(false)" class="bg-white rounded-2xl p-4 shadow-md border border-dashed border-md-primary text-center cursor-pointer">
+              <p class="text-xs font-bold text-md-primary">+ Tambahkan Mobil Pertama Anda</p>
+              <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Untuk mulai booking bengkel Dokter Mobil</p>
+            </div>
+          `}
+
+          ${unreviewed ? `
+            <div onclick="openRatingSheet('${unreviewed.id}')" class="px-3.5 py-2.5 rounded-2xl bg-amber-50 border border-amber-300 flex items-center justify-between gap-2 cursor-pointer hover:bg-amber-100/70 transition">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-base icon-filled">star</span>
+                </span>
+                <div class="min-w-0">
+                  <p class="text-xs font-bold text-amber-950 truncate">Beri Ulasan untuk ${unreviewed.mechanicName}</p>
+                  <p class="text-[10px] text-amber-800 truncate">${unreviewed.vehicleInfo}</p>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-amber-900 shrink-0">Nilai →</span>
+            </div>
+          ` : ''}
+
+          <!-- 4-Column Quick Service Icon Grid -->
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <h3 class="text-xs font-bold text-md-onSurface">Layanan Bengkel Dokter Mobil</h3>
+              <button onclick="openBookingFormSheet()" class="text-[11px] font-semibold text-md-primary">Booking →</button>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+              ${state.categories.map(cat => `
+                <button onclick="openBookingFormWithCategory('${cat.name}')" class="bg-white rounded-2xl p-2.5 border border-md-outlineVariant/70 hover:border-md-primary flex flex-col items-center text-center gap-1.5 shadow-2xs m3-transition active:scale-95">
+                  <div class="w-10 h-10 rounded-xl border ${cat.color} flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">${cat.icon}</span>
+                  </div>
+                  <span class="text-[11px] font-semibold text-md-onSurface leading-tight">${cat.name}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Horizontal Carousel: Mekanik Rekomendasi On-Site Terdekat -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="text-xs font-bold text-md-onSurface">Mekanik Rekomendasi On-Site</h3>
+                <p class="text-[10px] text-md-onSurfaceVariant">Kurasi resmi Dokter Mobil siap ke lokasi Anda</p>
+              </div>
+              <button onclick="switchTab('onsite')" class="text-[11px] font-semibold text-md-secondary">Semua (${state.recommendedMechanics.length})</button>
+            </div>
+
+            <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+              ${state.recommendedMechanics.map(m => `
+                <div class="min-w-[235px] bg-white rounded-2xl p-3 border border-md-outlineVariant/70 shadow-2xs flex flex-col justify-between shrink-0">
+                  <div>
+                    <div class="flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-md-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">
+                          ${m.initials}
+                        </div>
+                        <div>
+                          <div class="flex items-center gap-1">
+                            <h4 class="text-xs font-bold text-md-onSurface">${m.name}</h4>
+                            <span class="material-symbols-outlined text-sm text-md-tertiary icon-filled">verified</span>
+                          </div>
+                          <p class="text-[10px] text-md-onSurfaceVariant">${m.ratingAvg} ★ (${m.ratingCount}) • ${m.distanceKm} km</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex gap-1 mt-2">
+                      ${m.skillNames.map(s => `<span class="px-2 py-0.5 rounded-md bg-md-surfaceContainer text-[10px] font-semibold text-md-onSurfaceVariant">${s}</span>`).join('')}
+                    </div>
+                  </div>
+
+                  <div class="mt-2.5 pt-2 border-t border-slate-100 grid grid-cols-2 gap-1.5">
+                    <button onclick="contactOnSiteMechanic('${m.uid}', 'PHONE')" class="py-1.5 rounded-lg bg-md-surfaceContainer text-md-onSurface text-[11px] font-semibold flex items-center justify-center gap-1">
+                      <span class="material-symbols-outlined text-xs">call</span>
+                      <span>Telepon</span>
+                    </button>
+                    <button onclick="contactOnSiteMechanic('${m.uid}', 'WHATSAPP')" class="py-1.5 rounded-lg bg-[#1FAF38] text-white text-[11px] font-bold flex items-center justify-center gap-1">
+                      <span class="material-symbols-outlined text-xs">chat</span>
+                      <span>WhatsApp</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Workshop Branch Card -->
+          <div class="bg-white rounded-2xl p-3.5 border border-md-outlineVariant/70 shadow-2xs">
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wide text-md-primary">
+                ${hasMultipleBranches ? `Cabang Bengkel DM (${state.locations.length} Lokasi)` : 'Cabang Bengkel DM'}
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Buka • ${loc.distanceKm} km</span>
+                ${hasMultipleBranches ? `
+                  <button onclick="openBranchSwitcherSheet()" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-[10px] font-bold">
+                    <span>Ganti</span>
+                    <span class="material-symbols-outlined text-xs">expand_more</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            <h4 class="text-xs font-bold text-md-onSurface">${loc.name}</h4>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-0.5 leading-snug">${loc.address}</p>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-md-onSurfaceVariant">
+              <span>Jam Operasional: <strong class="text-md-onSurface">${loc.operatingHours}</strong></span>
+              <span>Telp: <strong class="text-md-onSurface">${loc.phone}</strong></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openBranchSwitcherSheet() {
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="mb-3">
+          <h3 class="text-base font-bold text-md-onSurface">Pilih Cabang Dokter Mobil</h3>
+          <p class="text-xs text-md-onSurfaceVariant">Tersedia ${state.locations.length} cabang aktif</p>
+        </div>
+
+        <div class="space-y-2">
+          ${state.locations.map((l, idx) => {
+            const isSelected = idx === state.selectedLocationIndex;
+            return `
+              <button onclick="state.selectedLocationIndex = ${idx}; closeMobileSheet(); renderApp();" class="w-full p-3.5 rounded-2xl border ${isSelected ? 'border-md-primary bg-md-primaryContainer/30' : 'border-md-outlineVariant bg-white'} flex items-center justify-between text-left transition">
+                <div class="pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-bold text-md-onSurface">${l.name}</span>
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">${l.distanceKm} km</span>
+                  </div>
+                  <p class="text-[11px] text-md-onSurfaceVariant mt-0.5 line-clamp-1">${l.address}</p>
+                </div>
+                ${isSelected ? `<span class="material-symbols-outlined text-md-primary icon-filled shrink-0">check_circle</span>` : ''}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function openVehicleSwitcherSheet() {
+      const vehicles = state.customer.vehicles;
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-base font-bold text-md-onSurface">Pilih Mobil Utama</h3>
+            <p class="text-xs text-md-onSurfaceVariant">Ketuk unit kendaraan yang ingin Anda servis</p>
+          </div>
+          <button onclick="openAddVehicleSheet(false)" class="px-3 py-1.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-xs font-bold">+ Tambah</button>
+        </div>
+
+        <div class="space-y-2">
+          ${vehicles.map((v, idx) => {
+            const isSelected = idx === state.selectedVehicleIndex;
+            return `
+              <button onclick="state.selectedVehicleIndex = ${idx}; closeMobileSheet(); renderApp();" class="w-full p-3.5 rounded-2xl border ${isSelected ? 'border-md-primary bg-md-primaryContainer/30' : 'border-md-outlineVariant bg-white'} flex items-center justify-between text-left transition">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-2xl ${isSelected ? 'text-md-primary icon-filled' : 'text-md-onSurfaceVariant'}">directions_car</span>
+                  <div>
+                    <span class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[10px] font-bold">${v.plateNumber}</span>
+                    <p class="text-xs font-bold text-md-onSurface mt-1">${v.brand} ${v.model} (${v.year})</p>
+                  </div>
+                </div>
+                ${isSelected ? `<span class="material-symbols-outlined text-md-primary icon-filled">check_circle</span>` : ''}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function openBookingFormSheet(preselectedCategoryName = null) {
+      const vehicles = state.customer.vehicles;
+      const activeVeh = getSelectedVehicle();
+      const activeVehStr = activeVeh ? `${activeVeh.brand} ${activeVeh.model} ${activeVeh.year} (${activeVeh.plateNumber})` : '';
+      const hasMultipleBranches = state.locations.length > 1;
+      const activeLoc = getSelectedLocation();
+
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <h3 class="text-base font-bold text-md-onSurface">Booking Bengkel Dokter Mobil</h3>
+        ${!hasMultipleBranches ? `<p class="text-xs text-md-onSurfaceVariant mt-0.5">Cabang: <strong>${activeLoc.name}</strong></p>` : ''}
+
+        <form onsubmit="submitCustomerBooking(event)" class="mt-4 space-y-3 text-xs">
+          ${hasMultipleBranches ? `
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Pilih Cabang Bengkel DM (${state.locations.length} Lokasi) *</label>
+              <select id="bk-location-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
+                ${state.locations.map((l, idx) => `<option value="${l.name}" ${idx === state.selectedLocationIndex ? 'selected' : ''}>${l.name} (${l.distanceKm} km)</option>`).join('')}
+              </select>
+            </div>
+          ` : `<input type="hidden" id="bk-location-select" value="${activeLoc.name}" />`}
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="font-semibold text-md-onSurfaceVariant">Unit Mobil (${vehicles.length} Terdaftar) *</label>
+              <button type="button" onclick="openAddVehicleSheet(true)" class="text-[11px] font-bold text-md-secondary hover:underline">+ Tambah Mobil</button>
+            </div>
+            <select id="bk-vehicle-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
+              ${vehicles.map(v => {
+                const val = `${v.brand} ${v.model} ${v.year} (${v.plateNumber})`;
+                return `<option value="${val}" ${val === activeVehStr ? 'selected' : ''}>${v.plateNumber} — ${v.brand} ${v.model} (${v.year})</option>`;
+              }).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Kategori Layanan *</label>
+            <select id="bk-category-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
+              ${state.categories.map(cat => `<option value="${cat.shortName}" ${preselectedCategoryName === cat.name ? 'selected' : ''}>${cat.name} — ${cat.desc}</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Rencana Jadwal Kedatangan *</label>
+            <select id="bk-schedule-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
+              <option value="Besok, 09:30 WIB">Besok, 09:30 WIB (Sesi Pagi)</option>
+              <option value="Besok, 13:30 WIB">Besok, 13:30 WIB (Sesi Siang)</option>
+              <option value="Besok, 15:30 WIB">Besok, 15:30 WIB (Sesi Sore)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Keluhan Kendaraan *</label>
+            <textarea id="bk-complaint-input" rows="2" required placeholder="Jelaskan gejala atau keluhan mobil Anda..." class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs"></textarea>
+          </div>
+
+          <div class="pt-2 flex items-center gap-2">
+            <button type="button" onclick="closeMobileSheet()" class="px-4 py-2.5 rounded-full font-semibold text-md-onSurfaceVariant bg-gray-100">Batal</button>
+            <button type="submit" class="flex-1 py-2.5 px-5 rounded-full font-bold bg-md-primary text-white shadow-sm">
+              Kirim Booking
+            </button>
+          </div>
+        </form>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function openBookingFormWithCategory(catName) {
+      openBookingFormSheet(catName);
+    }
+
+    function submitCustomerBooking(e) {
+      e.preventDefault();
+      const newId = `BK-2026-0${82 + state.bookingsAndServices.length}`;
+      const selectedLocationName = document.getElementById('bk-location-select').value;
+      state.bookingsAndServices.unshift({
+        id: newId,
+        type: 'BOOKING',
+        locationName: selectedLocationName,
+        vehicleInfo: document.getElementById('bk-vehicle-select').value,
+        categoryName: document.getElementById('bk-category-select').value,
+        complaint: document.getElementById('bk-complaint-input').value.trim(),
+        scheduledDate: document.getElementById('bk-schedule-select').value,
+        status: 'PENDING',
+        cancelDeadlineMs: Date.now() + 60000, // Batas pembatalan mandiri 1 menit (60 detik)
+        adminResponseNote: '',
+        proposedSchedule: null,
+        mechanicName: null,
+        totalPrice: null,
+        isReviewed: false,
+        rating: 0,
+        reviewComment: ''
+      });
+
+      closeMobileSheet();
+      state.activeTab = 'aktivitas';
+      renderApp();
+      startCancelCountdownLoop();
+      showMobileSnackbar(`Booking ${newId} dikirim! Dapat dibatalkan dalam 1 menit jika berubah pikiran.`);
+    }
+
+    /* ==========================================================================
+       6. TAB 2: REKOMENDASI MEKANIK ON-SITE (KURASI ADMIN DM)
+       ========================================================================== */
+    function renderOnSiteTab() {
+      const filteredMechs = state.selectedOnSiteCategory === 'ALL'
+        ? state.recommendedMechanics
+        : state.recommendedMechanics.filter(m => m.skillIds.includes(state.selectedOnSiteCategory));
+
+      return `
+        <div class="px-4 pt-3 pb-3 bg-white border-b border-md-outlineVariant/60">
+          <div class="flex items-center justify-between">
+            <h1 class="text-sm font-bold text-md-onSurface">Mekanik Rekomendasi On-Site</h1>
+            <span class="px-2.5 py-0.5 rounded-full bg-md-tertiaryContainer text-md-onTertiaryContainer text-[10px] font-bold">Kurasi Admin DM</span>
+          </div>
+          <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Mekanik mitra terverifikasi & aktif di sekitar Anda</p>
+        </div>
+
+        <div class="p-4 space-y-3">
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <button onclick="state.selectedOnSiteCategory = 'ALL'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedOnSiteCategory === 'ALL' ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+              Semua (${state.recommendedMechanics.length})
+            </button>
+            ${state.categories.map(cat => `
+              <button onclick="state.selectedOnSiteCategory = '${cat.categoryId}'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedOnSiteCategory === cat.categoryId ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+                ${cat.shortName}
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="space-y-3">
+            ${filteredMechs.map(m => `
+              <div class="bg-white rounded-2xl p-4 border border-md-outlineVariant/70 shadow-2xs space-y-3">
+                <div class="flex items-start justify-between gap-2.5">
+                  <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-md-secondary text-white font-extrabold text-sm flex items-center justify-center shrink-0">
+                      ${m.initials}
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-1">
+                        <h3 class="text-sm font-bold text-md-onSurface">${m.name}</h3>
+                        <span class="material-symbols-outlined text-base text-md-tertiary icon-filled" title="Terverifikasi & Direkomendasikan DM">verified</span>
+                      </div>
+                      <p class="text-[11px] text-md-onSurfaceVariant flex items-center gap-1.5 mt-0.5">
+                        <span class="font-bold text-amber-600">${m.ratingAvg} ★ (${m.ratingCount})</span>
+                        <span>•</span>
+                        <span>${m.completedJobsCount} Servis</span>
+                      </p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-800 text-[10px] font-bold shrink-0">
+                    ${m.distanceKm} km
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap gap-1.5">
+                  ${m.skillNames.map(s => `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-md-surfaceContainer text-md-onSurfaceVariant">${s}</span>`).join('')}
+                  ${m.hasCertificate ? `<span class="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-200">Bersertifikat</span>` : ''}
+                </div>
+
+                <p class="text-[11px] text-md-onSurfaceVariant leading-relaxed">${m.bio}</p>
+
+                <div class="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2">
+                  <button onclick="contactOnSiteMechanic('${m.uid}', 'PHONE')" class="py-2 px-3 rounded-xl text-xs font-semibold bg-md-surfaceContainer hover:bg-md-surfaceContainerHigh text-md-onSurface flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base text-md-secondary">call</span>
+                    <span>Telepon</span>
+                  </button>
+                  <button onclick="contactOnSiteMechanic('${m.uid}', 'WHATSAPP')" class="py-2 px-3 rounded-xl text-xs font-bold bg-[#1FAF38] hover:bg-[#19962E] text-white shadow-2xs flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base">chat</span>
+                    <span>WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function contactOnSiteMechanic(uid, method) {
+      const m = state.recommendedMechanics.find(item => item.uid === uid);
+      if (!m) return;
+      state.onsiteContactLogs.unshift({
+        mechanicName: m.name,
+        method,
+        distanceKm: m.distanceKm,
+        time: 'Baru saja'
+      });
+      showMobileSnackbar(
+        method === 'WHATSAPP'
+          ? `Membuka WhatsApp ${m.name} (${m.phone}) — rujukan tercatat.`
+          : `Memanggil telepon seluler ${m.name} (${m.phone}) — rujukan tercatat.`,
+        method === 'WHATSAPP' ? 'chat' : 'call'
+      );
+    }
+
+    /* ==========================================================================
+       7. TAB 3: GARASI MOBIL SAYA
+       ========================================================================== */
+    function renderGarasiTab() {
+      const vehicles = state.customer.vehicles;
+      return `
+        <div class="px-4 pt-3 pb-3 bg-white border-b border-md-outlineVariant/60 flex items-center justify-between">
+          <div>
+            <h1 class="text-sm font-bold text-md-onSurface">Garasi Mobil Saya</h1>
+            <p class="text-[11px] text-md-onSurfaceVariant">Kelola daftar kendaraan pribadi Anda (${vehicles.length} Unit)</p>
+          </div>
+          <button onclick="openAddVehicleSheet(false)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-md-primary text-white shadow-2xs">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>Mobil</span>
+          </button>
+        </div>
+
+        <div class="p-4 space-y-3">
+          ${vehicles.map((v, idx) => `
+            <div class="bg-white rounded-2xl p-4 border ${idx === state.selectedVehicleIndex ? 'border-md-primary' : 'border-md-outlineVariant/70'} shadow-2xs space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-xl bg-md-secondaryContainer text-md-onSecondaryContainer flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl icon-filled">directions_car</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[10px] font-bold tracking-wider">${v.plateNumber}</span>
+                      ${idx === state.selectedVehicleIndex ? `<span class="px-2 py-0.5 rounded-full bg-md-primaryContainer text-md-primary text-[9px] font-bold">Mobil Utama</span>` : ''}
+                    </div>
+                    <h3 class="text-sm font-bold text-md-onSurface mt-1">${v.brand} ${v.model}</h3>
+                    <p class="text-[11px] text-md-onSurfaceVariant">Tahun ${v.year} • Warna ${v.color || '-'}</p>
+                  </div>
+                </div>
+                ${vehicles.length > 1 ? `
+                  <button onclick="deleteCustomerVehicle('${v.id}')" class="p-1.5 rounded-full text-gray-400 hover:text-md-primary" title="Hapus Mobil">
+                    <span class="material-symbols-outlined text-lg">delete</span>
+                  </button>
+                ` : ''}
+              </div>
+
+              <button onclick="state.selectedVehicleIndex = ${idx}; openBookingFormSheet();" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-md-surfaceContainer hover:bg-md-primaryContainer/50 text-md-primary flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-sm">event_available</span>
+                <span>Booking Servis untuk Mobil Ini</span>
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function openAddVehicleSheet(returnToBooking = false) {
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <h3 class="text-base font-bold text-md-onSurface">Tambah Mobil ke Garasi</h3>
+        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Simpan lebih dari 1 kendaraan untuk memudahkan booking servis.</p>
+
+        <form onsubmit="submitAddCustomerVehicle(event, ${returnToBooking})" class="mt-4 space-y-3 text-xs">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor *</label>
+              <input type="text" id="new-veh-plate" required placeholder="BG 1420 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
+            </div>
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
+              <input type="text" id="new-veh-brand" required placeholder="Honda" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="col-span-2">
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Tipe / Model *</label>
+              <input type="text" id="new-veh-model" required placeholder="HR-V Prestige" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+            <div>
+              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Tahun *</label>
+              <input type="text" id="new-veh-year" required value="2022" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Warna Kendaraan</label>
+            <input type="text" id="new-veh-color" placeholder="Putih Mutiara" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+          </div>
+
+          <div class="pt-2 flex items-center gap-2">
+            <button type="button" onclick="closeMobileSheet()" class="px-4 py-2.5 rounded-full font-semibold text-md-onSurfaceVariant bg-gray-100">Batal</button>
+            <button type="submit" class="flex-1 py-2.5 px-5 rounded-full font-bold bg-md-secondary text-white">Simpan Mobil</button>
+          </div>
+        </form>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function submitAddCustomerVehicle(e, returnToBooking) {
+      e.preventDefault();
+      state.customer.vehicles.push({
+        id: 'veh_' + Date.now(),
+        plateNumber: document.getElementById('new-veh-plate').value.trim().toUpperCase(),
+        brand: document.getElementById('new-veh-brand').value.trim(),
+        model: document.getElementById('new-veh-model').value.trim(),
+        year: document.getElementById('new-veh-year').value.trim(),
+        color: document.getElementById('new-veh-color').value.trim() || '-',
+        typeTag: 'SUV'
+      });
+      state.selectedVehicleIndex = state.customer.vehicles.length - 1;
+      closeMobileSheet();
+      renderApp();
+      showMobileSnackbar('Kendaraan baru berhasil ditambahkan ke Garasi Saya.');
+      if (returnToBooking) {
+        openBookingFormSheet();
+      }
+    }
+
+    function deleteCustomerVehicle(vehId) {
+      if (state.customer.vehicles.length <= 1) return;
+      state.customer.vehicles = state.customer.vehicles.filter(v => v.id !== vehId);
+      state.selectedVehicleIndex = 0;
+      renderApp();
+      showMobileSnackbar('Kendaraan dihapus dari Garasi Saya.');
+    }
+
+    /* ==========================================================================
+       8. TAB 4: AKTIVITAS, STATUS BOOKING & RATING/ULASAN PELANGGAN
+       ========================================================================== */
+    function renderAktivitasTab() {
+      const statusBadgeMap = {
+        PENDING: { label: 'Menunggu Konfirmasi DM', cls: 'bg-amber-100 text-amber-900' },
+        RESCHEDULE_OFFERED: { label: 'Slot Penuh • Usulan Jadwal Baru', cls: 'bg-orange-100 text-orange-900' },
+        CONFIRMED: { label: 'Jadwal Dikonfirmasi', cls: 'bg-blue-100 text-blue-900' },
+        CANCELLED: { label: 'Dibatalkan Pelanggan', cls: 'bg-red-100 text-red-800' },
+        CONVERTED_TO_JOB: { label: 'Diteruskan ke Mekanik', cls: 'bg-emerald-100 text-emerald-900' },
+        COMPLETED: { label: 'Servis Selesai', cls: 'bg-slate-200 text-slate-800' }
+      };
+
+      const now = Date.now();
+
+      return `
+        <div class="px-4 pt-3 pb-3 bg-white border-b border-md-outlineVariant/60">
+          <h1 class="text-sm font-bold text-md-onSurface">Booking & Riwayat Servis</h1>
+          <p class="text-[11px] text-md-onSurfaceVariant">Pantau status jadwal bengkel & berikan ulasan hasil pengerjaan</p>
+        </div>
+
+        <div class="p-4 space-y-3">
+          ${state.bookingsAndServices.map(item => {
+            const st = statusBadgeMap[item.status] || statusBadgeMap.PENDING;
+            const remainingCancelSec = (item.status === 'PENDING' && item.cancelDeadlineMs > now)
+              ? Math.ceil((item.cancelDeadlineMs - now) / 1000)
+              : 0;
+
+            return `
+              <div class="bg-white rounded-2xl p-4 border border-md-outlineVariant/70 shadow-2xs space-y-2.5 text-xs ${item.status === 'CANCELLED' ? 'opacity-70' : ''}">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${st.cls}">${st.label}</span>
+                  <span class="font-mono text-[10px] text-md-onSurfaceVariant">${item.id}</span>
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-bold text-md-primary uppercase">${item.categoryName} • ${item.locationName}</span>
+                  <h4 class="font-bold text-sm text-md-onSurface mt-0.5">${item.complaint}</h4>
+                  <p class="text-[11px] text-md-secondary font-medium mt-0.5">${item.vehicleInfo}</p>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-md-surfaceContainer text-[11px] space-y-1">
+                  <div class="flex justify-between">
+                    <span class="text-md-onSurfaceVariant">Jadwal Diminta:</span>
+                    <strong class="text-md-onSurface">${item.scheduledDate}</strong>
+                  </div>
+                  ${item.proposedSchedule ? `
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Usulan Jadwal DM:</span>
+                      <strong class="text-orange-800">${item.proposedSchedule}</strong>
+                    </div>
+                  ` : ''}
+                  ${item.mechanicName ? `
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Mekanik Pelaksana:</span>
+                      <strong class="text-md-onSurface">${item.mechanicName}</strong>
+                    </div>
+                  ` : ''}
+                  ${item.totalPrice ? `
+                    <div class="flex justify-between">
+                      <span class="text-md-onSurfaceVariant">Total Biaya Jasa (Kasir DM):</span>
+                      <strong class="text-md-tertiary font-bold">${formatRupiah(item.totalPrice)}</strong>
+                    </div>
+                  ` : ''}
+                </div>
+
+                ${remainingCancelSec > 0 ? `
+                  <button onclick="cancelBookingWithinWindow('${item.id}')" class="w-full py-2 px-3 rounded-xl text-[11px] font-bold bg-red-50 hover:bg-red-100 text-md-primary border border-red-200 flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">cancel</span>
+                    <span>Batalkan Booking (<span id="cancel-countdown-${item.id}">${remainingCancelSec}d</span>)</span>
+                  </button>
+                ` : ''}
+
+                ${item.adminResponseNote ? `
+                  <div class="p-2.5 rounded-xl ${item.status === 'RESCHEDULE_OFFERED' ? 'bg-orange-50 border border-orange-200 text-orange-950' : 'bg-blue-50/80 border border-blue-200 text-blue-950'} text-[11px]">
+                    <span class="text-[10px] font-bold uppercase block mb-0.5">Pesan Admin Dokter Mobil:</span>
+                    <p class="leading-snug">"${item.adminResponseNote}"</p>
+                  </div>
+                ` : ''}
+
+                ${item.status === 'RESCHEDULE_OFFERED' ? `
+                  <button onclick="acceptProposedSchedule('${item.id}')" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-md-secondary hover:bg-blue-900 text-white shadow-2xs flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base">event_available</span>
+                    <span>Setujui Jadwal Baru (${item.proposedSchedule})</span>
+                  </button>
+              <button onclick="rejectProposedSchedule('${item.id}')" class="w-full py-2.5 rounded-full border border-md-primary text-md-primary bg-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95">
+                <span class="material-symbols-outlined text-base">event_busy</span>
+                <span>Tolak &amp; Batalkan Booking</span>
+              </button>
+                ` : ''}
+
+                ${item.status === 'COMPLETED' && !item.isReviewed ? `
+                  <button onclick="openRatingSheet('${item.id}')" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-2xs flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-base icon-filled">star</span>
+                    <span>Beri Rating & Ulasan Mekanik</span>
+                  </button>
+                ` : ''}
+
+                ${item.status === 'COMPLETED' && item.isReviewed ? `
+                  <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 text-[11px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-semibold text-amber-950">Ulasan Anda:</span>
+                      <span class="font-bold text-amber-600">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)} (${item.rating}.0)</span>
+                    </div>
+                    ${item.reviewComment ? `<p class="text-md-onSurfaceVariant italic mt-1">"${item.reviewComment}"</p>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function acceptProposedSchedule(bookingId) {
+      const item = state.bookingsAndServices.find(b => b.id === bookingId);
+      if (!item || !item.proposedSchedule) return;
+      item.scheduledDate = item.proposedSchedule;
+      item.proposedSchedule = null;
+      item.status = 'CONFIRMED';
+      item.adminResponseNote = 'Pelanggan menyetujui jadwal pengganti. Slot telah dikunci.';
+      renderApp();
+      showMobileSnackbar(`Jadwal baru (${item.scheduledDate}) berhasil dikonfirmasi!`);
+    }
+
+    function rejectProposedSchedule(bookingId) {
+      const item = state.bookingsAndServices.find(b => b.id === bookingId);
+      if (!item || item.status !== 'RESCHEDULE_OFFERED') return;
+      item.proposedSchedule = null;
+      item.adminResponseNote = '';
+      item.status = 'CANCELLED';
+      renderApp();
+      showMobileSnackbar(`Usulan jadwal ditolak. Booking ${item.id} dibatalkan.`, 'event_busy');
+    }
+
+    function openRatingSheet(serviceId) {
+      const item = state.bookingsAndServices.find(b => b.id === serviceId);
+      if (!item) return;
+      window._selectedRating = 5;
+
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <h3 class="text-base font-bold text-md-onSurface">Beri Penilaian Layanan</h3>
+        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Bagaimana hasil pengerjaan mekanik <strong>${item.mechanicName}</strong> pada <strong>${item.vehicleInfo}</strong>?</p>
+
+        <form onsubmit="submitCustomerRating(event, '${item.id}')" class="mt-4 space-y-4 text-xs">
+          <div class="flex items-center justify-center gap-2 py-2">
+            ${[1, 2, 3, 4, 5].map(star => `
+              <button type="button" onclick="selectStarRating(${star})" id="star-btn-${star}" class="p-1 text-amber-400 transition transform active:scale-90">
+                <span class="material-symbols-outlined text-4xl icon-filled">star</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Ulasan Anda (Opsional)</label>
+            <textarea id="rating-comment-input" rows="2" placeholder="Ceritakan pengalaman servis Anda..." class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs"></textarea>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeMobileSheet()" class="px-4 py-2.5 rounded-full font-semibold text-md-onSurfaceVariant bg-gray-100">Nanti</button>
+            <button type="submit" class="flex-1 py-2.5 px-5 rounded-full font-bold bg-md-primary text-white shadow-sm">
+              Kirim Ulasan
+            </button>
+          </div>
+        </form>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function selectStarRating(val) {
+      window._selectedRating = val;
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`star-btn-${i}`);
+        if (btn) {
+          btn.className = `p-1 transition transform active:scale-90 ${i <= val ? 'text-amber-400' : 'text-gray-300'}`;
+        }
+      }
+    }
+
+    function submitCustomerRating(e, serviceId) {
+      e.preventDefault();
+      const item = state.bookingsAndServices.find(b => b.id === serviceId);
+      if (!item) return;
+      item.isReviewed = true;
+      item.rating = window._selectedRating || 5;
+      item.reviewComment = document.getElementById('rating-comment-input').value.trim();
+
+      closeMobileSheet();
+      renderApp();
+      showMobileSnackbar(`Terima kasih! Penilaian ${item.rating} bintang untuk ${item.mechanicName} berhasil dikirim.`);
+    }
+
+    /* ==========================================================================
+       9. CUSTOMER PROFILE SHEET & ADMIN SIMULATOR
+       ========================================================================== */
+    function openCustomerProfileSheet() {
+      const c = state.customer;
+      const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-full bg-md-secondary text-white font-bold text-base flex items-center justify-center">${initials}</div>
+          <div>
+            <h3 class="text-base font-bold text-md-onSurface">${c.name}</h3>
+            <p class="text-xs text-md-onSurfaceVariant">${c.email}</p>
+            <p class="text-xs text-md-onSurfaceVariant">${c.phone}</p>
+          </div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-md-surfaceContainer text-xs space-y-1.5">
+          <div class="flex justify-between">
+            <span class="text-md-onSurfaceVariant">Jumlah Mobil Terdaftar:</span>
+            <strong>${c.vehicles.length} Unit Mobil</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-md-onSurfaceVariant">Status Akun:</span>
+            <strong class="text-md-tertiary">Terhubung Google</strong>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <button onclick="logoutCustomer()" class="px-4 py-2.5 rounded-full text-xs font-semibold text-md-primary border border-md-outlineVariant hover:bg-red-50">
+            Keluar Akun
+          </button>
+          <button onclick="closeMobileSheet()" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-md-surfaceContainerHigh text-md-onSurface">
+            Tutup Profil
+          </button>
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function simulateAdminConfirmBooking() {
+      const pending = state.bookingsAndServices.find(b => b.status === 'PENDING');
+      if (pending) {
+        pending.cancelDeadlineMs = 0;
+        pending.status = 'RESCHEDULE_OFFERED';
+        pending.proposedSchedule = 'Besok, 10:00 WIB';
+        pending.adminResponseNote = 'Mohon maaf, slot pukul 15:00 WIB sudah penuh dengan antrean servis lain. Apakah berkenan dialihkan ke Besok pukul 10:00 WIB?';
+        state.activeTab = 'aktivitas';
+        renderApp();
+        showMobileSnackbar(`Admin DM membalas: Slot penuh & mengusulkan jadwal baru!`, 'schedule');
+        return;
+      }
+
+      const rescheduled = state.bookingsAndServices.find(b => b.status === 'RESCHEDULE_OFFERED');
+      if (rescheduled) {
+        acceptProposedSchedule(rescheduled.id);
+        return;
+      }
+
+      const confirmed = state.bookingsAndServices.find(b => b.status === 'CONFIRMED');
+      if (confirmed) {
+        confirmed.status = 'COMPLETED';
+        confirmed.mechanicName = 'Agus Setiawan';
+        confirmed.totalPrice = 550000;
+        state.activeTab = 'aktivitas';
+        renderApp();
+        showMobileSnackbar(`Servis ${confirmed.id} selesai! Silakan beri rating & ulasan.`);
+        return;
+      }
+
+      showMobileSnackbar('Semua booking aktif sudah selesai. Buat booking baru dari tab Beranda.', 'info');
+    }
+
+    /* ==========================================================================
+       10. MAIN RENDER ORCHESTRATOR
+       ========================================================================== */
+    function renderApp() {
+      const sb = document.getElementById('status-bar');
+      if (!state.isLoggedIn || state.activeTab !== 'beranda') {
+        sb.className = 'relative z-40 h-8 px-5 pt-1 bg-white text-md-onSurface flex items-center justify-between text-[11px] font-semibold shrink-0 transition-colors';
+      } else {
+        sb.className = 'relative z-40 h-8 px-5 pt-1 bg-[#162844] text-white flex items-center justify-between text-[11px] font-semibold shrink-0 transition-colors';
+      }
+
+      renderBottomNav();
+      const screen = document.getElementById('app-screen');
+      if (!state.isLoggedIn) {
+        screen.innerHTML = renderCustomerLoginScreen();
+        return;
+      }
+      if (state.activeTab === 'beranda') {
+        screen.innerHTML = renderBerandaTab();
+      } else if (state.activeTab === 'onsite') {
+        screen.innerHTML = renderOnSiteTab();
+      } else if (state.activeTab === 'garasi') {
+        screen.innerHTML = renderGarasiTab();
+      } else if (state.activeTab === 'aktivitas') {
+        screen.innerHTML = renderAktivitasTab();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+    });
+  </script>
+<div style="position:fixed;left:8px;bottom:8px;z-index:9999;background:#111827;color:#fff;font:600 11px sans-serif;padding:7px 12px;border-radius:999px;white-space:nowrap;opacity:.92"><a href="index.html" style="color:#93c5fd">&#8592; Menu</a> &middot; Prototipe, data contoh</div>
+</body>
+</html>

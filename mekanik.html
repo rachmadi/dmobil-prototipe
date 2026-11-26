@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D-Mobil Mekanik — Prototype Android (Material Design 3)</title>
+  <!-- Favicon SVG Logo Dokter Mobil -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23FFFFFF' stroke='%23E5E7EB' stroke-width='4'/%3E%3Cpath fill='%23E31E24' fill-rule='evenodd' d='M25 18 H53 C72 18 84 31 84 50 C84 69 72 82 53 82 H25 Z M52 32 C41 32 33 40 33 50 C33 57.5 37.2 64 43.5 66.8 L43.5 55.5 C40.5 53.6 38.8 50.2 39.2 46.5 C39.7 41.8 43.2 38.2 47.8 37.5 L47.8 44.5 L52 47.2 L56.2 44.5 L56.2 37.5 C60.8 38.2 64.3 41.8 64.8 46.5 C65.2 50.2 63.5 53.6 60.5 55.5 L60.5 66.8 C66.8 64 71 57.5 71 50 C71 40 63 32 52 32 Z'/%3E%3C/svg%3E" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter + Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            md: {
+              primary: '#B3261E',
+              onPrimary: '#FFFFFF',
+              primaryContainer: '#F9DEDC',
+              onPrimaryContainer: '#410E0B',
+              secondary: '#1E3A5F',
+              onSecondary: '#FFFFFF',
+              secondaryContainer: '#D6E3FF',
+              onSecondaryContainer: '#001B3E',
+              tertiary: '#006C4C',
+              tertiaryContainer: '#89F8C7',
+              onTertiaryContainer: '#002114',
+              surface: '#FEF7FF',
+              surfaceContainerLow: '#F7F2FA',
+              surfaceContainer: '#F3EDF7',
+              surfaceContainerHigh: '#ECE6F0',
+              surfaceContainerHighest: '#E6E0E9',
+              outline: '#79747E',
+              outlineVariant: '#CAC4D0',
+              onSurface: '#1D1B20',
+              onSurfaceVariant: '#49454F',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .icon-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .m3-transition {
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    /* Hide scrollbar inside Android screen for authentic mobile feel */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Google Maps Style Background */
+    .gmaps-surface {
+      background-color: #F2EFE9;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.85) 1.5px, transparent 1.5px),
+        linear-gradient(to bottom, rgba(255,255,255,0.85) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 20% 25%, #CBE8BA 0%, #CBE8BA 9%, transparent 9.5%),
+        radial-gradient(circle at 75% 80%, #D4EDD6 0%, #D4EDD6 11%, transparent 11.5%);
+      background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
+    }
+
+    @keyframes radarPulse {
+      0% { transform: scale(0.9); opacity: 0.85; }
+      70% { transform: scale(2.3); opacity: 0; }
+      100% { transform: scale(2.3); opacity: 0; }
+    }
+    .radar-ring {
+      animation: radarPulse 2s infinite ease-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 font-sans antialiased">
+
+  <!-- ==================== SIMULATOR CONTROL BAR (OUTSIDE PHONE) ==================== -->
+  <div class="w-full max-w-[360px] mb-2.5 flex flex-wrap items-center justify-between gap-2 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-2xl text-xs text-slate-200">
+    <div class="flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="font-semibold text-[11px]">Android (360×780)</span>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button onclick="triggerNewJobAlert()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-md-primary hover:bg-red-700 text-white font-semibold text-[11px] shadow-xs transition active:scale-95">
+        <span class="material-symbols-outlined text-xs">notifications_active</span>
+        <span>Order Masuk</span>
+      </button>
+      <button onclick="toggleNotificationDrawer()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-100 font-medium text-[11px] transition">
+        <span class="material-symbols-outlined text-xs">expand_more</span>
+        <span>Laci Notif</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== ANDROID DEVICE FRAME (TRUE 360x780 PROPORTION) ==================== -->
+  <div style="width: 356px; height: 760px;" class="relative bg-gradient-to-b from-[#2B2F38] via-[#181A20] to-[#262932] rounded-[46px] p-[9px] shadow-[0_28px_70px_-15px_rgba(0,0,0,0.9),inset_0_0_0_1.5px_rgba(255,255,255,0.14)] flex flex-col select-none shrink-0">
+
+    <!-- Ear Speaker Slit (Top Bezel) -->
+    <div class="absolute top-[5px] left-1/2 -translate-x-1/2 w-14 h-[3px] rounded-full bg-[#0B0C0F] border-b border-white/10 z-50"></div>
+
+    <!-- Physical Side Buttons (Power & Volume Rocker) -->
+    <div class="hidden sm:block absolute -right-[4px] top-[22%] w-[3.5px] h-11 bg-gradient-to-b from-slate-500 to-slate-700 rounded-r-sm shadow"></div>
+    <div class="hidden sm:block absolute -right-[4px] top-[34%] w-[3.5px] h-20 bg-gradient-to-b from-slate-500 to-slate-700 rounded-r-sm shadow"></div>
+
+    <!-- Inner Android Viewport -->
+    <div class="relative w-full h-full bg-md-surface rounded-[36px] overflow-hidden flex flex-col text-md-onSurface ring-1 ring-black">
+
+      <!-- ANDROID SYSTEM STATUS BAR (TAP TO PULL NOTIFICATION DRAWER) -->
+      <div onclick="toggleNotificationDrawer()" title="Ketuk untuk membuka Laci Notifikasi Android" class="relative z-40 h-8 px-5 pt-1 bg-md-surfaceContainerLow flex items-center justify-between text-[11px] font-semibold text-md-onSurface cursor-pointer shrink-0">
+        <div class="flex items-center gap-1.5">
+          <span>14:05</span>
+          <!-- Persistent Foreground Service Icon when Active -->
+          <span id="statusbar-service-icon" class="w-3.5 h-3.5 rounded-full bg-md-primary text-white flex items-center justify-center text-[8px] font-extrabold shadow-2xs" title="Layanan D-Mobil Mekanik Aktif">
+            D
+          </span>
+          <span id="statusbar-alert-dot" class="hidden w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+        </div>
+
+        <!-- Camera Punch-Hole -->
+        <div class="w-3 h-3 rounded-full bg-[#090A0D] ring-1 ring-slate-700/80 flex items-center justify-center">
+          <div class="w-1 h-1 rounded-full bg-[#1C2841]"></div>
+        </div>
+
+        <!-- System Icons -->
+        <div class="flex items-center gap-1 text-md-onSurface">
+          <span class="material-symbols-outlined text-[13px]">wifi</span>
+          <span class="material-symbols-outlined text-[13px]">signal_cellular_alt</span>
+          <span class="material-symbols-outlined text-[14px] rotate-90">battery_5_bar</span>
+        </div>
+      </div>
+
+      <!-- ==================== ANDROID NOTIFICATION DRAWER OVERLAY ==================== -->
+      <div id="android-notif-drawer" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-xs flex flex-col justify-between p-4 pt-10 transition-all">
+        <div class="space-y-3 overflow-y-auto no-scrollbar">
+          <div class="flex items-center justify-between text-white px-1">
+            <div>
+              <span class="text-lg font-bold">14:05</span>
+              <span class="text-xs text-slate-300 ml-2">Rab, 25 Nov</span>
+            </div>
+            <button onclick="toggleNotificationDrawer(false)" class="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white">
+              <span class="material-symbols-outlined text-base">close</span>
+            </button>
+          </div>
+
+          <!-- Persistent Service Notification (Selalu Aktif di Notification Drawer) -->
+          <div id="drawer-persistent-card" class="rounded-3xl bg-[#252830] border border-white/10 p-4 text-white shadow-lg">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-white p-0.5 flex items-center justify-center">
+                  <svg viewBox="0 0 100 100" class="w-full h-full">
+                    <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+                  </svg>
+                </span>
+                <span class="text-[11px] font-semibold text-slate-300">D-Mobil Mekanik • Layanan Latar</span>
+              </div>
+              <span class="text-[10px] text-emerald-400 font-semibold">Aktif</span>
+            </div>
+            <p class="text-xs font-bold text-white">Siap Menerima Pekerjaan Bengkel DM</p>
+            <p class="text-[11px] text-slate-300 mt-0.5 leading-snug">Aplikasi tetap aktif memantau order masuk secara instan meskipun layar terkunci.</p>
+            <div class="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-end gap-3">
+              <button onclick="deactivateServiceFromDrawer()" class="px-3 py-1 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 text-[11px] font-semibold">
+                Nonaktifkan Status
+              </button>
+            </div>
+          </div>
+
+          <!-- Incoming Job Notifications List -->
+          <div id="drawer-alerts-list" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Drawer Bottom Handle -->
+        <div onclick="toggleNotificationDrawer(false)" class="pt-3 pb-1 flex flex-col items-center cursor-pointer">
+          <span class="text-[11px] text-slate-300 mb-1.5">Ketuk untuk menutup laci notifikasi</span>
+          <div class="w-12 h-1 rounded-full bg-white/50"></div>
+        </div>
+      </div>
+
+      <!-- ==================== HEADS-UP INCOMING JOB ALERT BANNER ==================== -->
+      <div id="headsup-alert" class="hidden absolute top-10 inset-x-3 z-40 rounded-3xl bg-[#1F242D] text-white p-4 shadow-2xl border border-amber-400/50 transition-all">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0 animate-bounce">
+              <span class="material-symbols-outlined text-xl">notifications_active</span>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300">Order Baru Tersedia!</span>
+              <h4 id="headsup-title" class="text-xs font-bold text-white leading-tight">Servis AC & Flushing</h4>
+              <p id="headsup-sub" class="text-[11px] text-slate-300 mt-0.5">Total Jasa Rp 650.000 • Palembang</p>
+            </div>
+          </div>
+          <button onclick="dismissHeadsUp()" class="p-1 text-slate-400 hover:text-white">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+        <div class="mt-3 flex justify-end gap-2">
+          <button onclick="dismissHeadsUp()" class="px-3 py-1.5 rounded-full text-[11px] text-slate-300 hover:bg-white/10">Nanti</button>
+          <button id="headsup-open-btn" onclick="dismissHeadsUp()" class="px-4 py-1.5 rounded-full text-[11px] font-bold bg-amber-400 text-slate-950 hover:bg-amber-300">
+            Lihat & Ambil Pekerjaan
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== APP CONTENT VIEWPORT ==================== -->
+      <div id="app-screen" class="flex-1 overflow-y-auto no-scrollbar flex flex-col"></div>
+
+      <!-- ==================== MATERIAL DESIGN 3 BOTTOM NAVIGATION BAR ==================== -->
+      <nav id="bottom-nav" class="hidden bg-md-surfaceContainer border-t border-md-outlineVariant/60 px-2 py-1.5 grid grid-cols-4 shrink-0"></nav>
+
+      <!-- ANDROID GESTURE NAVIGATION BAR -->
+      <div class="h-5 bg-md-surfaceContainer flex items-center justify-center shrink-0">
+        <div class="w-28 h-1 rounded-full bg-md-onSurface/30"></div>
+      </div>
+
+      <!-- ==================== IN-APP MODAL / BOTTOM SHEET ==================== -->
+      <div id="mobile-sheet-backdrop" onclick="closeMobileSheet()" class="hidden absolute inset-0 z-30 bg-black/50 backdrop-blur-[1px] flex items-end">
+        <div onclick="event.stopPropagation()" id="mobile-sheet-content" class="w-full bg-white rounded-t-[28px] p-5 pb-7 shadow-2xl max-h-[82%] overflow-y-auto no-scrollbar"></div>
+      </div>
+
+      <!-- ==================== MOBILE SNACKBAR ==================== -->
+      <div id="mobile-snackbar" class="hidden absolute bottom-20 inset-x-4 z-40 bg-[#322F35] text-[#F5EFF7] px-4 py-3 rounded-2xl shadow-lg flex items-center gap-2.5 text-xs">
+        <span id="mobile-sb-icon" class="material-symbols-outlined text-md-tertiaryContainer text-lg">check_circle</span>
+        <span id="mobile-sb-text" class="flex-1 leading-snug">Notifikasi</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    /* ==========================================================================
+       1. DUMMY DATA STATE (MEKANIK MITRA DOKTER MOBIL)
+       ========================================================================== */
+    const state = {
+      isLoggedIn: false,
+      activeTab: 'bursa', // bursa | aktif | riwayat | profil
+      selectedCategoryFilter: 'ALL',
+
+      mechanic: {
+        uid: 'mech_01',
+        name: 'Agus Setiawan',
+        email: 'agus.mekanik@example.com',
+        phone: '08XX-XXXX-0002',
+        whatsappNumber: '62-8XX-XXXX-0002',
+        skillIds: ['ac', 'elektrikal'],
+        skillNames: ['AC', 'Elektrikal'],
+        hasCertificate: true,
+        certName: 'Sertifikat Teknisi AC Otomotif BNSP',
+        isVerified: true,
+        isRecommendedForOnSite: true, // Diberikan oleh Admin DM
+        isAvailableForWorkshop: true,  // Saklar aktif layanan notifikasi & terima job
+        isAvailableForOnSite: true,    // Saklar siap terima panggilan on-site
+        ratingAvg: 4.9,
+        ratingCount: 28,
+        completedJobsCount: 31,
+        avgArrivalMinutes: 22,
+        avgWorkDurationMinutes: 85,
+        mechanicSharePercent: 70
+      },
+
+      // Daftar pekerjaan terbuka di bursa (hanya menampilkan Total Biaya Jasa)
+      openJobs: [
+        {
+          jobId: 'JOB-105',
+          vehicleType: 'Mazda CX-5 2018',
+          boardSummary: 'Pemeriksaan indikator mesin dan sensor.',
+          locationName: 'Dokter Mobil Palembang',
+          locationAddress: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Palembang',
+          distanceKm: 2.8,
+          etaMinutes: 11,
+          categoryId: 'elektrikal',
+          categoryName: 'Elektrikal',
+          title: 'Diagnosa Check Engine & Kalibrasi Sensor',
+          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 XX)',
+          description: 'Lampu check engine menyala, RPM tidak stabil saat idle. Butuh scan OBD & pengecekan soket injektor.',
+          totalPrice: 450000,
+          postedAgo: '2 menit lalu'
+        },
+        {
+          jobId: 'JOB-106',
+          vehicleType: 'Toyota Avanza 2020',
+          boardSummary: 'Perawatan AC: cuci evaporator dan isi freon.',
+          locationName: 'Dokter Mobil Palembang',
+          locationAddress: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Palembang',
+          distanceKm: 3.4,
+          etaMinutes: 14,
+          categoryId: 'ac',
+          categoryName: 'AC',
+          title: 'Cuci Evaporator Tanpa Bongkar & Isi Freon R134a',
+          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 XX)',
+          description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.',
+          totalPrice: 550000,
+          postedAgo: '5 menit lalu'
+        },
+        {
+          jobId: 'JOB-107',
+          vehicleType: 'Honda Brio RS 2023',
+          boardSummary: 'Tune up dan pembersihan ruang bakar.',
+          locationName: 'Dokter Mobil Palembang',
+          locationAddress: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Palembang',
+          distanceKm: 4.1,
+          etaMinutes: 16,
+          categoryId: 'mesin',
+          categoryName: 'Mesin',
+          title: 'Tune Up Ruang Bakar & Gurah Mesin',
+          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 XX)',
+          description: 'Tarikan terasa berat dan konsumsi BBM boros.',
+          totalPrice: 400000,
+          postedAgo: '12 menit lalu'
+        }
+      ],
+
+      // Pekerjaan yang sedang aktif diambil oleh mekanik ini (null jika sedang kosong)
+      activeJob: null,
+      isSimulatingDrive: false,
+
+      // Riwayat pekerjaan selesai
+      historyJobs: [
+        {
+          jobId: 'JOB-104',
+          title: 'Ganti Evaporator & Flushing AC Total',
+          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          categoryName: 'AC',
+          locationName: 'Dokter Mobil Palembang',
+          completedDate: 'Hari Ini, 14:00 WIB',
+          arrivalDurationMinutes: 6,
+          workDurationMinutes: 42,
+          totalPrice: 850000,
+          rating: 0,
+          reviewComment: ''
+        },
+        {
+          jobId: 'JOB-101',
+          title: 'Perbaikan Alternator & Penggantian IC Regulator',
+          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 XX)',
+          categoryName: 'Elektrikal',
+          locationName: 'Dokter Mobil Palembang',
+          completedDate: 'Hari Ini, 10:37 WIB',
+          arrivalDurationMinutes: 20,
+          workDurationMinutes: 75,
+          totalPrice: 400000,
+          rating: 5,
+          reviewComment: ''
+        },
+        {
+          jobId: 'JOB-098',
+          title: 'Ganti Magnet Clutch Kompresor AC',
+          vehicleSummary: 'Honda CR-V Turbo 2020 (BG 1420 XX)',
+          categoryName: 'AC',
+          locationName: 'Dokter Mobil Palembang',
+          completedDate: 'Kemarin, 15:20 WIB',
+          arrivalDurationMinutes: 18,
+          workDurationMinutes: 90,
+          totalPrice: 750000,
+          rating: 5,
+          reviewComment: 'AC dingin menggigil lagi, mekanik datang cepat tepat waktu.'
+        }
+      ],
+
+      drawerAlerts: [
+        {
+          id: 'AL-01',
+          jobId: 'JOB-106',
+          title: 'Order AC Baru — Total Jasa Rp 550.000',
+          body: 'Toyota Avanza 2020 • Dokter Mobil Palembang (3.4 km)',
+          time: 'Baru saja'
+        }
+      ]
+    };
+
+    /* ==========================================================================
+       2. HELPER FUNCTIONS
+       ========================================================================== */
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function showMobileSnackbar(msg, icon = 'check_circle') {
+      const sb = document.getElementById('mobile-snackbar');
+      document.getElementById('mobile-sb-text').textContent = msg;
+      document.getElementById('mobile-sb-icon').textContent = icon;
+      sb.classList.remove('hidden');
+      clearTimeout(window._mobSbTimer);
+      window._mobSbTimer = setTimeout(() => {
+        sb.classList.add('hidden');
+      }, 3200);
+    }
+
+    function toggleNotificationDrawer(forceState = null) {
+      const drawer = document.getElementById('android-notif-drawer');
+      const shouldOpen = forceState !== null ? forceState : drawer.classList.contains('hidden');
+      if (shouldOpen) {
+        renderNotificationDrawer();
+        drawer.classList.remove('hidden');
+        document.getElementById('statusbar-alert-dot').classList.add('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function renderNotificationDrawer() {
+      const persistentCard = document.getElementById('drawer-persistent-card');
+      if (state.mechanic.isAvailableForWorkshop) {
+        persistentCard.classList.remove('hidden');
+      } else {
+        persistentCard.classList.add('hidden');
+      }
+
+      const listEl = document.getElementById('drawer-alerts-list');
+      if (!state.mechanic.isVerified || state.drawerAlerts.length === 0) {
+        listEl.innerHTML = `
+          <div class="p-4 rounded-2xl bg-white/5 text-center text-xs text-slate-400">
+            Tidak ada notifikasi order baru yang belum dibaca.
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = state.drawerAlerts.map(al => `
+          <div onclick="openJobFromNotification('${al.jobId}', '${al.id}')" class="p-3.5 rounded-3xl bg-[#2B2F38] hover:bg-[#343944] border border-amber-400/30 text-white cursor-pointer transition">
+            <div class="flex items-center justify-between text-[10px] text-amber-300 font-semibold mb-1">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">work</span>
+                <span>D-Mobil Mekanik • Bursa Order</span>
+              </span>
+              <span class="text-slate-400">${al.time}</span>
+            </div>
+            <p class="text-xs font-bold">${al.title}</p>
+            <p class="text-[11px] text-slate-300 mt-0.5">${al.body}</p>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openJobFromNotification(jobId, alertId) {
+      state.drawerAlerts = state.drawerAlerts.filter(a => a.id !== alertId);
+      toggleNotificationDrawer(false);
+      state.activeTab = 'bursa';
+      renderApp();
+      openJobDetailSheet(jobId);
+    }
+
+    function deactivateServiceFromDrawer() {
+      state.mechanic.isAvailableForWorkshop = false;
+      updateStatusBarServiceIcon();
+      renderNotificationDrawer();
+      renderApp();
+      showMobileSnackbar('Status Siap Terima Pekerjaan dinonaktifkan. Anda tidak akan menerima notifikasi order.', 'notifications_off');
+    }
+
+    function updateStatusBarServiceIcon() {
+      const icon = document.getElementById('statusbar-service-icon');
+      if (state.isLoggedIn && state.mechanic.isAvailableForWorkshop) {
+        icon.classList.remove('hidden');
+      } else {
+        icon.classList.add('hidden');
+      }
+    }
+
+    function handleMechanicGoogleSignIn(accountType) {
+      if (accountType === 'VERIFIED') {
+        state.mechanic.name = 'Agus Setiawan';
+        state.mechanic.email = 'agus.mekanik@example.com';
+        state.mechanic.phone = '08XX-XXXX-0002';
+        state.mechanic.skillIds = ['ac', 'elektrikal'];
+        state.mechanic.skillNames = ['AC', 'Elektrikal'];
+        state.mechanic.hasCertificate = true;
+        state.mechanic.certName = 'Sertifikat Teknisi AC Otomotif BNSP';
+        state.mechanic.isVerified = true;
+        state.mechanic.isAvailableForWorkshop = true;
+        state.isLoggedIn = true;
+        state.activeTab = 'bursa';
+        renderApp();
+        showMobileSnackbar(`Selamat datang, ${state.mechanic.name}`);
+      } else {
+        state.mechanic.name = 'Rizky Pratama';
+        state.mechanic.email = 'rizky.pratama.mech@example.com';
+        state.mechanic.phone = '08XX-XXXX-0005';
+        state.mechanic.skillIds = [];
+        state.mechanic.skillNames = [];
+        state.mechanic.hasCertificate = false;
+        state.mechanic.certName = '-';
+        state.mechanic.isVerified = false;
+        state.mechanic.ktpSubmitted = false;
+        document.getElementById('statusbar-alert-dot').classList.add('hidden');
+        document.getElementById('headsup-alert').classList.add('hidden');
+        state.mechanic.isAvailableForWorkshop = false;
+        state.isLoggedIn = true;
+        state.activeTab = 'bursa';
+        renderApp();
+        openNewMechanicOnboardingSheet();
+      }
+    }
+
+    function openNewMechanicOnboardingSheet() {
+      window._draftKtpUploaded = false;
+      window._draftCertUploaded = false;
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-[10px] font-bold">Registrasi Mitra Baru</span>
+        </div>
+        <h3 class="text-base font-bold text-md-onSurface">Lengkapi Berkas Kemitraan</h3>
+        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Halo, <strong>${state.mechanic.name}</strong>! Unggah foto KTP wajib dan pilih keahlian Anda untuk verifikasi Admin DM.</p>
+
+        <form onsubmit="submitNewMechanicOnboarding(event)" class="mt-3.5 space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Nomor HP / WhatsApp Aktif *</label>
+            <input type="text" id="mech-onb-phone" required value="${state.mechanic.phone}" class="w-full rounded-xl border border-md-outline px-3 py-2" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Pilih Keahlian Spesialisasi (Min. 1) *</label>
+            <div class="grid grid-cols-2 gap-1.5">
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-md-outlineVariant bg-md-surfaceContainerLow cursor-pointer">
+                <input type="checkbox" name="mech-onb-skill" value="ac|AC" checked class="rounded text-md-primary" />
+                <span class="font-semibold">AC Mobil</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-md-outlineVariant bg-md-surfaceContainerLow cursor-pointer">
+                <input type="checkbox" name="mech-onb-skill" value="mesin|Mesin" class="rounded text-md-primary" />
+                <span class="font-semibold">Mesin / Tune Up</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-md-outlineVariant bg-md-surfaceContainerLow cursor-pointer">
+                <input type="checkbox" name="mech-onb-skill" value="kaki_kaki|Kaki-kaki" class="rounded text-md-primary" />
+                <span class="font-semibold">Kaki-kaki</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl border border-md-outlineVariant bg-md-surfaceContainerLow cursor-pointer">
+                <input type="checkbox" name="mech-onb-skill" value="elektrikal|Elektrikal" checked class="rounded text-md-primary" />
+                <span class="font-semibold">Elektrikal</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Unggah Foto KTP Wajib -->
+          <div class="p-3 rounded-2xl border border-dashed border-md-primary/60 bg-md-primaryContainer/20">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="font-bold text-md-onSurface block">1. Foto KTP Identitas <span class="text-md-primary">*Wajib</span></span>
+                <span id="ktp-upload-status" class="text-[11px] text-md-onSurfaceVariant">Belum ada file dipilih</span>
+              </div>
+              <button type="button" onclick="simulateUploadKtp()" id="ktp-upload-btn" class="px-3 py-1.5 rounded-full bg-md-primary text-white text-[11px] font-bold shrink-0">
+                Pilih Foto KTP
+              </button>
+            </div>
+          </div>
+
+          <!-- Unggah Sertifikat Opsional -->
+          <div class="p-3 rounded-2xl border border-dashed border-md-outlineVariant bg-md-surfaceContainerLow">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="font-bold text-md-onSurface block">2. Sertifikat Keahlian (Opsional)</span>
+                <span id="cert-upload-status" class="text-[11px] text-md-onSurfaceVariant">Opsional — menambah kepercayaan</span>
+              </div>
+              <button type="button" onclick="simulateUploadCert()" id="cert-upload-btn" class="px-3 py-1.5 rounded-full bg-md-secondary text-white text-[11px] font-semibold shrink-0">
+                Unggah
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 px-5 rounded-full font-bold bg-md-primary text-white shadow-sm mt-1">
+            Kirim Berkas & Daftar Mitra
+          </button>
+        </form>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function simulateUploadKtp() {
+      window._draftKtpUploaded = true;
+      document.getElementById('ktp-upload-status').innerHTML = `<span class="text-md-tertiary font-bold">✓ KTP_Rizky_Pratama.jpg (Terlampir)</span>`;
+      const btn = document.getElementById('ktp-upload-btn');
+      btn.textContent = 'Ganti Foto';
+      btn.className = 'px-3 py-1.5 rounded-full bg-emerald-700 text-white text-[11px] font-bold shrink-0';
+    }
+
+    function simulateUploadCert() {
+      window._draftCertUploaded = true;
+      document.getElementById('cert-upload-status').innerHTML = `<span class="text-md-secondary font-bold">✓ Sertifikat_Teknisi.pdf (Terlampir)</span>`;
+      const btn = document.getElementById('cert-upload-btn');
+      btn.textContent = 'Terlampir';
+    }
+
+    function submitNewMechanicOnboarding(e) {
+      e.preventDefault();
+      if (!window._draftKtpUploaded) {
+        showMobileSnackbar('Foto KTP wajib diunggah sebelum mengirim pendaftaran!', 'warning');
+        return;
+      }
+      const checked = Array.from(document.querySelectorAll('input[name="mech-onb-skill"]:checked'));
+      if (checked.length === 0) {
+        showMobileSnackbar('Pilih minimal 1 keahlian spesialisasi!', 'warning');
+        return;
+      }
+
+      state.mechanic.phone = document.getElementById('mech-onb-phone').value.trim();
+      state.mechanic.skillIds = checked.map(el => el.value.split('|')[0]);
+      state.mechanic.skillNames = checked.map(el => el.value.split('|')[1]);
+      state.mechanic.hasCertificate = Boolean(window._draftCertUploaded);
+      state.mechanic.certName = window._draftCertUploaded ? 'Sertifikat Teknisi Otomotif' : 'Tidak dilampirkan';
+
+      state.mechanic.ktpSubmitted = true;
+      closeMobileSheet();
+      renderApp();
+      showMobileSnackbar('Berkas KTP & profil dikirim! Menunggu verifikasi Admin DM.');
+    }
+
+    function logoutMechanic() {
+      stopMechanicDriveSimulation();
+      state.isLoggedIn = false;
+      renderApp();
+    }
+
+    function renderMechanicLoginScreen() {
+      return `
+        <div class="flex-1 flex flex-col justify-between p-6 bg-white">
+          <div class="pt-10 text-center">
+            <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-white border border-gray-200 shadow-md p-2 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" class="w-full h-full">
+                <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+              </svg>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-[10px] font-bold uppercase tracking-wider">Aplikasi Mitra Mekanik</span>
+            <h1 class="text-xl font-extrabold text-md-onSurface mt-3 tracking-tight">D-Mobil Mekanik</h1>
+            <p class="text-xs text-md-onSurfaceVariant mt-2 leading-relaxed">
+              Ambil pekerjaan servis bengkel Dokter Mobil secara instan, navigasi ke cabang, dan kelola layanan on-site.
+            </p>
+          </div>
+
+          <div class="my-6">
+            <button onclick="openMechanicGoogleAccountChooser()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 font-semibold py-3.5 px-5 rounded-full shadow-sm m3-transition active:scale-[0.99] text-xs">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+                <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+              </svg>
+              <span>Sign in with Google</span>
+            </button>
+          </div>
+
+          <p class="text-[10px] text-center text-md-onSurfaceVariant leading-normal">
+            Khusus mitra mekanik Dokter Mobil. Mitra baru wajib melengkapi unggahan KTP untuk verifikasi Admin.
+          </p>
+        </div>
+      `;
+    }
+
+    function openMechanicGoogleAccountChooser() {
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center justify-center gap-2 mb-1">
+          <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/>
+          </svg>
+          <span class="text-xs font-semibold text-gray-600">Sign in with Google</span>
+        </div>
+        <h3 class="text-base font-bold text-center text-md-onSurface">Pilih Akun</h3>
+        <p class="text-[11px] text-center text-md-onSurfaceVariant mt-0.5 mb-4">untuk melanjutkan ke <strong>D-Mobil Mekanik</strong></p>
+
+        <div class="divide-y divide-gray-200 border border-gray-200 rounded-2xl overflow-hidden">
+          <button onclick="closeMobileSheet(); handleMechanicGoogleSignIn('VERIFIED');" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer font-bold text-xs flex items-center justify-center shrink-0">AS</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Agus Setiawan</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">agus.mekanik@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-100 text-emerald-800 shrink-0">Terverifikasi</span>
+          </button>
+
+          <button onclick="closeMobileSheet(); handleMechanicGoogleSignIn('PENDING');" class="w-full p-3.5 flex items-center gap-3 hover:bg-gray-50 text-left transition">
+            <div class="w-9 h-9 rounded-full bg-amber-600 text-white font-bold text-xs flex items-center justify-center shrink-0">RP</div>
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-bold text-md-onSurface truncate">Rizky Pratama</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizky.pratama.mech@example.com</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-800 shrink-0">Belum Verifikasi</span>
+          </button>
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      renderApp();
+    }
+
+    function triggerNewJobAlert() {
+      if (!state.isLoggedIn) {
+        showMobileSnackbar('Silakan Sign in with Google terlebih dahulu.', 'info');
+        return;
+      }
+      if (!state.mechanic.isVerified || !state.mechanic.isAvailableForWorkshop) {
+        showMobileSnackbar('Aktifkan status "Siap Terima Pekerjaan Bengkel DM" untuk menerima order masuk.', 'notifications_off');
+        return;
+      }
+      const newJobId = `JOB-${108 + state.openJobs.length}`;
+      const newJob = {
+        jobId: newJobId,
+        locationName: 'Dokter Mobil Palembang',
+        locationAddress: 'Jl. Letkol Iskandar No.682 B, 15 Ilir, Palembang',
+        distanceKm: 2.5,
+        etaMinutes: 10,
+        categoryId: 'ac',
+        categoryName: 'AC',
+        title: 'Perbaikan Kompresor & Flushing AC',
+        vehicleSummary: 'Honda CR-V Turbo 2021 (BG 1488 XX)',
+        vehicleType: 'Honda CR-V Turbo 2021',
+        boardSummary: 'Pemeriksaan dan perawatan sistem AC.',
+        description: 'AC tiba-tiba tidak dingin saat putaran mesin rendah. Cek tekanan freon dan magnetic clutch.',
+        totalPrice: 650000,
+        postedAgo: 'Baru saja'
+      };
+      state.openJobs.unshift(newJob);
+      state.drawerAlerts.unshift({
+        id: 'AL-' + Date.now(),
+        jobId: newJobId,
+        title: `Order AC Baru — Total Jasa ${formatRupiah(newJob.totalPrice)}`,
+        body: `${newJob.vehicleType} • ${newJob.locationName} (${newJob.distanceKm} km)`,
+        time: 'Baru saja'
+      });
+
+      document.getElementById('statusbar-alert-dot').classList.remove('hidden');
+      document.getElementById('headsup-title').textContent = newJob.title;
+      document.getElementById('headsup-sub').textContent = `Total Jasa ${formatRupiah(newJob.totalPrice)} • ${newJob.distanceKm} km`;
+      document.getElementById('headsup-open-btn').onclick = () => {
+        dismissHeadsUp();
+        state.activeTab = 'bursa';
+        renderApp();
+        openJobDetailSheet(newJobId);
+      };
+      document.getElementById('headsup-alert').classList.remove('hidden');
+      renderApp();
+    }
+
+    function dismissHeadsUp() {
+      document.getElementById('headsup-alert').classList.add('hidden');
+    }
+
+    /* ==========================================================================
+       3. MATERIAL DESIGN 3 BOTTOM NAVIGATION
+       ========================================================================== */
+    function renderBottomNav() {
+      const nav = document.getElementById('bottom-nav');
+      if (!state.isLoggedIn) {
+        nav.classList.add('hidden');
+        return;
+      }
+      nav.classList.remove('hidden');
+      const items = [
+        { id: 'bursa', label: 'Bursa', icon: 'work', badge: state.mechanic.isVerified ? state.openJobs.length : 0 },
+        { id: 'aktif', label: 'Aktif', icon: 'near_me', badge: state.mechanic.isVerified && state.activeJob ? 1 : 0 },
+        { id: 'riwayat', label: 'Riwayat', icon: 'history', badge: 0 },
+        { id: 'profil', label: 'Profil', icon: 'person', badge: 0 }
+      ];
+
+      nav.innerHTML = items.map(item => {
+        const isActive = state.activeTab === item.id;
+        return `
+          <button onclick="switchTab('${item.id}')" class="flex flex-col items-center justify-center py-1 gap-0.5 relative">
+            <div class="relative px-4 py-1 rounded-full m3-transition ${isActive ? 'bg-md-secondaryContainer text-md-onSecondaryContainer' : 'text-md-onSurfaceVariant'}">
+              <span class="material-symbols-outlined text-[20px] ${isActive ? 'icon-filled' : ''}">${item.icon}</span>
+              ${item.badge > 0 ? `<span class="absolute -top-0.5 right-1.5 min-w-[15px] h-[15px] px-1 rounded-full bg-md-primary text-white text-[9px] font-bold flex items-center justify-center">${item.badge}</span>` : ''}
+            </div>
+            <span class="text-[10px] ${isActive ? 'font-bold text-md-onSurface' : 'font-medium text-md-onSurfaceVariant'}">${item.label}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    /* ==========================================================================
+       4. TAB 1: BURSA PEKERJAAN BENGKEL DM
+       ========================================================================== */
+    function toggleWorkshopAvailability() {
+      if (!state.mechanic.isVerified) {
+        showMobileSnackbar('Akun Anda masih menunggu verifikasi KTP oleh Admin DM.', 'hourglass_top');
+        return;
+      }
+      state.mechanic.isAvailableForWorkshop = !state.mechanic.isAvailableForWorkshop;
+      updateStatusBarServiceIcon();
+      renderApp();
+      showMobileSnackbar(
+        state.mechanic.isAvailableForWorkshop
+          ? 'Layanan Siap Terima Pekerjaan diaktifkan.'
+          : 'Layanan Siap Terima Pekerjaan dinonaktifkan.',
+        state.mechanic.isAvailableForWorkshop ? 'notifications_active' : 'notifications_off'
+      );
+    }
+
+    function renderPendingScreen(title) {
+      const sent = state.mechanic.ktpSubmitted;
+      return `
+        <div class="px-4 pt-4 pb-2">
+          <h1 class="text-base font-bold text-md-onSurface">${title}</h1>
+          <p class="text-xs text-md-onSurfaceVariant">Halo, ${state.mechanic.name}</p>
+        </div>
+        <div class="m-4 p-5 rounded-3xl bg-amber-50 border border-amber-200 text-center space-y-2">
+          <span class="material-symbols-outlined text-4xl text-amber-600">${sent ? 'pending_actions' : 'upload_file'}</span>
+          <h3 class="text-sm font-bold text-amber-900">${sent ? 'Akun Sedang Diverifikasi Admin DM' : 'Berkas Belum Dikirim'}</h3>
+          <p class="text-xs text-amber-900">${sent ? 'Bursa pekerjaan akan terbuka setelah Admin menyetujui akun Anda.' : 'Unggah foto KTP untuk mendaftar sebagai mitra mekanik.'}</p>
+          ${sent ? '' : `<button onclick="openNewMechanicOnboardingSheet()" class="px-4 py-2 rounded-full bg-md-primary text-white text-xs font-bold">Lengkapi Berkas</button>`}
+        </div>
+      `;
+    }
+
+    function renderBursaTab() {
+      if (!state.mechanic.isVerified) return renderPendingScreen('Bursa Pekerjaan');
+      const m = state.mechanic;
+      const filteredJobs = state.selectedCategoryFilter === 'ALL'
+        ? state.openJobs
+        : state.openJobs.filter(j => j.categoryId === state.selectedCategoryFilter);
+
+      return `
+        <!-- Top App Bar -->
+        <div class="px-4 pt-3 pb-3 bg-md-surfaceContainerLow border-b border-md-outlineVariant/50 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-2xs p-1 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 100 100" class="w-full h-full">
+                <path fill="#E31E24" fill-rule="evenodd" d="M24 16 H53 C73 16 86 30 86 50 C86 70 73 84 53 84 H24 Z M52 31 C40.5 31 32 39.5 32 50 C32 58 36.5 64.8 43.2 67.8 V55.5 C40 53.5 38.2 50 38.7 46 C39.3 41 43 37.2 47.8 36.5 V44 L52 46.8 L56.2 44 V36.5 C61 37.2 64.7 41 65.3 46 C65.8 50 64 53.5 60.8 55.5 V67.8 C67.5 64.8 72 58 72 50 C72 39.5 63.5 31 52 31 Z"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-sm font-bold text-md-onSurface leading-tight">D-Mobil Mekanik</h1>
+              <p class="text-[11px] text-md-onSurfaceVariant">Halo, ${m.name.split(' ')[0]} • ${m.isVerified ? 'Mitra Terverifikasi' : 'Menunggu Verifikasi'}</p>
+            </div>
+          </div>
+
+          <button onclick="toggleNotificationDrawer(true)" class="relative p-2 rounded-full bg-white border border-md-outlineVariant/60 text-md-onSurface">
+            <span class="material-symbols-outlined text-lg">notifications</span>
+            ${state.drawerAlerts.length > 0 ? `<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-md-primary"></span>` : ''}
+          </button>
+        </div>
+
+        <div class="p-4 space-y-3.5">
+          ${!m.isVerified ? `
+            <div class="p-4 rounded-3xl bg-amber-50 border border-amber-300 text-xs text-amber-950 space-y-1.5">
+              <div class="flex items-center gap-1.5 font-bold text-amber-900">
+                <span class="material-symbols-outlined text-lg">pending_actions</span>
+                <span>Akun Sedang Diverifikasi Admin DM</span>
+              </div>
+              <p class="text-[11px] text-amber-800 leading-relaxed">
+                Berkas KTP Anda sudah diterima. Anda dapat mengambil pekerjaan di bursa setelah Admin Dokter Mobil menyetujui verifikasi akun Anda.
+              </p>
+            </div>
+          ` : `
+            <!-- Availability Switch Card -->
+            <div class="p-3.5 rounded-3xl border ${m.isAvailableForWorkshop ? 'bg-emerald-50/90 border-emerald-300' : 'bg-gray-100 border-gray-300'} flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-2xl ${m.isAvailableForWorkshop ? 'text-md-tertiary' : 'text-gray-500'}">sensors</span>
+                <div>
+                  <p class="text-xs font-bold text-md-onSurface">${m.isAvailableForWorkshop ? 'Siap Terima Pekerjaan Bengkel DM' : 'Status Sedang Offline'}</p>
+                  <p class="text-[10px] text-md-onSurfaceVariant leading-snug">
+                    ${m.isAvailableForWorkshop ? 'Layanan notifikasi aktif di laci notifikasi ponsel Anda.' : 'Aktifkan untuk menerima notifikasi order baru.'}
+                  </p>
+                </div>
+              </div>
+              <button onclick="toggleWorkshopAvailability()" class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${m.isAvailableForWorkshop ? 'bg-md-tertiary' : 'bg-gray-300'}">
+                <span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-200 ${m.isAvailableForWorkshop ? 'translate-x-5' : 'translate-x-0'}"></span>
+              </button>
+            </div>
+          `}
+
+          <!-- Section Header -->
+          <div class="flex items-center justify-between pt-1">
+            <h2 class="text-xs font-bold text-md-onSurface">Bursa Pekerjaan (${filteredJobs.length})</h2>
+            <span class="text-[10px] text-md-onSurfaceVariant">Hak Mekanik 70% dari Total Jasa</span>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <button onclick="state.selectedCategoryFilter = 'ALL'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedCategoryFilter === 'ALL' ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+              Semua (${state.openJobs.length})
+            </button>
+            <button onclick="state.selectedCategoryFilter = 'ac'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedCategoryFilter === 'ac' ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+              AC ★
+            </button>
+            <button onclick="state.selectedCategoryFilter = 'elektrikal'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedCategoryFilter === 'elektrikal' ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+              Elektrikal ★
+            </button>
+            <button onclick="state.selectedCategoryFilter = 'mesin'; renderApp();" class="px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0 ${state.selectedCategoryFilter === 'mesin' ? 'bg-md-secondary text-white' : 'bg-white border border-md-outlineVariant text-md-onSurfaceVariant'}">
+              Mesin
+            </button>
+          </div>
+
+          <!-- Job Cards -->
+          <div class="space-y-3">
+            ${filteredJobs.map(job => {
+              const isSkillMatch = m.skillIds.includes(job.categoryId);
+              return `
+                <div onclick="openJobDetailSheet('${job.jobId}')" class="bg-white rounded-3xl p-4 border ${isSkillMatch ? 'border-md-outlineVariant/80' : 'border-gray-200 opacity-75'} shadow-2xs space-y-2.5 cursor-pointer hover:border-md-primary m3-transition">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-md-primaryContainer text-md-onPrimaryContainer">${job.categoryName}</span>
+                      ${isSkillMatch
+                        ? `<span class="text-[10px] font-semibold text-md-tertiary">• Sesuai Keahlian</span>`
+                        : `<span class="text-[10px] font-medium text-gray-500">• Di Luar Keahlian</span>`}
+                    </div>
+                    <span class="text-[10px] text-md-onSurfaceVariant">${job.postedAgo}</span>
+                  </div>
+
+                  <div>
+                    <h3 class="text-sm font-bold text-md-onSurface leading-snug">${job.title}</h3>
+                    <p class="text-[11px] font-medium text-md-secondary mt-0.5">${job.vehicleType}</p>
+                  </div>
+
+                  <div class="flex items-center gap-3 text-[11px] text-md-onSurfaceVariant">
+                    <span class="flex items-center gap-1">
+                      <span class="material-symbols-outlined text-sm text-md-primary">store</span>
+                      <span>${job.locationName}</span>
+                    </span>
+                    <span class="flex items-center gap-1 font-semibold text-md-secondary">
+                      <span class="material-symbols-outlined text-sm">near_me</span>
+                      <span>${job.distanceKm} km</span>
+                    </span>
+                  </div>
+
+                  <div class="pt-2.5 border-t border-gray-100 flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-md-onSurfaceVariant block">Total Biaya Jasa</span>
+                      <strong class="text-base font-extrabold text-md-tertiary">${formatRupiah(job.totalPrice)}</strong>
+                    </div>
+                    <button class="inline-flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold bg-md-primary text-white shadow-2xs">
+                      <span>Detail</span>
+                      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function openJobDetailSheet(jobId) {
+      const job = state.openJobs.find(j => j.jobId === jobId);
+      if (!job) return;
+      const m = state.mechanic;
+      const isSkillMatch = m.skillIds.includes(job.categoryId);
+      const canAccept = m.isVerified && isSkillMatch && !state.activeJob;
+
+      document.getElementById('mobile-sheet-content').innerHTML = `
+        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-md-primaryContainer text-md-onPrimaryContainer">${job.categoryName} • ${job.jobId}</span>
+          <span class="text-xs font-bold text-md-secondary">${job.distanceKm} km (~${job.etaMinutes} mnt)</span>
+        </div>
+
+        <h3 class="text-base font-bold text-md-onSurface mt-1">${job.title}</h3>
+        <p class="text-xs font-semibold text-md-secondary">${job.vehicleType}</p>
+
+        <div class="mt-3 p-3 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-1.5">
+          <div class="flex items-start gap-1.5">
+            <span class="material-symbols-outlined text-base text-md-primary shrink-0">location_on</span>
+            <div>
+              <strong class="block text-md-onSurface">${job.locationName}</strong>
+              <span class="text-[11px] text-md-onSurfaceVariant">${job.locationAddress}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <span class="text-[11px] font-bold text-md-onSurfaceVariant uppercase">Ringkasan Pekerjaan:</span>
+          <p class="text-xs text-md-onSurface mt-1 p-3 rounded-2xl border border-md-outlineVariant/60 bg-white leading-relaxed">${job.boardSummary}</p>
+        </div>
+
+        <!-- Total Biaya Jasa (Tanpa Rincian Potongan Admin sesuai spesifikasi v0.16) -->
+        <div class="mt-3 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-semibold text-emerald-900 block">Total Biaya Jasa</span>
+            <span class="text-[10px] text-emerald-800">Hak mekanik 70% sesuai ketentuan kemitraan</span>
+          </div>
+          <strong class="text-lg font-extrabold text-md-tertiary">${formatRupiah(job.totalPrice)}</strong>
+        </div>
+
+        ${!m.isVerified ? `
+          <div class="mt-3 p-2.5 rounded-xl bg-amber-50 text-amber-900 text-[11px]">
+            Akun Anda belum diverifikasi Admin DM sehingga belum dapat mengambil pekerjaan.
+          </div>
+        ` : !isSkillMatch ? `
+          <div class="mt-3 p-2.5 rounded-xl bg-red-50 text-red-900 text-[11px]">
+            Kategori <strong>${job.categoryName}</strong> tidak terdaftar pada keahlian profil Anda (${m.skillNames.join(', ')}).
+          </div>
+        ` : ''}
+
+        <div class="mt-4 flex items-center gap-2">
+          <button onclick="closeMobileSheet()" class="px-4 py-2.5 rounded-full text-xs font-semibold text-md-onSurfaceVariant bg-gray-100">Tutup</button>
+          <button onclick="acceptJob('${job.jobId}')" ${!canAccept ? 'disabled' : ''} class="flex-1 py-2.5 px-5 rounded-full text-xs font-bold bg-md-primary text-white shadow-sm disabled:opacity-40">
+            Ambil Pekerjaan Sekarang
+          </button>
+        </div>
+      `;
+      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
+    }
+
+    function closeMobileSheet() {
+      document.getElementById('mobile-sheet-backdrop').classList.add('hidden');
+    }
+
+    function acceptJob(jobId) {
+      if (state.activeJob) {
+        closeMobileSheet();
+        showMobileSnackbar('Selesaikan pekerjaan aktif Anda terlebih dahulu sebelum mengambil pekerjaan baru!', 'warning');
+        return;
+      }
+
+      const idx = state.openJobs.findIndex(j => j.jobId === jobId);
+      if (idx === -1) return;
+
+      const taken = state.openJobs.splice(idx, 1)[0];
+      state.activeJob = {
+        ...taken,
+        status: 'ON_THE_WAY', // ON_THE_WAY | IN_PROGRESS
+        acceptedAt: '14:05 WIB',
+        progressPercent: 18,
+        remainingKm: taken.distanceKm,
+        remainingEta: taken.etaMinutes,
+        currentStreet: 'Jl. Semeru (Menuju Jl. Dempo Luar)'
+      };
+
+      closeMobileSheet();
+      state.activeTab = 'aktif';
+      renderApp();
+      showMobileSnackbar(`Pekerjaan ${taken.jobId} berhasil diambil! Segera menuju bengkel DM.`);
+      startMechanicDriveSimulation();
+    }
+
+    /* ==========================================================================
+       5. TAB 2: PEKERJAAN AKTIF & NAVIGASI KE BENGKEL DM
+       ========================================================================== */
+    function stopMechanicDriveSimulation() {
+      if (window._mechDriveTimer) {
+        clearInterval(window._mechDriveTimer);
+        window._mechDriveTimer = null;
+      }
+      state.isSimulatingDrive = false;
+    }
+
+    function startMechanicDriveSimulation() {
+      if (!state.activeJob || state.activeJob.status !== 'ON_THE_WAY') return;
+      stopMechanicDriveSimulation();
+      state.isSimulatingDrive = true;
+
+      window._mechDriveTimer = setInterval(() => {
+        if (!state.activeJob || state.activeJob.status !== 'ON_THE_WAY') {
+          stopMechanicDriveSimulation();
+          return;
+        }
+        state.activeJob.progressPercent = Math.min(100, +(state.activeJob.progressPercent + 3).toFixed(1));
+        const ratio = Math.max(0, (100 - state.activeJob.progressPercent) / 100);
+        state.activeJob.remainingKm = +(ratio * state.activeJob.distanceKm).toFixed(1);
+        state.activeJob.remainingEta = state.activeJob.progressPercent >= 100 ? 0 : Math.max(1, Math.round(ratio * state.activeJob.etaMinutes));
+
+        if (state.activeJob.progressPercent >= 100) {
+          state.activeJob.currentStreet = 'Tiba di depan Dokter Mobil Palembang';
+          stopMechanicDriveSimulation();
+          if (state.activeTab === 'aktif') renderApp();
+          showMobileSnackbar('Anda telah tiba di lokasi Dokter Mobil Palembang!', 'location_on');
+          return;
+        } else if (state.activeJob.progressPercent >= 65) {
+          state.activeJob.currentStreet = 'Jl. Letkol Iskandar (Mendekati Bengkel)';
+        } else if (state.activeJob.progressPercent >= 35) {
+          state.activeJob.currentStreet = 'Jl. Dempo Luar (Menuju Jl. Letkol Iskandar)';
+        }
+
+        if (state.activeTab === 'aktif') renderApp();
+      }, 800);
+    }
+
+    function renderAktifTab() {
+      if (!state.mechanic.isVerified) return renderPendingScreen('Pekerjaan Aktif');
+      const job = state.activeJob;
+      if (!job) {
+        return `
+          <div class="px-4 pt-3 pb-3 bg-md-surfaceContainerLow border-b border-md-outlineVariant/50">
+            <h1 class="text-sm font-bold text-md-onSurface">Pekerjaan Aktif</h1>
+            <p class="text-[11px] text-md-onSurfaceVariant">Status perjalanan dan pengerjaan unit di bengkel</p>
+          </div>
+          <div class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-md-surfaceContainer flex items-center justify-center mb-3 text-md-outline">
+              <span class="material-symbols-outlined text-3xl">directions_car</span>
+            </div>
+            <h3 class="text-sm font-bold text-md-onSurface">Belum Ada Pekerjaan Aktif</h3>
+            <p class="text-xs text-md-onSurfaceVariant mt-1 max-w-[250px]">Ambil pekerjaan yang tersedia di tab Bursa untuk mulai navigasi menuju bengkel Dokter Mobil.</p>
+            <button onclick="switchTab('bursa')" class="mt-4 px-5 py-2.5 rounded-full text-xs font-semibold bg-md-primary text-white">
+              Lihat Bursa Pekerjaan
+            </button>
+          </div>
+        `;
+      }
+
+      const isOtw = job.status === 'ON_THE_WAY';
+
+      // Route interpolation mengikuti Jl. Jend. Sudirman -> Jl. Lintas Sumatera -> Jl. Letkol Iskandar -> Dokter Mobil Palembang
+      const pts = [
+        { x: 11.5, y: 18.0 },
+        { x: 16.5, y: 37.4 },
+        { x: 24.4, y: 63.2 },
+        { x: 38.8, y: 58.4 },
+        { x: 49.5, y: 54.0 }
+      ];
+      const p = Math.min(1, Math.max(0, (job.progressPercent || 20) / 100));
+      const idxFloat = p * (pts.length - 1);
+      const i0 = Math.floor(idxFloat);
+      const i1 = Math.min(pts.length - 1, i0 + 1);
+      const t = idxFloat - i0;
+      const mx = pts[i0].x + (pts[i1].x - pts[i0].x) * t;
+      const my = pts[i0].y + (pts[i1].y - pts[i0].y) * t;
+
+      return `
+        <div class="px-4 pt-3 pb-3 bg-md-surfaceContainerLow border-b border-md-outlineVariant/50 flex items-center justify-between">
+          <div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isOtw ? 'bg-blue-100 text-blue-900' : 'bg-emerald-100 text-emerald-900'}">
+              ${isOtw ? 'ON THE WAY • Menuju Bengkel' : 'IN PROGRESS • Sedang Dikerjakan'}
+            </span>
+            <h1 class="text-sm font-bold text-md-onSurface mt-1">${job.jobId} • ${job.categoryName}</h1>
+          </div>
+          <span class="text-xs font-extrabold text-md-tertiary">${formatRupiah(job.totalPrice)}</span>
+        </div>
+
+        <div class="p-4 space-y-3.5">
+          ${isOtw ? `
+            <!-- Live Navigation Map to Bengkel DM -->
+            <div class="rounded-3xl overflow-hidden border border-md-outlineVariant shadow-xs bg-white">
+              <div class="relative h-52 bg-[#F2EFE9] overflow-hidden">
+                <svg class="w-full h-full" viewBox="0 0 360 210" preserveAspectRatio="none">
+                  <rect width="360" height="210" fill="#F2EFE9" />
+                  <polygon points="8,72 24,66 30,85 13,92" fill="#C8E6C9" />
+                  <!-- Sungai sisi timur -->
+                  <path d="M 305 0 C 298 34, 292 63, 294 94 C 296 122, 307 146, 331 174 L 360 202 L 360 189 L 338 167 C 315 141, 305 117, 303 92 C 301 62, 307 33, 314 0 Z" fill="#9CCCF4" />
+                  <path d="M 299 86 C 320 72, 340 61, 360 51 L 360 58 C 340 68, 320 78, 301 92 Z" fill="#9CCCF4" />
+                  <!-- Jalan sekunder -->
+                  <g fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round">
+                    <path d="M 112 10 L 128 100" />
+                    <path d="M 125 102 L 182 90" />
+                    <path d="M 209 128 L 218 210" />
+                    <path d="M 250 120 L 313 95 L 360 84" />
+                  </g>
+                  <!-- Jl. Kolonel Atmo -->
+                  <path d="M 59 78 L 117 128 L 166 210" fill="none" stroke="#FFFFFF" stroke-width="4.2" stroke-linecap="round"/>
+                  <path d="M 145 139 L 184 210" fill="none" stroke="#F8D26A" stroke-width="5" stroke-linecap="round"/>
+                  <!-- Jl. Jend. Sudirman / Jl. Lintas Sumatera -->
+                  <path d="M 17 0 L 59 78 L 88 133 L 133 210" fill="none" stroke="#CBD5E1" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M 17 0 L 59 78 L 88 133 L 133 210" fill="none" stroke="#E2E8F0" stroke-width="7" stroke-linecap="round"/>
+                  <!-- Jl. Letkol Iskandar -> Jl. Lingkaran 1 -->
+                  <path d="M 0 167 L 88 133 L 178 113 L 250 84 L 297 62" fill="none" stroke="#F3BC3C" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M 0 167 L 88 133 L 178 113 L 250 84 L 297 62" fill="none" stroke="#FDE293" stroke-width="5" stroke-linecap="round"/>
+                  <!-- Landmark dots -->
+                  <circle cx="67" cy="60" r="3.5" fill="#E52592"/>
+                  <circle cx="157" cy="124" r="3.5" fill="#E52592"/>
+                  <circle cx="159" cy="158" r="3.5" fill="#E52592"/>
+                  <!-- Rute Biru Google Directions -->
+                  <polyline points="41.4,37.8 59.4,78.5 87.8,132.7 139.7,122.6 178.2,113.4" fill="none" stroke="#185ABC" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="41.4,37.8 59.4,78.5 87.8,132.7 139.7,122.6 178.2,113.4" fill="none" stroke="#4285F4" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <!-- Destination Pin: Dokter Mobil Palembang -->
+                <div class="absolute transform -translate-x-1/2 -translate-y-full flex flex-col items-center" style="left: 49.5%; top: 54%;">
+                  <span class="px-2 py-0.5 rounded bg-[#C5221F] text-white text-[9px] font-bold shadow whitespace-nowrap">Dokter Mobil</span>
+                  <span class="material-symbols-outlined text-2xl text-[#EA4335] icon-filled leading-none">location_on</span>
+                </div>
+
+                <!-- Mechanic Live Position -->
+                <div class="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-700" style="left: ${mx.toFixed(1)}%; top: ${my.toFixed(1)}%;">
+                  <div class="relative flex items-center justify-center">
+                    <span class="absolute w-8 h-8 rounded-full bg-blue-500/45 radar-ring"></span>
+                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center shadow border-2 border-white">
+                      <span class="material-symbols-outlined text-sm">two_wheeler</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="absolute top-2.5 inset-x-2.5 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-full shadow text-[10px] font-semibold text-gray-800 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-blue-600">navigation</span>
+                  <span class="truncate">${job.currentStreet}</span>
+                </div>
+              </div>
+
+              <div class="p-3.5 bg-blue-50/70 flex items-center justify-between text-xs">
+                <div>
+                  <span class="text-[10px] text-blue-800 block">Sisa Jarak & Waktu Tiba</span>
+                  <strong class="text-sm font-bold text-blue-950">${job.remainingKm} km • ${job.remainingEta} menit</strong>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[10px] font-semibold">
+                  GPS Aktif
+                </span>
+              </div>
+            </div>
+          ` : `
+            <!-- In-Progress Banner -->
+            <div class="p-4 rounded-3xl bg-emerald-50 border border-emerald-200 text-center">
+              <span class="material-symbols-outlined text-3xl text-md-tertiary mb-1">build_circle</span>
+              <h3 class="text-xs font-bold text-emerald-950">Sedang Mengerjakan Unit di Bengkel</h3>
+              <p class="text-[11px] text-emerald-800 mt-0.5">Waktu kerja sedang dicatat oleh Admin Bengkel DM. Lapor staf bengkel jika perbaikan selesai.</p>
+            </div>
+          `}
+
+          <!-- Job Info Card -->
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/70 space-y-2.5 text-xs">
+            <div>
+              <h4 class="font-bold text-sm text-md-onSurface">${job.title}</h4>
+              <p class="text-[11px] font-semibold text-md-secondary">${job.vehicleSummary}</p>
+            </div>
+            <p class="text-[11px] text-md-onSurfaceVariant bg-md-surfaceContainerLow p-2.5 rounded-xl">${job.description}</p>
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-md-onSurfaceVariant">Total Biaya Jasa:</span>
+              <strong class="text-sm font-extrabold text-md-tertiary">${formatRupiah(job.totalPrice)}</strong>
+            </div>
+          </div>
+
+          <!-- Simulation Helper Buttons for Testing Flow -->
+          <div class="p-3.5 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant/60 space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-md-onSurfaceVariant block">Simulasi Konfirmasi Staf Bengkel DM:</span>
+            ${isOtw ? `
+              <div class="flex gap-2">
+                <button onclick="cancelActiveJob()" class="px-3.5 py-2.5 rounded-full text-xs font-semibold text-md-primary border border-md-outlineVariant bg-white">
+                  Batalkan
+                </button>
+                <button onclick="simulateAdminConfirmArrival()" class="flex-1 py-2.5 px-4 rounded-full text-xs font-semibold bg-md-tertiary text-white shadow-xs">
+                  Simulasi Admin: Mekanik Tiba
+                </button>
+              </div>
+            ` : `
+              <button onclick="simulateAdminCompleteJob()" class="w-full py-2.5 px-4 rounded-full text-xs font-semibold bg-md-primary text-white shadow-xs">
+                Simulasi Admin: Pekerjaan Selesai
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function simulateAdminConfirmArrival() {
+      if (!state.activeJob) return;
+      stopMechanicDriveSimulation();
+      state.activeJob.status = 'IN_PROGRESS';
+      renderApp();
+      showMobileSnackbar('Admin DM mengonfirmasi kedatangan Anda. Mulai pengerjaan!', 'build');
+    }
+
+    function simulateAdminCompleteJob() {
+      if (!state.activeJob) return;
+      const done = state.activeJob;
+      state.historyJobs.unshift({
+        jobId: done.jobId,
+        title: done.title,
+        vehicleSummary: done.vehicleSummary,
+        categoryName: done.categoryName,
+        locationName: done.locationName,
+        completedDate: 'Baru saja',
+        arrivalDurationMinutes: Math.max(10, done.etaMinutes - 2),
+        workDurationMinutes: 60,
+        totalPrice: done.totalPrice,
+        rating: 5,
+        reviewComment: 'Pekerjaan selesai dengan baik sesuai standar Dokter Mobil.'
+      });
+      state.mechanic.completedJobsCount += 1;
+      state.activeJob = null;
+      state.activeTab = 'riwayat';
+      renderApp();
+      showMobileSnackbar(`Pekerjaan ${done.jobId} selesai! Total Jasa ${formatRupiah(done.totalPrice)}.`);
+    }
+
+    function cancelActiveJob() {
+      if (!state.activeJob) return;
+      stopMechanicDriveSimulation();
+      const cancelled = state.activeJob;
+      state.openJobs.unshift({
+        jobId: cancelled.jobId,
+        locationName: cancelled.locationName,
+        locationAddress: cancelled.locationAddress,
+        distanceKm: cancelled.distanceKm,
+        etaMinutes: cancelled.etaMinutes,
+        categoryId: cancelled.categoryId,
+        categoryName: cancelled.categoryName,
+        title: cancelled.title,
+        vehicleSummary: cancelled.vehicleSummary,
+        description: cancelled.description,
+        vehicleType: cancelled.vehicleType,
+        boardSummary: cancelled.boardSummary,
+        totalPrice: cancelled.totalPrice,
+        postedAgo: 'Baru dirilis ulang'
+      });
+      state.activeJob = null;
+      state.activeTab = 'bursa';
+      renderApp();
+      showMobileSnackbar(`Pekerjaan ${cancelled.jobId} dibatalkan dan dikembalikan ke bursa.`, 'replay');
+    }
+
+    /* ==========================================================================
+       6. TAB 3: RIWAYAT PEKERJAAN & ULASAN
+       ========================================================================== */
+    function renderRiwayatTab() {
+      if (!state.mechanic.isVerified) return renderPendingScreen('Riwayat Pekerjaan');
+      return `
+        <div class="px-4 pt-3 pb-3 bg-md-surfaceContainerLow border-b border-md-outlineVariant/50">
+          <h1 class="text-sm font-bold text-md-onSurface">Riwayat Pekerjaan Selesai</h1>
+          <p class="text-[11px] text-md-onSurfaceVariant">Catatan rekam waktu kerja, total biaya jasa & ulasan pelanggan</p>
+        </div>
+
+        <div class="p-4 space-y-3">
+          ${state.historyJobs.map(h => `
+            <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/70 space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-800">${h.categoryName}</span>
+                <span class="text-[10px] text-md-onSurfaceVariant">${h.completedDate}</span>
+              </div>
+
+              <h4 class="font-bold text-sm text-md-onSurface">${h.title}</h4>
+              <p class="text-[11px] text-md-secondary font-medium">${h.vehicleSummary}</p>
+
+              <div class="p-2.5 rounded-2xl bg-md-surfaceContainerLow flex items-center justify-between text-[11px]">
+                <span class="text-md-onSurfaceVariant">Tiba: <strong>${h.arrivalDurationMinutes} mnt</strong> • Kerja: <strong>${h.workDurationMinutes} mnt</strong></span>
+                <strong class="text-md-tertiary font-bold">${formatRupiah(h.totalPrice)}</strong>
+              </div>
+
+              ${h.reviewComment ? `
+                <div class="pt-1 flex items-start gap-1.5 text-[11px] text-md-onSurfaceVariant">
+                  <span class="text-amber-500 font-bold shrink-0">${h.rating}.0 ★</span>
+                  <span class="italic">"${h.reviewComment}"</span>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    /* ==========================================================================
+       7. TAB 4: PROFIL MEKANIK & STATUS ON-SITE
+       ========================================================================== */
+    function renderProfilTab() {
+      const m = state.mechanic;
+      const initials = m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      return `
+        <div class="px-4 pt-3 pb-3 bg-md-surfaceContainerLow border-b border-md-outlineVariant/50 flex items-center justify-between">
+          <div>
+            <h1 class="text-sm font-bold text-md-onSurface">Profil Mitra Mekanik</h1>
+            <p class="text-[11px] text-md-onSurfaceVariant">Identitas keahlian, evaluasi kinerja & status on-site</p>
+          </div>
+          <button onclick="logoutMechanic()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-semibold text-md-primary bg-md-primaryContainer/50 hover:bg-md-primaryContainer">
+            <span class="material-symbols-outlined text-sm">logout</span>
+            <span>Keluar</span>
+          </button>
+        </div>
+
+        <div class="p-4 space-y-4">
+          <!-- Profile Header Card -->
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/70 flex items-center gap-3.5">
+            <div class="w-14 h-14 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer font-extrabold text-lg flex items-center justify-center shrink-0">
+              ${initials}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1">
+                <h2 class="text-base font-bold text-md-onSurface truncate">${m.name}</h2>
+                ${m.isVerified ? `<span class="material-symbols-outlined text-base text-md-tertiary icon-filled">verified</span>` : `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-900">Belum Verifikasi</span>`}
+              </div>
+              <p class="text-xs text-md-onSurfaceVariant truncate">${m.phone} • ${m.email}</p>
+              <div class="flex flex-wrap gap-1 mt-1.5">
+                ${m.skillNames.map(s => `<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-md-secondaryContainer text-md-onSecondaryContainer">${s}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          ${!m.isVerified ? '' : `
+          <!-- Performance Stats -->
+          <div class="grid grid-cols-4 gap-2 bg-white p-3.5 rounded-3xl border border-md-outlineVariant/70 text-center">
+            <div>
+              <span class="text-[10px] text-md-onSurfaceVariant block">Rating</span>
+              <strong class="text-xs font-extrabold text-amber-600">${m.ratingAvg} ★</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-md-onSurfaceVariant block">Selesai</span>
+              <strong class="text-xs font-extrabold">${m.completedJobsCount}</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-md-onSurfaceVariant block">Rata2 Tiba</span>
+              <strong class="text-xs font-extrabold">${m.avgArrivalMinutes}m</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-md-onSurfaceVariant block">Rata2 Kerja</span>
+              <strong class="text-xs font-extrabold">${m.avgWorkDurationMinutes}m</strong>
+            </div>
+          </div>
+
+          <!-- Status Rekomendasi On-Site (Kurasi Admin DM) -->
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/70 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-md-onSurface">Layanan di Tempat (On-Site)</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-md-tertiaryContainer text-md-onTertiaryContainer">
+                Direkomendasikan Admin DM
+              </span>
+            </div>
+            <p class="text-[11px] text-md-onSurfaceVariant leading-relaxed">
+              Selamat! Berdasarkan kinerja Anda, Admin Dokter Mobil memberikan status <strong>Direkomendasikan</strong> sehingga profil Anda tampil di aplikasi pelanggan D-Mobil.
+            </p>
+
+            <div class="p-3 rounded-2xl bg-md-surfaceContainerLow flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold text-md-onSurface block">Terima Panggilan On-Site</span>
+                <span class="text-[10px] text-md-onSurfaceVariant">Tampilkan tombol WhatsApp & Telepon ke pelanggan</span>
+              </div>
+              <button onclick="toggleOnSiteAvailability()" class="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${m.isAvailableForOnSite ? 'bg-md-secondary' : 'bg-gray-300'}">
+                <span class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow transition duration-200 ${m.isAvailableForOnSite ? 'translate-x-5' : 'translate-x-0'}"></span>
+              </button>
+            </div>
+          </div>
+
+          `}
+
+          <!-- Dokumen Verifikasi -->
+          <div class="bg-white rounded-3xl p-4 border border-md-outlineVariant/70 space-y-2 text-xs">
+            <span class="font-bold text-md-onSurface block">Kelengkapan Berkas Kemitraan</span>
+            <div class="flex items-center justify-between py-1.5 border-b border-gray-100">
+              <span class="text-md-onSurfaceVariant">Foto KTP Identitas</span>
+              <span class="${m.isVerified ? 'text-md-tertiary' : 'text-amber-700'} font-semibold">${m.isVerified ? 'Terverifikasi' : m.ktpSubmitted ? 'Menunggu verifikasi' : 'Belum diunggah'}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-md-onSurfaceVariant">Sertifikat Keahlian</span>
+              <span class="text-md-secondary font-semibold">${m.certName}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleOnSiteAvailability() {
+      state.mechanic.isAvailableForOnSite = !state.mechanic.isAvailableForOnSite;
+      renderApp();
+      showMobileSnackbar(
+        state.mechanic.isAvailableForOnSite
+          ? 'Profil Anda aktif tampil di daftar rekomendasi layanan di tempat pelanggan.'
+          : 'Profil Anda disembunyikan sementara dari daftar rekomendasi layanan di tempat.'
+      );
+    }
+
+    /* ==========================================================================
+       8. MAIN RENDER ORCHESTRATOR
+       ========================================================================== */
+    function renderApp() {
+      updateStatusBarServiceIcon();
+      renderBottomNav();
+
+      const screen = document.getElementById('app-screen');
+      if (!state.isLoggedIn) {
+        screen.innerHTML = renderMechanicLoginScreen();
+        return;
+      }
+      if (state.activeTab === 'bursa') {
+        screen.innerHTML = renderBursaTab();
+      } else if (state.activeTab === 'aktif') {
+        screen.innerHTML = renderAktifTab();
+      } else if (state.activeTab === 'riwayat') {
+        screen.innerHTML = renderRiwayatTab();
+      } else if (state.activeTab === 'profil') {
+        screen.innerHTML = renderProfilTab();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+    });
+  </script>
+<div style="position:fixed;left:8px;bottom:8px;z-index:9999;background:#111827;color:#fff;font:600 11px sans-serif;padding:7px 12px;border-radius:999px;white-space:nowrap;opacity:.92"><a href="index.html" style="color:#93c5fd">&#8592; Menu</a> &middot; Prototipe, data contoh</div>
+</body>
+</html>
