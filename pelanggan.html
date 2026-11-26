@@ -160,11 +160,11 @@
       customer: {
         customerId: 'cust_01',
         name: 'Andi Saputra',
-        phone: '08XX-XXXX-0001',
-        email: 'andi.saputra@example.com',
+        phone: '0812-3344-5566',
+        email: 'andi.saputra@gmail.com',
         vehicles: [
-          { id: 'veh_1', plateNumber: 'BG 1892 XX', brand: 'Toyota', model: 'Innova Reborn', year: '2021', color: 'Hitam', typeTag: 'MPV' },
-          { id: 'veh_2', plateNumber: 'BG 1102 XX', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020', color: 'Putih', typeTag: 'SUV' }
+          { id: 'veh_1', plateNumber: 'BG 1892 KJU', brand: 'Toyota', model: 'Innova Reborn', year: '2021', color: 'Hitam', typeTag: 'MPV' },
+          { id: 'veh_2', plateNumber: 'BG 1102 PJS', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020', color: 'Putih', typeTag: 'SUV' }
         ]
       },
 
@@ -192,8 +192,8 @@
           uid: 'mech_01',
           name: 'Agus Setiawan',
           initials: 'AS',
-          phone: '08XX-XXXX-0002',
-          whatsappNumber: '62-8XX-XXXX-0002',
+          phone: '0813-4567-8901',
+          whatsappNumber: '6281345678901',
           skillIds: ['ac', 'elektrikal'],
           skillNames: ['AC', 'Elektrikal'],
           hasCertificate: true,
@@ -208,8 +208,8 @@
           uid: 'mech_02',
           name: 'Dedi Kurniawan',
           initials: 'DK',
-          phone: '08XX-XXXX-0003',
-          whatsappNumber: '62-8XX-XXXX-0003',
+          phone: '0857-1122-3344',
+          whatsappNumber: '6285711223344',
           skillIds: ['mesin', 'kaki_kaki'],
           skillNames: ['Mesin', 'Kaki-kaki'],
           hasCertificate: true,
@@ -227,7 +227,7 @@
           id: 'BK-2026-081',
           type: 'BOOKING',
           locationName: 'Dokter Mobil Palembang',
-          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
           categoryName: 'AC',
           complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
           scheduledDate: 'Hari Ini, 15:00 WIB',
@@ -245,7 +245,7 @@
           id: 'JOB-104',
           type: 'SERVICE',
           locationName: 'Dokter Mobil Palembang',
-          vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
           categoryName: 'AC',
           complaint: 'Ganti Evaporator & Flushing AC Total.',
           scheduledDate: 'Hari Ini, 13:10 WIB',
@@ -261,7 +261,7 @@
           id: 'JOB-089',
           type: 'SERVICE',
           locationName: 'Dokter Mobil Palembang',
-          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
           categoryName: 'Mesin',
           complaint: 'Tune Up Ruang Bakar & Penggantian Oli Mesin.',
           scheduledDate: '12 Okt 2026',
@@ -427,7 +427,7 @@
             <div class="w-9 h-9 rounded-full bg-md-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">AS</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Andi Saputra</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">andi.saputra@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">andi.saputra@gmail.com</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-100 text-emerald-800 shrink-0">Terdaftar</span>
           </button>
@@ -436,7 +436,7 @@
             <div class="w-9 h-9 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0">RA</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Rizka Amelia</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizka.amelia@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizka.amelia@gmail.com</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-100 text-blue-800 shrink-0">Akun Baru</span>
           </button>
@@ -448,8 +448,8 @@
     function handleCustomerGoogleSignIn(accountType) {
       if (accountType === 'EXISTING') {
         state.customer.name = 'Andi Saputra';
-        state.customer.email = 'andi.saputra@example.com';
-        state.customer.phone = '08XX-XXXX-0001';
+        state.customer.email = 'andi.saputra@gmail.com';
+        state.customer.phone = '0812-3344-5566';
         state.selectedVehicleIndex = 0;
         state.isLoggedIn = true;
         state.activeTab = 'beranda';
@@ -457,8 +457,8 @@
         showMobileSnackbar(`Selamat datang kembali, ${state.customer.name}`);
       } else {
         state.customer.name = 'Rizka Amelia';
-        state.customer.email = 'rizka.amelia@example.com';
-        state.customer.phone = '08XX-XXXX-0004';
+        state.customer.email = 'rizka.amelia@gmail.com';
+        state.customer.phone = '0812-9000-1122';
         state.customer.vehicles = [];
         state.selectedVehicleIndex = 0;
         state.isLoggedIn = true;
@@ -482,7 +482,7 @@
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="block font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor Mobil *</label>
-              <input type="text" id="onb-plate" required placeholder="BG 1520 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
+              <input type="text" id="onb-plate" required placeholder="BG 1520 RZ" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
             </div>
             <div>
               <label class="block font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
@@ -1065,7 +1065,7 @@
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="block font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor *</label>
-              <input type="text" id="new-veh-plate" required placeholder="BG 1420 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
+              <input type="text" id="new-veh-plate" required placeholder="BG 1420 AB" class="w-full rounded-xl border border-md-outline px-3 py-2 uppercase font-bold" />
             </div>
             <div>
               <label class="block font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>

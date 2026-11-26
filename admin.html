@@ -129,7 +129,7 @@
         <span class="material-symbols-outlined text-red-600 text-xl mt-0.5">gpp_bad</span>
         <div class="text-xs text-red-800">
           <p class="font-semibold">Akses Ditolak</p>
-          <p class="mt-0.5">Email <span class="font-mono font-semibold">tamu.luar@example.com</span> belum terdaftar sebagai Admin. Hubungi Super Admin untuk mendaftarkan email Google Anda.</p>
+          <p class="mt-0.5">Email <span class="font-mono font-semibold">tamu.luar@gmail.com</span> belum terdaftar sebagai Admin. Hubungi Super Admin untuk mendaftarkan email Google Anda.</p>
         </div>
       </div>
     </div>
@@ -154,7 +154,7 @@
             <div class="w-9 h-9 rounded-full bg-md-secondary text-white font-bold text-xs flex items-center justify-center shrink-0">BS</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Budi Santoso</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">budi.superadmin@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">budi.superadmin@doktermobil.co.id</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-md-primaryContainer text-md-onPrimaryContainer shrink-0">Super Admin</span>
           </button>
@@ -163,7 +163,7 @@
             <div class="w-9 h-9 rounded-full bg-md-tertiary text-white font-bold text-xs flex items-center justify-center shrink-0">RM</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Rina Marlina</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">rina.admin@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rina.admin@doktermobil.co.id</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-md-secondaryContainer text-md-onSecondaryContainer shrink-0">Admin Bengkel</span>
           </button>
@@ -172,7 +172,7 @@
             <div class="w-9 h-9 rounded-full bg-gray-400 text-white font-bold text-xs flex items-center justify-center shrink-0">TL</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Tamu Luar</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">tamu.luar@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">tamu.luar@gmail.com</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-gray-100 text-gray-600 shrink-0">Non-Admin</span>
           </button>
@@ -386,7 +386,7 @@
 
         <div>
           <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1.5">Data Kendaraan (Merek, Tipe, Tahun, Plat) *</label>
-          <input type="text" id="job-vehicle-input" required placeholder="Contoh: Honda CR-V Turbo 2020 (BG 1420 XX)" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary" />
+          <input type="text" id="job-vehicle-input" required placeholder="Contoh: Honda CR-V Turbo 2020 (BG 1420 AB)" class="w-full rounded-xl border border-md-outline bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-md-primary" />
         </div>
 
         <div>
@@ -483,7 +483,7 @@
        ========================================================================== */
     const state = {
       currentUser: {
-        email: 'budi.superadmin@example.com',
+        email: 'budi.superadmin@doktermobil.co.id',
         name: 'Budi Santoso',
         role: 'SUPER_ADMIN',
         initials: 'BS'
@@ -526,22 +526,22 @@
       ],
 
       adminUsers: [
-        { email: 'budi.superadmin@example.com', name: 'Budi Santoso', role: 'SUPER_ADMIN', isActive: true },
-        { email: 'rina.admin@example.com', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', isActive: true }
+        { email: 'budi.superadmin@doktermobil.co.id', name: 'Budi Santoso', role: 'SUPER_ADMIN', isActive: true },
+        { email: 'rina.admin@doktermobil.co.id', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', isActive: true }
       ],
 
       customers: [
         {
           customerId: 'cust_01',
           name: 'Andi Saputra',
-          phone: '08XX-XXXX-0001',
-          email: 'andi.saputra@example.com',
+          phone: '0812-3344-5566',
+          email: 'andi.saputra@gmail.com',
           registrationSource: 'APP_SELF_REGISTER',
           registeredByAdmin: null,
           isAccountClaimed: true,
           vehicles: [
-            { plateNumber: 'BG 1892 XX', brand: 'Toyota', model: 'Innova Reborn', year: '2021' },
-            { plateNumber: 'BG 1102 XX', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020' }
+            { plateNumber: 'BG 1892 KJU', brand: 'Toyota', model: 'Innova Reborn', year: '2021' },
+            { plateNumber: 'BG 1102 PJS', brand: 'Mitsubishi', model: 'Pajero Sport', year: '2020' }
           ],
           totalVisits: 4,
           lastVisit: 'Hari Ini',
@@ -550,13 +550,13 @@
         {
           customerId: 'cust_02',
           name: 'Siti Nurhaliza',
-          phone: '08XX-XXXX-0006',
-          email: 'siti.nurhaliza89@example.com',
+          phone: '0819-7766-5544',
+          email: 'siti.nurhaliza89@gmail.com',
           registrationSource: 'APP_SELF_REGISTER',
           registeredByAdmin: null,
           isAccountClaimed: true,
           vehicles: [
-            { plateNumber: 'BG 2401 XX', brand: 'Honda', model: 'HR-V Prestige', year: '2022' }
+            { plateNumber: 'BG 2401 SZZ', brand: 'Honda', model: 'HR-V Prestige', year: '2022' }
           ],
           totalVisits: 2,
           lastVisit: 'Hari Ini',
@@ -565,15 +565,15 @@
         {
           customerId: 'cust_03',
           name: 'H. Bambang Wijaya',
-          phone: '08XX-XXXX-0007',
-          email: 'bambang.wijaya.plg@example.com',
+          phone: '0811-7812-4490',
+          email: 'bambang.wijaya.plg@gmail.com',
           registrationSource: 'WALK_IN_ADMIN',
           registeredByAdmin: 'Rina Marlina',
           isAccountClaimed: false,
           vehicles: [
-            { plateNumber: 'BG 1990 XX', brand: 'Toyota', model: 'Fortuner VRZ', year: '2019' },
-            { plateNumber: 'BG 1088 XX', brand: 'Toyota', model: 'Camry 2.5V', year: '2019' },
-            { plateNumber: 'BG 8821 XX', brand: 'Honda', model: 'Brio RS', year: '2023' }
+            { plateNumber: 'BG 1990 RF', brand: 'Toyota', model: 'Fortuner VRZ', year: '2019' },
+            { plateNumber: 'BG 1088 KLM', brand: 'Toyota', model: 'Camry 2.5V', year: '2019' },
+            { plateNumber: 'BG 8821 TBO', brand: 'Honda', model: 'Brio RS', year: '2023' }
           ],
           totalVisits: 6,
           lastVisit: 'Hari Ini',
@@ -582,13 +582,13 @@
         {
           customerId: 'cust_04',
           name: 'Dr. Rahmat Hidayat',
-          phone: '08XX-XXXX-0008',
+          phone: '0812-7100-9921',
           email: null,
           registrationSource: 'WALK_IN_ADMIN',
           registeredByAdmin: 'Budi Santoso',
           isAccountClaimed: false,
           vehicles: [
-            { plateNumber: 'BG 2718 XX', brand: 'Mazda', model: 'CX-5', year: '2018' }
+            { plateNumber: 'BG 2718 TBO', brand: 'Mazda', model: 'CX-5', year: '2018' }
           ],
           totalVisits: 1,
           lastVisit: 'Hari Ini',
@@ -600,9 +600,9 @@
         {
           uid: 'mech_01',
           name: 'Agus Setiawan',
-          email: 'agus.mekanik@example.com',
-          phone: '08XX-XXXX-0002',
-          whatsappNumber: '62-8XX-XXXX-0002',
+          email: 'agus.mekanik@gmail.com',
+          phone: '0813-4567-8901',
+          whatsappNumber: '6281345678901',
           skillIds: ['ac', 'elektrikal'],
           hasCertificate: true,
           isVerified: true,
@@ -616,15 +616,15 @@
           cancelledJobsCount: 0,
           avgArrivalMinutes: 22,
           avgWorkDurationMinutes: 85,
-          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          ktpNote: 'NIK: 3172051208890004 • Terverifikasi Valid',
           certNote: 'Sertifikat Teknisi AC Otomotif BNSP'
         },
         {
           uid: 'mech_02',
           name: 'Dedi Kurniawan',
-          email: 'dedi.kurniawan88@example.com',
-          phone: '08XX-XXXX-0003',
-          whatsappNumber: '62-8XX-XXXX-0003',
+          email: 'dedi.kurniawan88@gmail.com',
+          phone: '0857-1122-3344',
+          whatsappNumber: '6285711223344',
           skillIds: ['mesin', 'kaki_kaki'],
           hasCertificate: true,
           isVerified: true,
@@ -638,15 +638,15 @@
           cancelledJobsCount: 1,
           avgArrivalMinutes: 28,
           avgWorkDurationMinutes: 115,
-          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          ktpNote: 'NIK: 3175021904910002 • Terverifikasi Valid',
           certNote: 'Sertifikat Mekanik Engine & Chassis Astra'
         },
         {
           uid: 'mech_03',
           name: 'Hendra Wijaya',
-          email: 'hendra.auto@example.com',
-          phone: '08XX-XXXX-0009',
-          whatsappNumber: '62-8XX-XXXX-0009',
+          email: 'hendra.auto@gmail.com',
+          phone: '0812-9988-7766',
+          whatsappNumber: '6281299887766',
           skillIds: ['kaki_kaki', 'mesin'],
           hasCertificate: false,
           isVerified: true,
@@ -660,15 +660,15 @@
           cancelledJobsCount: 1,
           avgArrivalMinutes: 46,
           avgWorkDurationMinutes: 130,
-          ktpNote: 'NIK disamarkan • Terverifikasi Valid',
+          ktpNote: 'NIK: 3275010506950009 • Terverifikasi Valid',
           certNote: null
         },
         {
           uid: 'mech_04',
           name: 'Rizky Pratama',
-          email: 'rizky.pratama.mech@example.com',
-          phone: '08XX-XXXX-0005',
-          whatsappNumber: '62-8XX-XXXX-0005',
+          email: 'rizky.pratama.mech@gmail.com',
+          phone: '0878-5544-3322',
+          whatsappNumber: '6287855443322',
           skillIds: ['elektrikal', 'ac'],
           hasCertificate: false,
           isVerified: false,
@@ -682,7 +682,7 @@
           cancelledJobsCount: 0,
           avgArrivalMinutes: 0,
           avgWorkDurationMinutes: 0,
-          ktpNote: 'NIK disamarkan • Menunggu Pemeriksaan KTP',
+          ktpNote: 'NIK: 3174092211970001 • Menunggu Pemeriksaan KTP',
           certNote: null
         }
       ],
@@ -694,8 +694,8 @@
           locationName: 'Dokter Mobil Palembang',
           customerId: 'cust_01',
           customerName: 'Andi Saputra',
-          customerPhone: '08XX-XXXX-0001',
-          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 XX)',
+          customerPhone: '0812-3344-5566',
+          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
           categoryId: 'ac',
           categoryName: 'AC',
           complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
@@ -711,8 +711,8 @@
           locationName: 'Dokter Mobil Palembang',
           customerId: 'cust_02',
           customerName: 'Siti Nurhaliza',
-          customerPhone: '08XX-XXXX-0006',
-          vehicleInfo: 'Honda HR-V Prestige 2022 (BG 2401 XX)',
+          customerPhone: '0819-7766-5544',
+          vehicleInfo: 'Honda HR-V Prestige 2022 (BG 2401 SZZ)',
           categoryId: 'kaki_kaki',
           categoryName: 'Kaki-kaki',
           complaint: 'Bunyi gluduk di roda depan kiri saat melewati polisi tidur.',
@@ -736,12 +736,12 @@
           title: 'Ganti Evaporator & Flushing AC Total',
           categoryId: 'ac',
           categoryName: 'AC',
-          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
           description: 'Bongkar dashboard, ganti evaporator baru, vakum dan isi freon R134a.',
           status: 'COMPLETED',
           assignedMechanicId: 'mech_01',
           assignedMechanicName: 'Agus Setiawan',
-          assignedMechanicPhone: '08XX-XXXX-0002',
+          assignedMechanicPhone: '0813-4567-8901',
           totalPrice: 850000,
           revenueSplit: {
             mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 595000,
@@ -767,12 +767,12 @@
           title: 'Kuras Oli Transmisi Matic & Tune Up',
           categoryId: 'mesin',
           categoryName: 'Mesin',
-          vehicleSummary: 'Toyota Camry 2.5V 2019 (BG 1088 XX)',
+          vehicleSummary: 'Toyota Camry 2.5V 2019 (BG 1088 KLM)',
           description: 'Flushing ATF WS, pembersihan throttle body, dan cek tekanan fuel pump.',
           status: 'ON_THE_WAY',
           assignedMechanicId: 'mech_03',
           assignedMechanicName: 'Hendra Wijaya',
-          assignedMechanicPhone: '08XX-XXXX-0009',
+          assignedMechanicPhone: '0812-9988-7766',
           totalPrice: 550000,
           revenueSplit: {
             mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 385000,
@@ -805,12 +805,12 @@
           title: 'Overhaul Rack Steer & Ganti Tie Rod End',
           categoryId: 'kaki_kaki',
           categoryName: 'Kaki-kaki',
-          vehicleSummary: 'Toyota Fortuner VRZ 2019 (BG 1990 XX)',
+          vehicleSummary: 'Toyota Fortuner VRZ 2019 (BG 1990 RF)',
           description: 'Perbaikan rack steer EPS bunyi dan penggantian tie rod kiri-kanan.',
           status: 'IN_PROGRESS',
           assignedMechanicId: 'mech_02',
           assignedMechanicName: 'Dedi Kurniawan',
-          assignedMechanicPhone: '08XX-XXXX-0003',
+          assignedMechanicPhone: '0857-1122-3344',
           totalPrice: 600000,
           revenueSplit: {
             mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 420000,
@@ -837,7 +837,7 @@
           title: 'Diagnosa Check Engine & Kalibrasi Sensor',
           categoryId: 'elektrikal',
           categoryName: 'Elektrikal',
-          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 XX)',
+          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 TBO)',
           description: 'Lampu check engine menyala, RPM tidak stabil saat idle. Butuh scan OBD & pengecekan soket injektor.',
           boardSummary: 'Pemeriksaan indikator mesin dan sensor.',
           status: 'OPEN',
@@ -863,7 +863,7 @@
           sourceType: 'WALK_IN', bookingId: null,
           customerId: null, customerName: 'Pelanggan Walk-In Umum',
           title: 'Cuci Evaporator Tanpa Bongkar & Isi Freon R134a', categoryId: 'ac', categoryName: 'AC',
-          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 XX)', description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.', boardSummary: 'Perawatan AC: cuci evaporator dan isi freon.',
+          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 AA)', description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.', boardSummary: 'Perawatan AC: cuci evaporator dan isi freon.',
           status: 'OPEN', assignedMechanicId: null, assignedMechanicName: null, assignedMechanicPhone: null,
           totalPrice: 550000,
           revenueSplit: {
@@ -879,7 +879,7 @@
           sourceType: 'WALK_IN', bookingId: null,
           customerId: 'cust_03', customerName: 'H. Bambang Wijaya',
           title: 'Tune Up Ruang Bakar & Gurah Mesin', categoryId: 'mesin', categoryName: 'Mesin',
-          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 XX)', description: 'Tarikan terasa berat dan konsumsi BBM boros.', boardSummary: 'Tune up dan pembersihan ruang bakar.',
+          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 TBO)', description: 'Tarikan terasa berat dan konsumsi BBM boros.', boardSummary: 'Tune up dan pembersihan ruang bakar.',
           status: 'OPEN', assignedMechanicId: null, assignedMechanicName: null, assignedMechanicPhone: null,
           totalPrice: 400000,
           revenueSplit: {
@@ -901,12 +901,12 @@
           title: 'Perbaikan Alternator & Penggantian IC Regulator',
           categoryId: 'elektrikal',
           categoryName: 'Elektrikal',
-          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 XX)',
+          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 UYT)',
           description: 'Pengisian aki drop di bawah 12.2V saat beban AC & lampu menyala.',
           status: 'COMPLETED',
           assignedMechanicId: 'mech_01',
           assignedMechanicName: 'Agus Setiawan',
-          assignedMechanicPhone: '08XX-XXXX-0002',
+          assignedMechanicPhone: '0813-4567-8901',
           totalPrice: 400000,
           revenueSplit: {
             mechanicLabel: 'Mekanik', mechanicPercent: 70, mechanicAmount: 280000,
@@ -985,9 +985,9 @@
       }
       errBox.classList.add('hidden');
       if (val === 'SUPER_ADMIN') {
-        state.currentUser = { email: 'budi.superadmin@example.com', name: 'Budi Santoso', role: 'SUPER_ADMIN', initials: 'BS' };
+        state.currentUser = { email: 'budi.superadmin@doktermobil.co.id', name: 'Budi Santoso', role: 'SUPER_ADMIN', initials: 'BS' };
       } else {
-        state.currentUser = { email: 'rina.admin@example.com', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', initials: 'RM' };
+        state.currentUser = { email: 'rina.admin@doktermobil.co.id', name: 'Rina Marlina', role: 'ADMIN_BENGKEL', initials: 'RM' };
       }
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app-shell').classList.remove('hidden');
@@ -1896,8 +1896,8 @@
         locationName: activeLoc.name,
         customerId: 'cust_01',
         customerName: 'Andi Saputra',
-        customerPhone: '08XX-XXXX-0001',
-        vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+        customerPhone: '0812-3344-5566',
+        vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
         categoryId: 'elektrikal',
         categoryName: 'Elektrikal',
         complaint: 'Indikator aki menyala di speedometer saat kecepatan tinggi.',
@@ -2059,7 +2059,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Email Google (Opsional — untuk sinkronisasi jika instal aplikasi D-Mobil)</label>
-            <input type="email" id="cust-email" value="${existing && existing.email ? existing.email : ''}" placeholder="pelanggan@example.com" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
+            <input type="email" id="cust-email" value="${existing && existing.email ? existing.email : ''}" placeholder="pelanggan@gmail.com" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs" />
           </div>
 
           <div class="p-3 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant/60 space-y-2.5">
@@ -2160,7 +2160,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor *</label>
-              <input type="text" id="add-veh-plate" required placeholder="BG 5511 XX" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs uppercase font-semibold" />
+              <input type="text" id="add-veh-plate" required placeholder="BG 5511 CD" class="w-full rounded-xl border border-md-outline px-3 py-2 text-xs uppercase font-semibold" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Merek Mobil *</label>
@@ -2647,7 +2647,7 @@
             </div>
 
             <form onsubmit="addAdminWhitelist(event)" class="flex gap-2">
-              <input type="email" id="new-admin-email" required placeholder="email.staf@example.com" ${!isSuperAdmin ? 'disabled' : ''} class="flex-1 rounded-full border border-md-outline px-4 py-2 text-xs focus:outline-none focus:border-md-primary" />
+              <input type="email" id="new-admin-email" required placeholder="email.staf@gmail.com" ${!isSuperAdmin ? 'disabled' : ''} class="flex-1 rounded-full border border-md-outline px-4 py-2 text-xs focus:outline-none focus:border-md-primary" />
               <button type="submit" ${!isSuperAdmin ? 'disabled' : ''} class="px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90 disabled:opacity-40">
                 Tambah
               </button>
@@ -2997,14 +2997,64 @@
 
       document.getElementById('doc-modal-title').textContent = `Berkas Verifikasi — ${m.name}`;
       document.getElementById('doc-modal-body').innerHTML = `
-        <div class="space-y-2">
-          <span class="text-xs font-bold block">1. Foto KTP (Wajib • Private Bucket)</span>
-          <div class="p-6 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-center text-xs text-gray-600">
-            <span class="material-symbols-outlined text-4xl block">badge</span>
-            <strong class="block mt-1">Contoh tempat foto KTP</strong>
-            Dokumen identitas tidak ditampilkan pada prototipe.
+        <div class="p-4 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-md-onSurface">1. Foto KTP (Wajib • Private Bucket)</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">Signed URL Aktif</span>
           </div>
-          <p class="text-[11px] text-gray-600">${m.ktpNote}</p>
+          <div class="rounded-xl bg-[#BCE3FA] border border-[#7CC2EA] p-3.5 text-[#0F2942] shadow-2xs select-none">
+            <div class="text-center border-b border-[#7CC2EA]/80 pb-1.5 mb-2">
+              <div class="text-[11px] font-extrabold tracking-wider uppercase leading-tight">PROVINSI SUMATERA SELATAN</div>
+              <div class="text-[10px] font-bold tracking-wide uppercase leading-tight">KOTA PALEMBANG</div>
+            </div>
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1 space-y-0.5 text-[10px] leading-snug">
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="font-bold text-[11px] w-24 shrink-0">NIK</span>
+                  <span class="font-mono font-extrabold text-xs tracking-wider">: ${m.ktpNote.split('•')[0].replace('NIK:', '').trim()}</span>
+                </div>
+                <div class="grid grid-cols-[96px_1fr] gap-x-1">
+                  <span class="font-semibold">Nama</span>
+                  <span class="font-bold uppercase">: ${m.name}</span>
+
+                  <span class="font-semibold">Tempat/Tgl Lahir</span>
+                  <span>: PALEMBANG, 14-08-1992</span>
+
+                  <span class="font-semibold">Jenis Kelamin</span>
+                  <span>: LAKI-LAKI &nbsp;&nbsp; Gol. Darah: O</span>
+
+                  <span class="font-semibold">Alamat</span>
+                  <span>: JL. R. SUKAMTO LR. DAMAI NO. 18</span>
+
+                  <span class="pl-3 font-semibold">RT/RW</span>
+                  <span>: 012 / 004</span>
+
+                  <span class="pl-3 font-semibold">Kel/Desa</span>
+                  <span>: 8 ILIR</span>
+
+                  <span class="pl-3 font-semibold">Kecamatan</span>
+                  <span>: ILIR TIMUR II</span>
+
+                  <span class="font-semibold">Pekerjaan</span>
+                  <span>: MEKANIK OTOMOTIF</span>
+
+                  <span class="font-semibold">Berlaku Hingga</span>
+                  <span>: SEUMUR HIDUP</span>
+                </div>
+              </div>
+
+              <div class="w-20 shrink-0 flex flex-col items-center text-center pt-1">
+                <div class="w-16 h-20 rounded-md bg-[#D32F2F] border border-white/80 shadow-2xs flex flex-col items-center justify-end overflow-hidden text-white">
+                  <span class="material-symbols-outlined text-[46px] leading-none translate-y-1 text-white/95">person</span>
+                </div>
+                <div class="mt-1.5 text-[8px] font-semibold leading-tight">
+                  KOTA PALEMBANG<br/>12-05-2021
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-[11px] text-md-onSurfaceVariant mt-2">${m.ktpNote}</p>
         </div>
 
         <div class="p-4 rounded-2xl bg-md-surfaceContainerLow border border-md-outlineVariant">
@@ -3105,7 +3155,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">No. Telepon / WA *</label>
-              <input type="text" id="loc-phone" required value="08XX-XXXX-0010" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
+              <input type="text" id="loc-phone" required value="0812-7700-8899" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-sm" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-md-onSurfaceVariant mb-1">Jam Operasional *</label>

@@ -260,9 +260,9 @@
       mechanic: {
         uid: 'mech_01',
         name: 'Agus Setiawan',
-        email: 'agus.mekanik@example.com',
-        phone: '08XX-XXXX-0002',
-        whatsappNumber: '62-8XX-XXXX-0002',
+        email: 'agus.mekanik@gmail.com',
+        phone: '0813-4567-8901',
+        whatsappNumber: '6281345678901',
         skillIds: ['ac', 'elektrikal'],
         skillNames: ['AC', 'Elektrikal'],
         hasCertificate: true,
@@ -292,7 +292,7 @@
           categoryId: 'elektrikal',
           categoryName: 'Elektrikal',
           title: 'Diagnosa Check Engine & Kalibrasi Sensor',
-          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 XX)',
+          vehicleSummary: 'Mazda CX-5 2018 (BG 2718 TBO)',
           description: 'Lampu check engine menyala, RPM tidak stabil saat idle. Butuh scan OBD & pengecekan soket injektor.',
           totalPrice: 450000,
           postedAgo: '2 menit lalu'
@@ -308,7 +308,7 @@
           categoryId: 'ac',
           categoryName: 'AC',
           title: 'Cuci Evaporator Tanpa Bongkar & Isi Freon R134a',
-          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 XX)',
+          vehicleSummary: 'Toyota Avanza 2020 (BG 1305 AA)',
           description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.',
           totalPrice: 550000,
           postedAgo: '5 menit lalu'
@@ -324,7 +324,7 @@
           categoryId: 'mesin',
           categoryName: 'Mesin',
           title: 'Tune Up Ruang Bakar & Gurah Mesin',
-          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 XX)',
+          vehicleSummary: 'Honda Brio RS 2023 (BG 8821 TBO)',
           description: 'Tarikan terasa berat dan konsumsi BBM boros.',
           totalPrice: 400000,
           postedAgo: '12 menit lalu'
@@ -340,7 +340,7 @@
         {
           jobId: 'JOB-104',
           title: 'Ganti Evaporator & Flushing AC Total',
-          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 XX)',
+          vehicleSummary: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
           categoryName: 'AC',
           locationName: 'Dokter Mobil Palembang',
           completedDate: 'Hari Ini, 14:00 WIB',
@@ -353,7 +353,7 @@
         {
           jobId: 'JOB-101',
           title: 'Perbaikan Alternator & Penggantian IC Regulator',
-          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 XX)',
+          vehicleSummary: 'Suzuki Ertiga 2019 (BG 1650 UYT)',
           categoryName: 'Elektrikal',
           locationName: 'Dokter Mobil Palembang',
           completedDate: 'Hari Ini, 10:37 WIB',
@@ -366,7 +366,7 @@
         {
           jobId: 'JOB-098',
           title: 'Ganti Magnet Clutch Kompresor AC',
-          vehicleSummary: 'Honda CR-V Turbo 2020 (BG 1420 XX)',
+          vehicleSummary: 'Honda CR-V Turbo 2020 (BG 1420 AB)',
           categoryName: 'AC',
           locationName: 'Dokter Mobil Palembang',
           completedDate: 'Kemarin, 15:20 WIB',
@@ -479,8 +479,8 @@
     function handleMechanicGoogleSignIn(accountType) {
       if (accountType === 'VERIFIED') {
         state.mechanic.name = 'Agus Setiawan';
-        state.mechanic.email = 'agus.mekanik@example.com';
-        state.mechanic.phone = '08XX-XXXX-0002';
+        state.mechanic.email = 'agus.mekanik@gmail.com';
+        state.mechanic.phone = '0813-4567-8901';
         state.mechanic.skillIds = ['ac', 'elektrikal'];
         state.mechanic.skillNames = ['AC', 'Elektrikal'];
         state.mechanic.hasCertificate = true;
@@ -493,8 +493,8 @@
         showMobileSnackbar(`Selamat datang, ${state.mechanic.name}`);
       } else {
         state.mechanic.name = 'Rizky Pratama';
-        state.mechanic.email = 'rizky.pratama.mech@example.com';
-        state.mechanic.phone = '08XX-XXXX-0005';
+        state.mechanic.email = 'rizky.pratama.mech@gmail.com';
+        state.mechanic.phone = '0878-5544-3322';
         state.mechanic.skillIds = [];
         state.mechanic.skillNames = [];
         state.mechanic.hasCertificate = false;
@@ -684,7 +684,7 @@
             <div class="w-9 h-9 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer font-bold text-xs flex items-center justify-center shrink-0">AS</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Agus Setiawan</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">agus.mekanik@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">agus.mekanik@gmail.com</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-100 text-emerald-800 shrink-0">Terverifikasi</span>
           </button>
@@ -693,7 +693,7 @@
             <div class="w-9 h-9 rounded-full bg-amber-600 text-white font-bold text-xs flex items-center justify-center shrink-0">RP</div>
             <div class="min-w-0 flex-1">
               <p class="text-xs font-bold text-md-onSurface truncate">Rizky Pratama</p>
-              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizky.pratama.mech@example.com</p>
+              <p class="text-[11px] text-md-onSurfaceVariant truncate">rizky.pratama.mech@gmail.com</p>
             </div>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-amber-100 text-amber-800 shrink-0">Belum Verifikasi</span>
           </button>
@@ -726,7 +726,7 @@
         categoryId: 'ac',
         categoryName: 'AC',
         title: 'Perbaikan Kompresor & Flushing AC',
-        vehicleSummary: 'Honda CR-V Turbo 2021 (BG 1488 XX)',
+        vehicleSummary: 'Honda CR-V Turbo 2021 (BG 1488 PL)',
         vehicleType: 'Honda CR-V Turbo 2021',
         boardSummary: 'Pemeriksaan dan perawatan sistem AC.',
         description: 'AC tiba-tiba tidak dingin saat putaran mesin rendah. Cek tekanan freon dan magnetic clutch.',
