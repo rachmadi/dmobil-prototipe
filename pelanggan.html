@@ -80,12 +80,6 @@
       <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
       <span class="font-semibold text-[11px]">Pelanggan v2 • Consumer UI</span>
     </div>
-    <div class="flex items-center gap-1.5">
-      <button onclick="simulateAdminConfirmBooking()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-md-secondary hover:bg-blue-800 text-white font-semibold text-[11px] shadow-2xs transition active:scale-95" title="Simulasi Admin mengonfirmasi booking & menyelesaikan servis">
-        <span class="material-symbols-outlined text-xs">check_circle</span>
-        <span>Simulasi Admin</span>
-      </button>
-    </div>
   </div>
 
   <!-- ==================== ANDROID DEVICE FRAME (TRUE 360x780 PROPORTION) ==================== -->
@@ -152,7 +146,7 @@
        ========================================================================== */
     const state = {
       isLoggedIn: false,
-      activeTab: 'beranda', // beranda | onsite | garasi | aktivitas
+      activeTab: 'beranda', // beranda | onsite | garasi | riwayat
       selectedVehicleIndex: 0,
       selectedLocationIndex: 0,
       selectedOnSiteCategory: 'ALL',
@@ -222,35 +216,15 @@
         }
       ],
 
-      bookingsAndServices: [
-        {
-          id: 'BK-2026-081',
-          type: 'BOOKING',
-          locationName: 'Dokter Mobil Palembang',
-          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
-          categoryName: 'AC',
-          complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
-          scheduledDate: 'Hari Ini, 15:00 WIB',
-          status: 'PENDING',
-          cancelDeadlineMs: 0, // Sudah melewati 1 menit
-          adminResponseNote: '',
-          proposedSchedule: null,
-          mechanicName: null,
-          totalPrice: null,
-          isReviewed: false,
-          rating: 0,
-          reviewComment: ''
-        },
+      serviceHistory: [
         {
           id: 'JOB-104',
-          type: 'SERVICE',
           locationName: 'Dokter Mobil Palembang',
           vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
           categoryName: 'AC',
           complaint: 'Ganti Evaporator & Flushing AC Total.',
-          scheduledDate: 'Hari Ini, 13:10 WIB',
+          serviceDate: 'Hari Ini, 13:10 WIB',
           status: 'COMPLETED',
-          cancelDeadlineMs: 0,
           mechanicName: 'Agus Setiawan',
           totalPrice: 850000,
           isReviewed: false,
@@ -259,14 +233,12 @@
         },
         {
           id: 'JOB-089',
-          type: 'SERVICE',
           locationName: 'Dokter Mobil Palembang',
           vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
           categoryName: 'Mesin',
           complaint: 'Tune Up Ruang Bakar & Penggantian Oli Mesin.',
-          scheduledDate: '12 Okt 2026',
+          serviceDate: '12 Okt 2026',
           status: 'COMPLETED',
-          cancelDeadlineMs: 0,
           mechanicName: 'Dedi Kurniawan',
           totalPrice: 500000,
           isReviewed: true,
@@ -279,7 +251,7 @@
     };
 
     /* ==========================================================================
-       2. HELPER FUNCTIONS & 1-MINUTE CANCEL TIMER
+       2. HELPER FUNCTIONS
        ========================================================================== */
     function formatRupiah(num) {
       return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
@@ -321,54 +293,6 @@
       return state.locations[state.selectedLocationIndex];
     }
 
-    function startCancelCountdownLoop() {
-      if (window._cancelTicker) return;
-      window._cancelTicker = setInterval(() => {
-        const now = Date.now();
-        let hasActiveWindow = false;
-        let expiredJustNow = false;
-
-        state.bookingsAndServices.forEach(item => {
-          if (item.status === 'PENDING' && item.cancelDeadlineMs > 0) {
-            const remSec = Math.ceil((item.cancelDeadlineMs - now) / 1000);
-            if (remSec > 0) {
-              hasActiveWindow = true;
-              const labelEl = document.getElementById(`cancel-countdown-${item.id}`);
-              if (labelEl) {
-                labelEl.textContent = `${remSec}d`;
-              }
-            } else {
-              item.cancelDeadlineMs = 0;
-              expiredJustNow = true;
-            }
-          }
-        });
-
-        if (expiredJustNow && state.activeTab === 'aktivitas') {
-          renderApp();
-        }
-        if (!hasActiveWindow) {
-          clearInterval(window._cancelTicker);
-          window._cancelTicker = null;
-        }
-      }, 1000);
-    }
-
-    function cancelBookingWithinWindow(bookingId) {
-      const item = state.bookingsAndServices.find(b => b.id === bookingId);
-      if (!item || item.status !== 'PENDING') return;
-      if (Date.now() > item.cancelDeadlineMs) {
-        item.cancelDeadlineMs = 0;
-        renderApp();
-        showMobileSnackbar('Batas waktu pembatalan 1 menit telah berakhir.', 'error');
-        return;
-      }
-      item.status = 'CANCELLED';
-      item.cancelDeadlineMs = 0;
-      renderApp();
-      showMobileSnackbar(`Booking ${bookingId} berhasil dibatalkan.`, 'cancel');
-    }
-
     /* ==========================================================================
        3. AUTHENTICATION (SIGN IN WITH GOOGLE ONLY)
        ========================================================================== */
@@ -384,7 +308,7 @@
             <span class="px-3 py-1 rounded-full bg-md-primaryContainer text-md-onPrimaryContainer text-[10px] font-bold uppercase tracking-wider">D-Mobil Consumer App</span>
             <h1 class="text-xl font-extrabold text-md-onSurface mt-3 tracking-tight">Rawat Mobil Lebih Praktis</h1>
             <p class="text-xs text-md-onSurfaceVariant mt-2 leading-relaxed">
-              Booking bengkel Dokter Mobil tanpa antre atau panggil mekanik rekomendasi ke lokasi Anda.
+              Simpan data mobil, lihat riwayat servis, atau panggil mekanik rekomendasi ke lokasi Anda.
             </p>
           </div>
 
@@ -541,12 +465,12 @@
         return;
       }
       nav.classList.remove('hidden');
-      const unreviewedCount = state.bookingsAndServices.filter(b => b.status === 'COMPLETED' && !b.isReviewed).length;
+      const unreviewedCount = state.serviceHistory.filter(b => b.status === 'COMPLETED' && !b.isReviewed).length;
       const items = [
         { id: 'beranda', label: 'Beranda', icon: 'home', badge: 0 },
         { id: 'onsite', label: 'On-Site', icon: 'person_pin_circle', badge: 0 },
         { id: 'garasi', label: 'Garasi', icon: 'directions_car', badge: state.customer.vehicles.length },
-        { id: 'aktivitas', label: 'Aktivitas', icon: 'receipt_long', badge: unreviewedCount }
+        { id: 'riwayat', label: 'Riwayat', icon: 'receipt_long', badge: unreviewedCount }
       ];
 
       nav.innerHTML = items.map(item => {
@@ -572,7 +496,7 @@
       const hasMultipleBranches = state.locations.length > 1;
       const activeVeh = getSelectedVehicle();
       const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-      const unreviewed = state.bookingsAndServices.find(b => b.status === 'COMPLETED' && !b.isReviewed);
+      const unreviewed = state.serviceHistory.find(b => b.status === 'COMPLETED' && !b.isReviewed);
 
       return `
         <!-- Automotive Deep-Blue Hero Header -->
@@ -620,24 +544,43 @@
                 </button>
               </div>
 
-              <div class="mt-3 pt-2.5 border-t border-slate-100 grid grid-cols-2 gap-2">
-                <button onclick="openBookingFormSheet()" class="py-2 px-3 rounded-xl bg-md-primary hover:bg-red-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs m3-transition active:scale-[0.98]">
-                  <span class="material-symbols-outlined text-base">event_available</span>
-                  <span>Booking Bengkel</span>
-                </button>
-                <button onclick="switchTab('onsite')" class="py-2 px-3 rounded-xl bg-md-secondaryContainer hover:bg-blue-200/70 text-md-onSecondaryContainer text-xs font-bold flex items-center justify-center gap-1.5 m3-transition active:scale-[0.98]">
+              <div class="mt-3 pt-2.5 border-t border-slate-100">
+                <button onclick="switchTab('onsite')" class="w-full py-2 px-3 rounded-xl bg-md-secondaryContainer hover:bg-blue-200/70 text-md-onSecondaryContainer text-xs font-bold flex items-center justify-center gap-1.5 m3-transition active:scale-[0.98]">
                   <span class="material-symbols-outlined text-base">person_pin_circle</span>
                   <span>Mekanik On-Site</span>
                 </button>
               </div>
             </div>
           ` : `
-            <div onclick="openAddVehicleSheet(false)" class="bg-white rounded-2xl p-4 shadow-md border border-dashed border-md-primary text-center cursor-pointer">
+            <div onclick="openAddVehicleSheet()" class="bg-white rounded-2xl p-4 shadow-md border border-dashed border-md-primary text-center cursor-pointer">
               <p class="text-xs font-bold text-md-primary">+ Tambahkan Mobil Pertama Anda</p>
-              <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Untuk mulai booking bengkel Dokter Mobil</p>
+              <p class="text-[11px] text-md-onSurfaceVariant mt-0.5">Simpan data mobil untuk melihat riwayat servisnya</p>
             </div>
           `}
 
+          <!-- Info Bengkel: pelanggan datang langsung -->
+          <div class="bg-white rounded-2xl p-3.5 border border-md-outlineVariant/70 shadow-2xs">
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wide text-md-primary">
+                ${hasMultipleBranches ? `Datang Langsung ke Bengkel (${state.locations.length} Lokasi)` : 'Datang Langsung ke Bengkel'}
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Buka • ${loc.distanceKm} km</span>
+                ${hasMultipleBranches ? `
+                  <button onclick="openBranchSwitcherSheet()" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-[10px] font-bold">
+                    <span>Ganti</span>
+                    <span class="material-symbols-outlined text-xs">expand_more</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+            <h4 class="text-xs font-bold text-md-onSurface">${loc.name}</h4>
+            <p class="text-[11px] text-md-onSurfaceVariant mt-0.5 leading-snug">${loc.address}</p>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-md-onSurfaceVariant">
+              <span>Jam Operasional: <strong class="text-md-onSurface">${loc.operatingHours}</strong></span>
+              <span>Telp: <strong class="text-md-onSurface">${loc.phone}</strong></span>
+            </div>
+          </div>
           ${unreviewed ? `
             <div onclick="openRatingSheet('${unreviewed.id}')" class="px-3.5 py-2.5 rounded-2xl bg-amber-50 border border-amber-300 flex items-center justify-between gap-2 cursor-pointer hover:bg-amber-100/70 transition">
               <div class="flex items-center gap-2.5 min-w-0">
@@ -657,16 +600,15 @@
           <div>
             <div class="flex items-center justify-between mb-2.5">
               <h3 class="text-xs font-bold text-md-onSurface">Layanan Bengkel Dokter Mobil</h3>
-              <button onclick="openBookingFormSheet()" class="text-[11px] font-semibold text-md-primary">Booking →</button>
             </div>
             <div class="grid grid-cols-4 gap-2">
               ${state.categories.map(cat => `
-                <button onclick="openBookingFormWithCategory('${cat.name}')" class="bg-white rounded-2xl p-2.5 border border-md-outlineVariant/70 hover:border-md-primary flex flex-col items-center text-center gap-1.5 shadow-2xs m3-transition active:scale-95">
+                <div class="bg-white rounded-2xl p-2.5 border border-md-outlineVariant/70 flex flex-col items-center text-center gap-1.5 shadow-2xs">
                   <div class="w-10 h-10 rounded-xl border ${cat.color} flex items-center justify-center">
                     <span class="material-symbols-outlined text-xl">${cat.icon}</span>
                   </div>
                   <span class="text-[11px] font-semibold text-md-onSurface leading-tight">${cat.name}</span>
-                </button>
+                </div>
               `).join('')}
             </div>
           </div>
@@ -718,30 +660,6 @@
               `).join('')}
             </div>
           </div>
-
-          <!-- Workshop Branch Card -->
-          <div class="bg-white rounded-2xl p-3.5 border border-md-outlineVariant/70 shadow-2xs">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <span class="text-[10px] font-bold uppercase tracking-wide text-md-primary">
-                ${hasMultipleBranches ? `Cabang Bengkel DM (${state.locations.length} Lokasi)` : 'Cabang Bengkel DM'}
-              </span>
-              <div class="flex items-center gap-1.5">
-                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Buka • ${loc.distanceKm} km</span>
-                ${hasMultipleBranches ? `
-                  <button onclick="openBranchSwitcherSheet()" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-[10px] font-bold">
-                    <span>Ganti</span>
-                    <span class="material-symbols-outlined text-xs">expand_more</span>
-                  </button>
-                ` : ''}
-              </div>
-            </div>
-            <h4 class="text-xs font-bold text-md-onSurface">${loc.name}</h4>
-            <p class="text-[11px] text-md-onSurfaceVariant mt-0.5 leading-snug">${loc.address}</p>
-            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-md-onSurfaceVariant">
-              <span>Jam Operasional: <strong class="text-md-onSurface">${loc.operatingHours}</strong></span>
-              <span>Telp: <strong class="text-md-onSurface">${loc.phone}</strong></span>
-            </div>
-          </div>
         </div>
       `;
     }
@@ -784,7 +702,7 @@
             <h3 class="text-base font-bold text-md-onSurface">Pilih Mobil Utama</h3>
             <p class="text-xs text-md-onSurfaceVariant">Ketuk unit kendaraan yang ingin Anda servis</p>
           </div>
-          <button onclick="openAddVehicleSheet(false)" class="px-3 py-1.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-xs font-bold">+ Tambah</button>
+          <button onclick="openAddVehicleSheet()" class="px-3 py-1.5 rounded-full bg-md-secondaryContainer text-md-onSecondaryContainer text-xs font-bold">+ Tambah</button>
         </div>
 
         <div class="space-y-2">
@@ -806,107 +724,6 @@
         </div>
       `;
       document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
-    }
-
-    function openBookingFormSheet(preselectedCategoryName = null) {
-      const vehicles = state.customer.vehicles;
-      const activeVeh = getSelectedVehicle();
-      const activeVehStr = activeVeh ? `${activeVeh.brand} ${activeVeh.model} ${activeVeh.year} (${activeVeh.plateNumber})` : '';
-      const hasMultipleBranches = state.locations.length > 1;
-      const activeLoc = getSelectedLocation();
-
-      document.getElementById('mobile-sheet-content').innerHTML = `
-        <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
-        <h3 class="text-base font-bold text-md-onSurface">Booking Bengkel Dokter Mobil</h3>
-        ${!hasMultipleBranches ? `<p class="text-xs text-md-onSurfaceVariant mt-0.5">Cabang: <strong>${activeLoc.name}</strong></p>` : ''}
-
-        <form onsubmit="submitCustomerBooking(event)" class="mt-4 space-y-3 text-xs">
-          ${hasMultipleBranches ? `
-            <div>
-              <label class="block font-semibold text-md-onSurfaceVariant mb-1">Pilih Cabang Bengkel DM (${state.locations.length} Lokasi) *</label>
-              <select id="bk-location-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
-                ${state.locations.map((l, idx) => `<option value="${l.name}" ${idx === state.selectedLocationIndex ? 'selected' : ''}>${l.name} (${l.distanceKm} km)</option>`).join('')}
-              </select>
-            </div>
-          ` : `<input type="hidden" id="bk-location-select" value="${activeLoc.name}" />`}
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="font-semibold text-md-onSurfaceVariant">Unit Mobil (${vehicles.length} Terdaftar) *</label>
-              <button type="button" onclick="openAddVehicleSheet(true)" class="text-[11px] font-bold text-md-secondary hover:underline">+ Tambah Mobil</button>
-            </div>
-            <select id="bk-vehicle-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
-              ${vehicles.map(v => {
-                const val = `${v.brand} ${v.model} ${v.year} (${v.plateNumber})`;
-                return `<option value="${val}" ${val === activeVehStr ? 'selected' : ''}>${v.plateNumber} — ${v.brand} ${v.model} (${v.year})</option>`;
-              }).join('')}
-            </select>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Kategori Layanan *</label>
-            <select id="bk-category-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
-              ${state.categories.map(cat => `<option value="${cat.shortName}" ${preselectedCategoryName === cat.name ? 'selected' : ''}>${cat.name} — ${cat.desc}</option>`).join('')}
-            </select>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Rencana Jadwal Kedatangan *</label>
-            <select id="bk-schedule-select" required class="w-full rounded-xl border border-md-outline bg-white px-3 py-2.5 text-xs font-semibold">
-              <option value="Besok, 09:30 WIB">Besok, 09:30 WIB (Sesi Pagi)</option>
-              <option value="Besok, 13:30 WIB">Besok, 13:30 WIB (Sesi Siang)</option>
-              <option value="Besok, 15:30 WIB">Besok, 15:30 WIB (Sesi Sore)</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Keluhan Kendaraan *</label>
-            <textarea id="bk-complaint-input" rows="2" required placeholder="Jelaskan gejala atau keluhan mobil Anda..." class="w-full rounded-xl border border-md-outline bg-white px-3 py-2 text-xs"></textarea>
-          </div>
-
-          <div class="pt-2 flex items-center gap-2">
-            <button type="button" onclick="closeMobileSheet()" class="px-4 py-2.5 rounded-full font-semibold text-md-onSurfaceVariant bg-gray-100">Batal</button>
-            <button type="submit" class="flex-1 py-2.5 px-5 rounded-full font-bold bg-md-primary text-white shadow-sm">
-              Kirim Booking
-            </button>
-          </div>
-        </form>
-      `;
-      document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
-    }
-
-    function openBookingFormWithCategory(catName) {
-      openBookingFormSheet(catName);
-    }
-
-    function submitCustomerBooking(e) {
-      e.preventDefault();
-      const newId = `BK-2026-0${82 + state.bookingsAndServices.length}`;
-      const selectedLocationName = document.getElementById('bk-location-select').value;
-      state.bookingsAndServices.unshift({
-        id: newId,
-        type: 'BOOKING',
-        locationName: selectedLocationName,
-        vehicleInfo: document.getElementById('bk-vehicle-select').value,
-        categoryName: document.getElementById('bk-category-select').value,
-        complaint: document.getElementById('bk-complaint-input').value.trim(),
-        scheduledDate: document.getElementById('bk-schedule-select').value,
-        status: 'PENDING',
-        cancelDeadlineMs: Date.now() + 60000, // Batas pembatalan mandiri 1 menit (60 detik)
-        adminResponseNote: '',
-        proposedSchedule: null,
-        mechanicName: null,
-        totalPrice: null,
-        isReviewed: false,
-        rating: 0,
-        reviewComment: ''
-      });
-
-      closeMobileSheet();
-      state.activeTab = 'aktivitas';
-      renderApp();
-      startCancelCountdownLoop();
-      showMobileSnackbar(`Booking ${newId} dikirim! Dapat dibatalkan dalam 1 menit jika berubah pikiran.`);
     }
 
     /* ==========================================================================
@@ -1015,7 +832,7 @@
             <h1 class="text-sm font-bold text-md-onSurface">Garasi Mobil Saya</h1>
             <p class="text-[11px] text-md-onSurfaceVariant">Kelola daftar kendaraan pribadi Anda (${vehicles.length} Unit)</p>
           </div>
-          <button onclick="openAddVehicleSheet(false)" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-md-primary text-white shadow-2xs">
+          <button onclick="openAddVehicleSheet()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-md-primary text-white shadow-2xs">
             <span class="material-symbols-outlined text-sm">add</span>
             <span>Mobil</span>
           </button>
@@ -1044,24 +861,19 @@
                   </button>
                 ` : ''}
               </div>
-
-              <button onclick="state.selectedVehicleIndex = ${idx}; openBookingFormSheet();" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-md-surfaceContainer hover:bg-md-primaryContainer/50 text-md-primary flex items-center justify-center gap-1.5">
-                <span class="material-symbols-outlined text-sm">event_available</span>
-                <span>Booking Servis untuk Mobil Ini</span>
-              </button>
             </div>
           `).join('')}
         </div>
       `;
     }
 
-    function openAddVehicleSheet(returnToBooking = false) {
+    function openAddVehicleSheet() {
       document.getElementById('mobile-sheet-content').innerHTML = `
         <div class="w-10 h-1 rounded-full bg-gray-300 mx-auto mb-3"></div>
         <h3 class="text-base font-bold text-md-onSurface">Tambah Mobil ke Garasi</h3>
-        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Simpan lebih dari 1 kendaraan untuk memudahkan booking servis.</p>
+        <p class="text-xs text-md-onSurfaceVariant mt-0.5">Simpan lebih dari 1 kendaraan untuk mencatat riwayat servis tiap mobil.</p>
 
-        <form onsubmit="submitAddCustomerVehicle(event, ${returnToBooking})" class="mt-4 space-y-3 text-xs">
+        <form onsubmit="submitAddCustomerVehicle(event)" class="mt-4 space-y-3 text-xs">
           <div class="grid grid-cols-2 gap-2.5">
             <div>
               <label class="block font-semibold text-md-onSurfaceVariant mb-1">Plat Nomor *</label>
@@ -1096,7 +908,7 @@
       document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
     }
 
-    function submitAddCustomerVehicle(e, returnToBooking) {
+    function submitAddCustomerVehicle(e) {
       e.preventDefault();
       state.customer.vehicles.push({
         id: 'veh_' + Date.now(),
@@ -1111,9 +923,6 @@
       closeMobileSheet();
       renderApp();
       showMobileSnackbar('Kendaraan baru berhasil ditambahkan ke Garasi Saya.');
-      if (returnToBooking) {
-        openBookingFormSheet();
-      }
     }
 
     function deleteCustomerVehicle(vehId) {
@@ -1125,37 +934,21 @@
     }
 
     /* ==========================================================================
-       8. TAB 4: AKTIVITAS, STATUS BOOKING & RATING/ULASAN PELANGGAN
+       8. TAB 4: RIWAYAT SERVIS & RATING/ULASAN PELANGGAN
        ========================================================================== */
-    function renderAktivitasTab() {
-      const statusBadgeMap = {
-        PENDING: { label: 'Menunggu Konfirmasi DM', cls: 'bg-amber-100 text-amber-900' },
-        RESCHEDULE_OFFERED: { label: 'Slot Penuh • Usulan Jadwal Baru', cls: 'bg-orange-100 text-orange-900' },
-        CONFIRMED: { label: 'Jadwal Dikonfirmasi', cls: 'bg-blue-100 text-blue-900' },
-        CANCELLED: { label: 'Dibatalkan Pelanggan', cls: 'bg-red-100 text-red-800' },
-        CONVERTED_TO_JOB: { label: 'Diteruskan ke Mekanik', cls: 'bg-emerald-100 text-emerald-900' },
-        COMPLETED: { label: 'Servis Selesai', cls: 'bg-slate-200 text-slate-800' }
-      };
-
-      const now = Date.now();
-
+    function renderRiwayatTab() {
       return `
         <div class="px-4 pt-3 pb-3 bg-white border-b border-md-outlineVariant/60">
-          <h1 class="text-sm font-bold text-md-onSurface">Booking & Riwayat Servis</h1>
-          <p class="text-[11px] text-md-onSurfaceVariant">Pantau status jadwal bengkel & berikan ulasan hasil pengerjaan</p>
+          <h1 class="text-sm font-bold text-md-onSurface">Riwayat Servis</h1>
+          <p class="text-[11px] text-md-onSurfaceVariant">Lihat servis yang pernah dikerjakan & beri ulasan hasilnya</p>
         </div>
 
         <div class="p-4 space-y-3">
-          ${state.bookingsAndServices.map(item => {
-            const st = statusBadgeMap[item.status] || statusBadgeMap.PENDING;
-            const remainingCancelSec = (item.status === 'PENDING' && item.cancelDeadlineMs > now)
-              ? Math.ceil((item.cancelDeadlineMs - now) / 1000)
-              : 0;
-
+          ${state.serviceHistory.map(item => {
             return `
-              <div class="bg-white rounded-2xl p-4 border border-md-outlineVariant/70 shadow-2xs space-y-2.5 text-xs ${item.status === 'CANCELLED' ? 'opacity-70' : ''}">
+              <div class="bg-white rounded-2xl p-4 border border-md-outlineVariant/70 shadow-2xs space-y-2.5 text-xs">
                 <div class="flex items-center justify-between gap-2">
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${st.cls}">${st.label}</span>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-800">Servis Selesai</span>
                   <span class="font-mono text-[10px] text-md-onSurfaceVariant">${item.id}</span>
                 </div>
 
@@ -1167,15 +960,9 @@
 
                 <div class="p-2.5 rounded-xl bg-md-surfaceContainer text-[11px] space-y-1">
                   <div class="flex justify-between">
-                    <span class="text-md-onSurfaceVariant">Jadwal Diminta:</span>
-                    <strong class="text-md-onSurface">${item.scheduledDate}</strong>
+                    <span class="text-md-onSurfaceVariant">Tanggal Servis:</span>
+                    <strong class="text-md-onSurface">${item.serviceDate}</strong>
                   </div>
-                  ${item.proposedSchedule ? `
-                    <div class="flex justify-between">
-                      <span class="text-md-onSurfaceVariant">Usulan Jadwal DM:</span>
-                      <strong class="text-orange-800">${item.proposedSchedule}</strong>
-                    </div>
-                  ` : ''}
                   ${item.mechanicName ? `
                     <div class="flex justify-between">
                       <span class="text-md-onSurfaceVariant">Mekanik Pelaksana:</span>
@@ -1189,31 +976,6 @@
                     </div>
                   ` : ''}
                 </div>
-
-                ${remainingCancelSec > 0 ? `
-                  <button onclick="cancelBookingWithinWindow('${item.id}')" class="w-full py-2 px-3 rounded-xl text-[11px] font-bold bg-red-50 hover:bg-red-100 text-md-primary border border-red-200 flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">cancel</span>
-                    <span>Batalkan Booking (<span id="cancel-countdown-${item.id}">${remainingCancelSec}d</span>)</span>
-                  </button>
-                ` : ''}
-
-                ${item.adminResponseNote ? `
-                  <div class="p-2.5 rounded-xl ${item.status === 'RESCHEDULE_OFFERED' ? 'bg-orange-50 border border-orange-200 text-orange-950' : 'bg-blue-50/80 border border-blue-200 text-blue-950'} text-[11px]">
-                    <span class="text-[10px] font-bold uppercase block mb-0.5">Pesan Admin Dokter Mobil:</span>
-                    <p class="leading-snug">"${item.adminResponseNote}"</p>
-                  </div>
-                ` : ''}
-
-                ${item.status === 'RESCHEDULE_OFFERED' ? `
-                  <button onclick="acceptProposedSchedule('${item.id}')" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-md-secondary hover:bg-blue-900 text-white shadow-2xs flex items-center justify-center gap-1.5">
-                    <span class="material-symbols-outlined text-base">event_available</span>
-                    <span>Setujui Jadwal Baru (${item.proposedSchedule})</span>
-                  </button>
-              <button onclick="rejectProposedSchedule('${item.id}')" class="w-full py-2.5 rounded-full border border-md-primary text-md-primary bg-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95">
-                <span class="material-symbols-outlined text-base">event_busy</span>
-                <span>Tolak &amp; Batalkan Booking</span>
-              </button>
-                ` : ''}
 
                 ${item.status === 'COMPLETED' && !item.isReviewed ? `
                   <button onclick="openRatingSheet('${item.id}')" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-2xs flex items-center justify-center gap-1.5">
@@ -1238,29 +1000,8 @@
       `;
     }
 
-    function acceptProposedSchedule(bookingId) {
-      const item = state.bookingsAndServices.find(b => b.id === bookingId);
-      if (!item || !item.proposedSchedule) return;
-      item.scheduledDate = item.proposedSchedule;
-      item.proposedSchedule = null;
-      item.status = 'CONFIRMED';
-      item.adminResponseNote = 'Pelanggan menyetujui jadwal pengganti. Slot telah dikunci.';
-      renderApp();
-      showMobileSnackbar(`Jadwal baru (${item.scheduledDate}) berhasil dikonfirmasi!`);
-    }
-
-    function rejectProposedSchedule(bookingId) {
-      const item = state.bookingsAndServices.find(b => b.id === bookingId);
-      if (!item || item.status !== 'RESCHEDULE_OFFERED') return;
-      item.proposedSchedule = null;
-      item.adminResponseNote = '';
-      item.status = 'CANCELLED';
-      renderApp();
-      showMobileSnackbar(`Usulan jadwal ditolak. Booking ${item.id} dibatalkan.`, 'event_busy');
-    }
-
     function openRatingSheet(serviceId) {
-      const item = state.bookingsAndServices.find(b => b.id === serviceId);
+      const item = state.serviceHistory.find(b => b.id === serviceId);
       if (!item) return;
       window._selectedRating = 5;
 
@@ -1306,7 +1047,7 @@
 
     function submitCustomerRating(e, serviceId) {
       e.preventDefault();
-      const item = state.bookingsAndServices.find(b => b.id === serviceId);
+      const item = state.serviceHistory.find(b => b.id === serviceId);
       if (!item) return;
       item.isReviewed = true;
       item.rating = window._selectedRating || 5;
@@ -1318,7 +1059,7 @@
     }
 
     /* ==========================================================================
-       9. CUSTOMER PROFILE SHEET & ADMIN SIMULATOR
+       9. CUSTOMER PROFILE SHEET
        ========================================================================== */
     function openCustomerProfileSheet() {
       const c = state.customer;
@@ -1355,39 +1096,6 @@
       document.getElementById('mobile-sheet-backdrop').classList.remove('hidden');
     }
 
-    function simulateAdminConfirmBooking() {
-      const pending = state.bookingsAndServices.find(b => b.status === 'PENDING');
-      if (pending) {
-        pending.cancelDeadlineMs = 0;
-        pending.status = 'RESCHEDULE_OFFERED';
-        pending.proposedSchedule = 'Besok, 10:00 WIB';
-        pending.adminResponseNote = 'Mohon maaf, slot pukul 15:00 WIB sudah penuh dengan antrean servis lain. Apakah berkenan dialihkan ke Besok pukul 10:00 WIB?';
-        state.activeTab = 'aktivitas';
-        renderApp();
-        showMobileSnackbar(`Admin DM membalas: Slot penuh & mengusulkan jadwal baru!`, 'schedule');
-        return;
-      }
-
-      const rescheduled = state.bookingsAndServices.find(b => b.status === 'RESCHEDULE_OFFERED');
-      if (rescheduled) {
-        acceptProposedSchedule(rescheduled.id);
-        return;
-      }
-
-      const confirmed = state.bookingsAndServices.find(b => b.status === 'CONFIRMED');
-      if (confirmed) {
-        confirmed.status = 'COMPLETED';
-        confirmed.mechanicName = 'Agus Setiawan';
-        confirmed.totalPrice = 550000;
-        state.activeTab = 'aktivitas';
-        renderApp();
-        showMobileSnackbar(`Servis ${confirmed.id} selesai! Silakan beri rating & ulasan.`);
-        return;
-      }
-
-      showMobileSnackbar('Semua booking aktif sudah selesai. Buat booking baru dari tab Beranda.', 'info');
-    }
-
     /* ==========================================================================
        10. MAIN RENDER ORCHESTRATOR
        ========================================================================== */
@@ -1411,8 +1119,8 @@
         screen.innerHTML = renderOnSiteTab();
       } else if (state.activeTab === 'garasi') {
         screen.innerHTML = renderGarasiTab();
-      } else if (state.activeTab === 'aktivitas') {
-        screen.innerHTML = renderAktivitasTab();
+      } else if (state.activeTab === 'riwayat') {
+        screen.innerHTML = renderRiwayatTab();
       }
     }
 

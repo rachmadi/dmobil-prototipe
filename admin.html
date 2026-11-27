@@ -299,10 +299,6 @@
         <div class="flex items-center gap-3">
           <div id="header-location-container"></div>
 
-          <button onclick="simulateIncomingBooking()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium bg-md-surfaceContainerHigh hover:bg-md-surfaceContainerHighest text-md-onSurface m3-transition" title="Simulasi pelanggan mengirim booking dari aplikasi Android D-Mobil">
-            <span class="material-symbols-outlined text-base text-md-secondary">notifications_active</span>
-            <span>Simulasi Booking Masuk</span>
-          </button>
         </div>
       </div>
 
@@ -325,14 +321,6 @@
       </div>
 
       <form id="create-job-form" onsubmit="submitCreateJob(event)" class="p-6 overflow-y-auto space-y-4">
-        <input type="hidden" id="job-source-booking-id" value="" />
-
-        <!-- Sumber Pekerjaan -->
-        <div id="job-source-badge" class="p-3 rounded-2xl bg-md-secondaryContainer/60 text-md-onSecondaryContainer text-xs flex items-center justify-between">
-          <span>Sumber Order: <strong id="job-source-label">Pelanggan Datang Langsung (Walk-In)</strong></span>
-          <span class="px-2.5 py-0.5 rounded-full bg-white/80 text-[11px] font-medium">Siap Tayang</span>
-        </div>
-
         <!-- Pemilihan Pelanggan Terdaftar & Kendaraan Miliknya (Multi-Mobil) -->
         <div id="job-customer-picker-section" class="p-3.5 rounded-2xl bg-white border border-md-outlineVariant/80 space-y-2.5">
           <div class="flex items-center justify-between gap-2">
@@ -488,7 +476,7 @@
         role: 'SUPER_ADMIN',
         initials: 'BS'
       },
-      activeTab: 'operations', // operations | bookings | customers | mechanics | reports | settings
+      activeTab: 'operations', // operations | customers | mechanics | reports | settings
       selectedLocationFilter: 'ALL',
       customerSearchQuery: '',
       customerSourceFilter: 'ALL', // ALL | APP_SELF_REGISTER | WALK_IN_ADMIN
@@ -687,50 +675,11 @@
         }
       ],
 
-      bookings: [
-        {
-          bookingId: 'BK-2026-081',
-          locationId: 'dm_palembang',
-          locationName: 'Dokter Mobil Palembang',
-          customerId: 'cust_01',
-          customerName: 'Andi Saputra',
-          customerPhone: '0812-3344-5566',
-          vehicleInfo: 'Toyota Innova Reborn 2021 (BG 1892 KJU)',
-          categoryId: 'ac',
-          categoryName: 'AC',
-          complaint: 'AC hanya keluar angin panas saat macet siang hari, terdengar bunyi mendesis.',
-          scheduledDate: 'Hari Ini, 15:00 WIB',
-          status: 'PENDING',
-          adminResponseNote: '',
-          proposedSchedule: null,
-          linkedJobId: null
-        },
-        {
-          bookingId: 'BK-2026-082',
-          locationId: 'dm_palembang',
-          locationName: 'Dokter Mobil Palembang',
-          customerId: 'cust_02',
-          customerName: 'Siti Nurhaliza',
-          customerPhone: '0819-7766-5544',
-          vehicleInfo: 'Honda HR-V Prestige 2022 (BG 2401 SZZ)',
-          categoryId: 'kaki_kaki',
-          categoryName: 'Kaki-kaki',
-          complaint: 'Bunyi gluduk di roda depan kiri saat melewati polisi tidur.',
-          scheduledDate: 'Hari Ini, 15:30 WIB',
-          status: 'PENDING',
-          adminResponseNote: '',
-          proposedSchedule: null,
-          linkedJobId: null
-        }
-      ],
-
       jobs: [
         {
           jobId: 'JOB-104',
           locationId: 'dm_palembang',
           locationName: 'Dokter Mobil Palembang',
-          sourceType: 'APP_BOOKING',
-          bookingId: 'BK-2026-079',
           customerId: 'cust_01',
           customerName: 'Andi Saputra',
           title: 'Ganti Evaporator & Flushing AC Total',
@@ -760,8 +709,6 @@
           jobId: 'JOB-102',
           locationId: 'dm_palembang',
           locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN',
-          bookingId: null,
           customerId: 'cust_03',
           customerName: 'H. Bambang Wijaya',
           title: 'Kuras Oli Transmisi Matic & Tune Up',
@@ -798,8 +745,6 @@
           jobId: 'JOB-103',
           locationId: 'dm_palembang',
           locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN',
-          bookingId: null,
           customerId: 'cust_03',
           customerName: 'H. Bambang Wijaya',
           title: 'Overhaul Rack Steer & Ganti Tie Rod End',
@@ -830,8 +775,6 @@
           jobId: 'JOB-105',
           locationId: 'dm_palembang',
           locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN',
-          bookingId: null,
           customerId: 'cust_04',
           customerName: 'Dr. Rahmat Hidayat',
           title: 'Diagnosa Check Engine & Kalibrasi Sensor',
@@ -860,7 +803,6 @@
         },
         {
           jobId: 'JOB-106', locationId: 'dm_palembang', locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN', bookingId: null,
           customerId: null, customerName: 'Pelanggan Walk-In Umum',
           title: 'Cuci Evaporator Tanpa Bongkar & Isi Freon R134a', categoryId: 'ac', categoryName: 'AC',
           vehicleSummary: 'Toyota Avanza 2020 (BG 1305 AA)', description: 'AC kurang dingin saat siang macet, tekanan kompresor perlu dicek dan flushing oli kompresor.', boardSummary: 'Perawatan AC: cuci evaporator dan isi freon.',
@@ -876,7 +818,6 @@
         },
         {
           jobId: 'JOB-107', locationId: 'dm_palembang', locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN', bookingId: null,
           customerId: 'cust_03', customerName: 'H. Bambang Wijaya',
           title: 'Tune Up Ruang Bakar & Gurah Mesin', categoryId: 'mesin', categoryName: 'Mesin',
           vehicleSummary: 'Honda Brio RS 2023 (BG 8821 TBO)', description: 'Tarikan terasa berat dan konsumsi BBM boros.', boardSummary: 'Tune up dan pembersihan ruang bakar.',
@@ -894,8 +835,6 @@
           jobId: 'JOB-101',
           locationId: 'dm_palembang',
           locationName: 'Dokter Mobil Palembang',
-          sourceType: 'WALK_IN',
-          bookingId: null,
           customerId: null,
           customerName: 'Pelanggan Walk-In Umum',
           title: 'Perbaikan Alternator & Penggantian IC Regulator',
@@ -1020,13 +959,11 @@
     }
 
     function renderNavigation() {
-      const pendingBookings = state.bookings.filter(b => b.status === 'PENDING').length;
       const unverifiedMechs = state.mechanics.filter(m => !m.isVerified).length;
       const activeJobsCount = state.jobs.filter(j => ['OPEN', 'ON_THE_WAY', 'IN_PROGRESS'].includes(j.status)).length;
 
       const navItems = [
         { id: 'operations', label: 'Operasional & Tracking', icon: 'map', badge: activeJobsCount, badgeColor: 'bg-md-primaryContainer text-md-onPrimaryContainer' },
-        { id: 'bookings', label: 'Booking Pelanggan', icon: 'event_available', badge: pendingBookings, badgeColor: 'bg-amber-100 text-amber-800' },
         { id: 'customers', label: 'Data Pelanggan', icon: 'groups', badge: state.customers.length, badgeColor: 'bg-md-surfaceContainerHighest text-md-onSurfaceVariant' },
         { id: 'mechanics', label: 'Mitra Mekanik & Kurasi', icon: 'engineering', badge: unverifiedMechs, badgeColor: 'bg-blue-100 text-blue-800' },
         { id: 'reports', label: 'Laporan & Evaluasi', icon: 'analytics', badge: 0 },
@@ -1242,8 +1179,8 @@
             <!-- Info Grid -->
             <div class="mt-4 p-3 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-1.5">
               <div class="flex justify-between">
-                <span class="text-md-onSurfaceVariant">Pelanggan & Sumber:</span>
-                <span class="font-medium text-right">${job.customerName || 'Walk-In Umum'} • ${job.sourceType === 'APP_BOOKING' ? 'Booking (' + job.bookingId + ')' : 'Walk-In'}</span>
+                <span class="text-md-onSurfaceVariant">Pelanggan:</span>
+                <span class="font-medium text-right">${job.customerName || 'Walk-In Umum'}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-md-onSurfaceVariant">Mekanik Mitra:</span>
@@ -1318,17 +1255,17 @@
               </button>
             ` : ''}
 
-            ${job.status === 'COMPLETED' && job.sourceType === 'APP_BOOKING' ? `
+            ${job.status === 'COMPLETED' && job.customerId ? `
               <span class="inline-flex items-center gap-1 text-xs font-medium ${job.isReviewed ? 'text-md-tertiary' : 'text-md-onSurfaceVariant'}">
                 <span class="material-symbols-outlined text-base ${job.isReviewed ? 'icon-filled' : ''}">${job.isReviewed ? 'verified' : 'rate_review'}</span>
                 <span>${job.isReviewed ? `Diulas Pelanggan (${job.givenRating || 5}★)` : 'Menunggu Ulasan Pelanggan di Aplikasi'}</span>
               </span>
             ` : ''}
 
-            ${job.status === 'COMPLETED' && job.sourceType === 'WALK_IN' ? `
+            ${job.status === 'COMPLETED' && !job.customerId ? `
               <span class="inline-flex items-center gap-1 text-xs font-medium text-md-onSurfaceVariant">
                 <span class="material-symbols-outlined text-base text-md-tertiary icon-filled">check_circle</span>
-                <span>Selesai (Order Walk-In)</span>
+                <span>Selesai (Pelanggan Belum Terdaftar)</span>
               </span>
             ` : ''}
           </div>
@@ -1665,11 +1602,6 @@
       job.completedAt = 'Baru saja';
       job.workDurationMinutes = workMins;
 
-      if (job.bookingId) {
-        const bk = state.bookings.find(b => b.bookingId === job.bookingId);
-        if (bk) bk.status = 'COMPLETED';
-      }
-
       const mech = state.mechanics.find(m => m.uid === job.assignedMechanicId);
       if (mech) {
         const prevCount = mech.completedJobsCount;
@@ -1683,237 +1615,7 @@
     }
 
     /* ==========================================================================
-       5. TAB 2: BOOKING PELANGGAN
-       ========================================================================== */
-    function renderBookingsTab() {
-      document.getElementById('page-title').textContent = 'Antrean Booking Pelanggan';
-      document.getElementById('page-subtitle').textContent = 'Periksa ketersediaan slot bengkel, beri tanggapan/jadwal alternatif, atau teruskan ke bursa mekanik.';
-
-      return `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          ${state.bookings.map(bk => {
-            const isPending = bk.status === 'PENDING';
-            const isConfirmed = bk.status === 'CONFIRMED';
-            const isReschedule = bk.status === 'RESCHEDULE_OFFERED';
-            const isCompleted = bk.status === 'COMPLETED';
-              const isCancelled = bk.status === 'CANCELLED';
-            return `
-              <div class="bg-white rounded-[24px] p-5 border border-md-outlineVariant/60 flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between gap-2 mb-3">
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold ${
-                      isPending ? 'bg-amber-100 text-amber-900' :
-                      isConfirmed ? 'bg-blue-100 text-blue-900' :
-                      isReschedule ? 'bg-orange-100 text-orange-900' :
-                      isCompleted ? 'bg-gray-200 text-gray-800' :
-                          isCancelled ? 'bg-red-100 text-red-800' :
-                      'bg-emerald-100 text-emerald-900'
-                    }">
-                      ${isPending ? 'PENDING • Perlu Tanggapan Admin' :
-                        isConfirmed ? 'CONFIRMED • Siap Dilempar ke Mekanik' :
-                        isReschedule ? 'SLOT PENUH • Menunggu Konfirmasi Jadwal Baru' :
-                        isCompleted ? 'COMPLETED • Servis Selesai' :
-                           isCancelled ? 'CANCELLED • Dibatalkan' :
-                        'CONVERTED_TO_JOB • Pekerjaan (' + bk.linkedJobId + ')'}
-                    </span>
-                    <span class="font-mono text-xs text-md-onSurfaceVariant">${bk.bookingId}</span>
-                  </div>
-
-                  <h4 class="font-bold text-base text-md-onSurface">${bk.customerName}</h4>
-                  <p class="text-xs text-md-secondary font-medium mt-0.5">${bk.vehicleInfo}</p>
-
-                  <div class="mt-3 p-3.5 rounded-2xl bg-md-surfaceContainerLow text-xs space-y-1.5">
-                    <div class="flex justify-between">
-                      <span class="text-md-onSurfaceVariant">Cabang Bengkel:</span>
-                      <span class="font-semibold">${bk.locationName}</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-md-onSurfaceVariant">Jadwal Diminta:</span>
-                      <span class="font-semibold text-md-primary">${bk.scheduledDate}</span>
-                    </div>
-                    ${bk.proposedSchedule ? `
-                      <div class="flex justify-between">
-                        <span class="text-md-onSurfaceVariant">Jadwal Alternatif DM:</span>
-                        <span class="font-semibold text-orange-800">${bk.proposedSchedule}</span>
-                      </div>
-                    ` : ''}
-                    <div class="flex justify-between">
-                      <span class="text-md-onSurfaceVariant">Kategori & Kontak:</span>
-                      <span>${bk.categoryName} • ${bk.customerPhone}</span>
-                    </div>
-                  </div>
-
-                  <div class="mt-3">
-                    <span class="text-[11px] font-semibold text-md-onSurfaceVariant uppercase">Keluhan Pelanggan:</span>
-                    <p class="text-xs text-md-onSurface mt-1 bg-md-surface p-3 rounded-xl border border-md-outlineVariant/50">"${bk.complaint}"</p>
-                  </div>
-
-                  ${bk.adminResponseNote ? `
-                    <div class="mt-3 p-3 rounded-xl ${isReschedule ? 'bg-orange-50 border border-orange-200 text-orange-950' : 'bg-blue-50/70 border border-blue-200 text-blue-950'} text-xs">
-                      <span class="text-[10px] font-bold uppercase block mb-0.5">Komentar / Tanggapan Admin DM:</span>
-                      <p class="leading-relaxed">"${bk.adminResponseNote}"</p>
-                    </div>
-                  ` : ''}
-                </div>
-
-                <div class="mt-4 pt-3 border-t border-md-outlineVariant/50 flex flex-wrap items-center justify-end gap-2">
-                  ${(isPending || isReschedule) ? `
-                    <button onclick="openBookingResponseModal('${bk.bookingId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-secondary text-white hover:bg-md-secondary/90">
-                      <span class="material-symbols-outlined text-sm">rate_review</span>
-                      <span>${isReschedule ? 'Ubah Tanggapan' : 'Tanggapi & Konfirmasi'}</span>
-                    </button>
-                  ` : ''}
-                  ${isConfirmed ? `
-                    <button onclick="openBookingResponseModal('${bk.bookingId}')" class="px-3.5 py-2 rounded-full text-xs font-medium text-md-secondary border border-md-outlineVariant hover:bg-md-surfaceContainerHigh">
-                      Ubah Catatan
-                    </button>
-                    <button onclick="openCreateJobFromBooking('${bk.bookingId}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-md-primary text-white hover:bg-md-primary/90">
-                      <span class="material-symbols-outlined text-sm">publish</span>
-                      <span>Lempar ke Bursa Mekanik</span>
-                    </button>
-                  ` : ''}
-                  ${isCancelled ? `<span class="text-xs font-semibold text-red-800">Booking dibatalkan</span>` : ''}
-                    ${!isPending && !isConfirmed && !isReschedule && !isCancelled ? `
-                    <span class="text-xs font-semibold text-md-tertiary flex items-center gap-1">
-                      <span class="material-symbols-outlined text-base">check_circle</span>
-                      <span>Sudah Dikonversi ke Pekerjaan (${bk.linkedJobId || '-'})</span>
-                    </span>
-                  ` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      `;
-    }
-
-    function openBookingResponseModal(bookingId) {
-      const bk = state.bookings.find(b => b.bookingId === bookingId);
-      if (!bk) return;
-
-      const defaultDecision = bk.status === 'RESCHEDULE_OFFERED' ? 'RESCHEDULE' : 'CONFIRM';
-
-      document.getElementById('entity-modal-title').textContent = `Tanggapan Jadwal Booking (${bk.bookingId})`;
-      document.getElementById('entity-modal-body').innerHTML = `
-        <form onsubmit="submitBookingResponse(event, '${bk.bookingId}')" class="space-y-3.5 text-xs">
-          <div class="p-3 rounded-2xl bg-md-surfaceContainerLow space-y-1">
-            <p class="font-bold text-sm text-md-onSurface">${bk.customerName} • ${bk.vehicleInfo}</p>
-            <p class="text-md-onSurfaceVariant">Jadwal Diminta Pelanggan: <strong class="text-md-primary">${bk.scheduledDate}</strong> (${bk.categoryName})</p>
-          </div>
-
-          <div>
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1.5">Status Ketersediaan Slot Bengkel *</label>
-            <div class="grid grid-cols-2 gap-2">
-              <label class="p-3 rounded-2xl border border-md-outlineVariant cursor-pointer flex items-start gap-2 has-[:checked]:border-md-tertiary has-[:checked]:bg-emerald-50/70">
-                <input type="radio" name="bk-decision" value="CONFIRM" ${defaultDecision === 'CONFIRM' ? 'checked' : ''} onchange="toggleRescheduleInput(false)" class="mt-0.5" />
-                <div>
-                  <span class="font-bold text-md-onSurface block">Terima & Konfirmasi</span>
-                  <span class="text-[11px] text-md-onSurfaceVariant">Slot jam tersedia</span>
-                </div>
-              </label>
-              <label class="p-3 rounded-2xl border border-md-outlineVariant cursor-pointer flex items-start gap-2 has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/70">
-                <input type="radio" name="bk-decision" value="RESCHEDULE" ${defaultDecision === 'RESCHEDULE' ? 'checked' : ''} onchange="toggleRescheduleInput(true)" class="mt-0.5" />
-                <div>
-                  <span class="font-bold text-md-onSurface block">Slot Penuh / Ubah Jam</span>
-                  <span class="text-[11px] text-md-onSurfaceVariant">Ajukan jam pengganti</span>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          <div id="bk-reschedule-field" class="${defaultDecision === 'RESCHEDULE' ? '' : 'hidden'}">
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Usulan Jadwal Alternatif Tersedia *</label>
-            <input type="text" id="bk-proposed-schedule" value="${bk.proposedSchedule || 'Hari Ini, 16:30 WIB atau Besok, 09:30 WIB'}" placeholder="Contoh: Besok, 10:00 WIB" class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-xs font-semibold" />
-          </div>
-
-          <div>
-            <label class="block font-semibold text-md-onSurfaceVariant mb-1">Komentar / Pesan untuk Pelanggan *</label>
-            <textarea id="bk-admin-note" rows="3" required placeholder="Tulis konfirmasi slot atau penjelasan bahwa jam tersebut penuh beserta saran jadwal lain..." class="w-full rounded-xl border border-md-outline px-3.5 py-2 text-xs">${bk.adminResponseNote || (defaultDecision === 'CONFIRM' ? 'Slot tersedia sesuai jadwal yang dipilih. Silakan datang 10 menit lebih awal.' : '')}</textarea>
-          </div>
-
-          <div class="pt-2 flex justify-end gap-2">
-            <button type="button" onclick="closeEntityModal()" class="px-4 py-2 rounded-full font-medium text-md-onSurfaceVariant hover:bg-md-surfaceContainerHigh">Batal</button>
-            <button type="submit" class="px-5 py-2 rounded-full font-semibold bg-md-primary text-white shadow-xs">Kirim Tanggapan ke Pelanggan</button>
-          </div>
-        </form>
-      `;
-      document.getElementById('entity-modal').classList.remove('hidden');
-    }
-
-    function toggleRescheduleInput(show) {
-      const field = document.getElementById('bk-reschedule-field');
-      const noteEl = document.getElementById('bk-admin-note');
-      if (show) {
-        field.classList.remove('hidden');
-        if (!noteEl.value || noteEl.value.includes('Slot tersedia')) {
-          noteEl.value = 'Mohon maaf, slot bengkel pada jam tersebut sudah penuh dengan antrean servis lain. Kami sarankan jadwal pengganti di atas.';
-        }
-      } else {
-        field.classList.add('hidden');
-        if (!noteEl.value || noteEl.value.includes('Mohon maaf')) {
-          noteEl.value = 'Slot tersedia sesuai jadwal yang dipilih. Silakan datang 10 menit lebih awal.';
-        }
-      }
-    }
-
-    function submitBookingResponse(e, bookingId) {
-      e.preventDefault();
-      const bk = state.bookings.find(b => b.bookingId === bookingId);
-      if (!bk) return;
-
-      const decision = document.querySelector('input[name="bk-decision"]:checked').value;
-      const note = document.getElementById('bk-admin-note').value.trim();
-
-      if (decision === 'CONFIRM') {
-        bk.status = 'CONFIRMED';
-        bk.adminResponseNote = note;
-        bk.proposedSchedule = null;
-        closeEntityModal();
-        renderApp();
-        showSnackbar(`Booking ${bookingId} dikonfirmasi beserta catatan untuk ${bk.customerName}.`);
-      } else {
-        const proposed = document.getElementById('bk-proposed-schedule').value.trim();
-        if (!proposed) {
-          showSnackbar('Harap isi usulan jadwal alternatif untuk pelanggan.', 'warning');
-          return;
-        }
-        bk.status = 'RESCHEDULE_OFFERED';
-        bk.proposedSchedule = proposed;
-        bk.adminResponseNote = note;
-        closeEntityModal();
-        renderApp();
-        showSnackbar(`Informasi slot penuh & usulan jadwal baru dikirim ke ${bk.customerName}.`, 'schedule');
-      }
-    }
-
-    function simulateIncomingBooking() {
-      const nextNum = 83 + state.bookings.length;
-      const newBkId = `BK-2026-0${nextNum}`;
-      const activeLoc = getActiveLocations()[0];
-      state.bookings.unshift({
-        bookingId: newBkId,
-        locationId: activeLoc.locationId,
-        locationName: activeLoc.name,
-        customerId: 'cust_01',
-        customerName: 'Andi Saputra',
-        customerPhone: '0812-3344-5566',
-        vehicleInfo: 'Mitsubishi Pajero Sport 2020 (BG 1102 PJS)',
-        categoryId: 'elektrikal',
-        categoryName: 'Elektrikal',
-        complaint: 'Indikator aki menyala di speedometer saat kecepatan tinggi.',
-        scheduledDate: 'Besok, 10:00 WIB',
-        status: 'PENDING',
-        adminResponseNote: '',
-        proposedSchedule: null,
-        linkedJobId: null
-      });
-      state.activeTab = 'bookings';
-      renderApp();
-      showSnackbar(`Booking baru masuk dari aplikasi D-Mobil (${newBkId})!`, 'notifications_active');
-    }
-
-    /* ==========================================================================
-       6. TAB 3: DATA PELANGGAN BENGKEL (WALK-IN & APLIKASI D-MOBIL)
+       5. TAB 2: DATA PELANGGAN BENGKEL (WALK-IN & APLIKASI D-MOBIL)
        ========================================================================== */
     function renderCustomersTab() {
       document.getElementById('page-title').textContent = 'Data Pelanggan Bengkel';
@@ -2215,7 +1917,7 @@
     }
 
     /* ==========================================================================
-       7. TAB 4: MITRA MEKANIK & KURASI REKOMENDASI ON-SITE
+       6. TAB 3: MITRA MEKANIK & KURASI REKOMENDASI ON-SITE
        ========================================================================== */
     function renderMechanicsTab() {
       document.getElementById('page-title').textContent = 'Mitra Mekanik & Kurasi Rekomendasi On-Site';
@@ -2349,7 +2051,7 @@
     }
 
     /* ==========================================================================
-       8. TAB 5: LAPORAN BAGI HASIL, EVALUASI KINERJA & LOG ON-SITE
+       7. TAB 4: LAPORAN BAGI HASIL, EVALUASI KINERJA & LOG ON-SITE
        ========================================================================== */
     function renderReportsTab() {
       document.getElementById('page-title').textContent = 'Laporan Bagi Hasil & Evaluasi Kinerja';
@@ -2461,7 +2163,7 @@
     }
 
     /* ==========================================================================
-       9. TAB 6: SETTINGS SISTEM (Lokasi Cabang, Kategori per Cabang, Bagi Hasil)
+       8. TAB 5: SETTINGS SISTEM (Lokasi Cabang, Kategori per Cabang, Bagi Hasil)
        ========================================================================== */
     function renderSettingsTab() {
       document.getElementById('page-title').textContent = 'Settings Sistem & Skalabilitas';
@@ -2575,7 +2277,7 @@
             </div>
 
             <p class="text-[11px] text-md-onSurfaceVariant mt-4 pt-3 border-t border-md-outlineVariant/40">
-              * Perubahan kategori langsung memperbarui pilihan di form Posting Pekerjaan, Booking Pelanggan, dan Profil Keahlian Mekanik.
+              * Perubahan kategori langsung memperbarui pilihan di form Posting Pekerjaan dan Profil Keahlian Mekanik.
             </p>
           </div>
 
@@ -2825,8 +2527,6 @@
     }
 
     function openCreateJobModal() {
-      document.getElementById('job-source-booking-id').value = '';
-      document.getElementById('job-source-label').textContent = 'Pelanggan Datang Langsung (Walk-In)';
       document.getElementById('job-title-input').value = '';
       document.getElementById('job-board-summary-input').value = '';
       document.getElementById('job-vehicle-input').value = '';
@@ -2836,25 +2536,6 @@
       populateJobCustomerSelect('');
       handleJobCustomerChange();
       populateCreateJobFormSelects();
-      updateCreateJobSplitPreview();
-      document.getElementById('create-job-modal').classList.remove('hidden');
-    }
-
-    function openCreateJobFromBooking(bookingId) {
-      const bk = state.bookings.find(b => b.bookingId === bookingId);
-      if (!bk) return;
-
-      document.getElementById('job-source-booking-id').value = bk.bookingId;
-      document.getElementById('job-source-label').textContent = `Booking Aplikasi (${bk.bookingId} — ${bk.customerName})`;
-      document.getElementById('job-title-input').value = `Servis ${bk.categoryName}`;
-      document.getElementById('job-board-summary-input').value = '';
-      document.getElementById('job-desc-input').value = bk.complaint;
-      document.getElementById('job-price-input').value = 550000;
-
-      populateJobCustomerSelect(bk.customerId || '');
-      handleJobCustomerChange(0);
-      document.getElementById('job-vehicle-input').value = bk.vehicleInfo;
-      populateCreateJobFormSelects(bk.locationId, bk.categoryId);
       updateCreateJobSplitPreview();
       document.getElementById('create-job-modal').classList.remove('hidden');
     }
@@ -2922,7 +2603,6 @@
 
     function submitCreateJob(e) {
       e.preventDefault();
-      const bookingId = document.getElementById('job-source-booking-id').value || null;
       const selectedCustId = document.getElementById('job-customer-select').value || null;
       const custObj = selectedCustId ? state.customers.find(c => c.customerId === selectedCustId) : null;
       if (custObj) {
@@ -2947,8 +2627,6 @@
         jobId: newJobId,
         locationId: locObj.locationId,
         locationName: locObj.name,
-        sourceType: bookingId ? 'APP_BOOKING' : 'WALK_IN',
-        bookingId,
         customerId: custObj ? custObj.customerId : null,
         customerName: custObj ? custObj.name : 'Pelanggan Walk-In Umum',
         title: document.getElementById('job-title-input').value.trim(),
@@ -2975,14 +2653,6 @@
         workDurationMinutes: null,
         isReviewed: false
       });
-
-      if (bookingId) {
-        const bk = state.bookings.find(b => b.bookingId === bookingId);
-        if (bk) {
-          bk.linkedJobId = newJobId;
-          bk.status = 'CONVERTED_TO_JOB';
-        }
-      }
 
       closeCreateJobModal();
       state.activeTab = 'operations';
@@ -3294,8 +2964,6 @@
       const content = document.getElementById('page-content');
       if (state.activeTab === 'operations') {
         content.innerHTML = renderOperationsTab();
-      } else if (state.activeTab === 'bookings') {
-        content.innerHTML = renderBookingsTab();
       } else if (state.activeTab === 'customers') {
         content.innerHTML = renderCustomersTab();
       } else if (state.activeTab === 'mechanics') {
