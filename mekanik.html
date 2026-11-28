@@ -1209,11 +1209,15 @@
               </div>
             </div>
           ` : `
-            <!-- In-Progress Banner -->
-            <div class="p-4 rounded-3xl bg-emerald-50 border border-emerald-200 text-center">
-              <span class="material-symbols-outlined text-3xl text-md-tertiary mb-1">build_circle</span>
-              <h3 class="text-xs font-bold text-emerald-950">Sedang Mengerjakan Unit di Bengkel</h3>
-              <p class="text-[11px] text-emerald-800 mt-0.5">Waktu kerja sedang dicatat oleh Admin Bengkel DM. Lapor staf bengkel jika perbaikan selesai.</p>
+            <!-- Penghitung Durasi Pengerjaan -->
+            <div class="p-4 rounded-3xl bg-[#1E3A5F] text-white text-center shadow-md">
+              <div class="flex items-center justify-center gap-1.5 text-blue-200">
+                <span class="material-symbols-outlined text-lg">timer</span>
+                <h3 class="text-xs font-bold uppercase tracking-wider">Durasi Pengerjaan</h3>
+              </div>
+              <p id="work-timer" role="timer" class="text-[52px] leading-none font-extrabold my-3" style="font-variant-numeric: tabular-nums">${formatWorkDuration(Date.now() - job.workStartedAt)}</p>
+              <p class="text-[11px] font-semibold text-blue-100">Mulai pukul ${formatWorkStart(job.workStartedAt)} WIB</p>
+              <p class="text-[11px] text-blue-200 mt-2 pt-2 border-t border-white/20">Lapor staf bengkel jika perbaikan selesai.</p>
             </div>
           `}
 
@@ -1252,17 +1256,46 @@
       `;
     }
 
+    /* Durasi pengerjaan: dihitung dari waktu mulai, sehingga tetap akurat saat pindah tab */
+    function formatWorkDuration(ms) {
+      const total = Math.max(0, Math.floor(ms / 1000));
+      return [Math.floor(total / 3600), Math.floor(total / 60) % 60, total % 60]
+        .map(n => String(n).padStart(2, '0')).join(':');
+    }
+
+    function formatWorkStart(ts) {
+      return new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
+    }
+
+    function startWorkTimer() {
+      stopWorkTimer();
+      window._workTimer = setInterval(() => {
+        const job = state.activeJob;
+        if (!job || job.status !== 'IN_PROGRESS') return stopWorkTimer();
+        const el = document.getElementById('work-timer');
+        if (el) el.textContent = formatWorkDuration(Date.now() - job.workStartedAt);
+      }, 250);
+    }
+
+    function stopWorkTimer() {
+      clearInterval(window._workTimer);
+    }
+
     function simulateAdminConfirmArrival() {
       if (!state.activeJob) return;
       stopMechanicDriveSimulation();
       state.activeJob.status = 'IN_PROGRESS';
+      state.activeJob.workStartedAt = Date.now();
       renderApp();
+      startWorkTimer();
       showMobileSnackbar('Admin DM mengonfirmasi kedatangan Anda. Mulai pengerjaan!', 'build');
     }
 
     function simulateAdminCompleteJob() {
       if (!state.activeJob) return;
       const done = state.activeJob;
+      stopWorkTimer();
+      const workMinutes = Math.max(1, Math.round((Date.now() - done.workStartedAt) / 60000));
       state.historyJobs.unshift({
         jobId: done.jobId,
         title: done.title,
@@ -1271,7 +1304,7 @@
         locationName: done.locationName,
         completedDate: 'Baru saja',
         arrivalDurationMinutes: Math.max(10, done.etaMinutes - 2),
-        workDurationMinutes: 60,
+        workDurationMinutes: workMinutes,
         totalPrice: done.totalPrice,
         rating: 5,
         reviewComment: 'Pekerjaan selesai dengan baik sesuai standar Dokter Mobil.'
